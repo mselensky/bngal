@@ -7,7 +7,7 @@
 build_dendrograms(binned.taxonomy, metadata, color.by, trans = "log10")
 }
 \arguments{
-\item{binned.taxonomy}{Output from bin_taxonomy}
+\item{binned.taxonomy}{Output from \code{\link[=bin_taxonomy]{bin_taxonomy()}}}
 
 \item{metadata}{Sample metadata}
 

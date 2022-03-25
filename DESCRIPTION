@@ -25,3 +25,5 @@ Imports:
   treeio,
   ggtree,
   vegan
+Depends: 
+    R (>= 2.10)

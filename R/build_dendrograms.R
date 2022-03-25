@@ -3,7 +3,7 @@
 #' This function performs hierarchical clustering on microbial relative
 #' abundance data binned at a specified level of taxonomic classification.
 #'
-#' @param binned.taxonomy Output from bin_taxonomy
+#' @param binned.taxonomy Output from [bngal::bin_taxonomy()]
 #' @param metadata Sample metadata
 #' @param color.by Metadata column by which to color
 #' @param trans Transformation to apply to relative abundance data (default = none). Can be one of `"log10"`, `"log"`, `"sqrt"`, or `"none"`
