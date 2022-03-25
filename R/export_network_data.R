@@ -8,34 +8,27 @@
 #' @export
 #'
 #' @examples
-export_network_data <- function(node.color.data, tax.level, out.dr){
+export_network_data <- function(node.color.data, tax.level, subset.column, out.dr){
 
-  write_data <- function (node.color.data, subset.values) {
-    for (i in subset.values) {
+  if (missing(subset.column)) {
+    subset.column = "all"
+  }
 
-      if (subset.values == "all") {
-        node.color.data$nodes$group = as.character(i)
-        node.color.data$edges$group = as.character(i)
-      } else {
-        node.color.data$nodes[[i]]$group = as.character(i)
-        node.color.data$edges[[i]]$group = as.character(i)
-      }
+  write_data <- function (node.color.data, subset.column) {
 
-      filename = paste0(i, "-", tax.level,
-                        "-network-data.rds")
+      filename = paste0(subset.column, "_", tax.level, "_network-data.rds")
 
       saveRDS(node.color.data, file = filename)
-    }
   }
 
   work.dr <- getwd()
   setwd(out.dr)
   if (!is.null(nrow(node.color.data$nodes))) {
-    subset.values = "all"
-    write_data(node.color.data, subset.values)
+    subset.column = "all"
+    write_data(node.color.data, subset.column)
   } else if (class(node.color.data$nodes) == "list") {
-    subset.values = names(node.color.data$nodes)
-    write_data(node.color.data, subset.values)
+    subset.column = subset.column
+    write_data(node.color.data, subset.column)
   } else {
     setwd(work.dr)
     stop("
