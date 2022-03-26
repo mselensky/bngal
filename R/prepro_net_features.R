@@ -39,9 +39,8 @@ prepro_net_features <- function(edges., node.ids, p.val.cutoff, correlation, cor
       edges_filt <- edges. %>%
         filter(.data[[correlation]] > abs(correlation.cutoff) | .data[[correlation]] < -1*abs(correlation.cutoff))
     } else {
-      stop("
- | prepro_net_features():
- |   ->sign must be 'positive', 'negative', or 'all', not ", "'",sign,"'")
+      stop("\n | [", Sys.time(), "] prepro_net_features():\n",
+      " |   ->sign must be 'positive', 'negative', or 'all', not ", "'",sign,"'")
     }
 
     edges_filt <- edges_filt %>%
@@ -96,10 +95,8 @@ prepro_net_features <- function(edges., node.ids, p.val.cutoff, correlation, cor
                        nodes = nodes_f)
 
   } else {
-    stop("
-  | Unexpected input data.
-  |   ->Do your edges match your nodes?
-         ")
+    stop("\n | [", Sys.time(), "] Unexpected input data.\n",
+    " |   ->Do your edges match your nodes?")
   }
 
 }

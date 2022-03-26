@@ -17,12 +17,12 @@ split_network_data <- function(prepared.data, subset.column) {
   if (missing(subset.column)) {
 
     return(prepared.data)
-    stop("
- | No subcommunities defined; exiting.
- |   ->you can define subcommunities via subset.column!
- |   ->if you want to analyze the entire community, use the
- |     output of prepare_network_data() downstream instead.
-           ")
+    warning(" | [", Sys.time(), "] No subcommunities defined; returning original data.\n",
+            " |   ->you can define subcommunities via subset.column!\n",
+            " |   ->if you want to analyze the entire community, consider using the\n",
+            " |     output of prepare_network_data() downstream instead.\n")
+    stop("\n | Execution halted; no subcommunities defined. You can still use\n",
+         " | this output for downstream analysis on the full community.")
 
   } else {
 

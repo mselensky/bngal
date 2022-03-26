@@ -73,10 +73,8 @@ color_nodes <- function(clusters.to.color, phylum.colors) {
          edges = clusters.to.color$edges)
 
   } else {
-    stop("
-  | Unexpected input data for bngal::color_nodes()
-  |   ->Requires output from bngal::get_ebc_clusters()
-         ")
+    stop("\n | [", Sys.time(), "] Unexpected input data for bngal::color_nodes()\n",
+    " |   ->Requires output from bngal::get_ebc_clusters()")
   }
 
 }

@@ -117,9 +117,9 @@ prepare_network_data <- function(asv.table, meta.data, tax.level, direction, cut
       select(`sample-id`, rel_abun_binned, taxon_, domain) %>%
       distinct(`sample-id`, taxon_, .keep_all = TRUE) %>% ungroup()
   } else {
-    message("
- | ERROR, prepare_data(): Must choose one of the following taxonomic levels:
- | 'asv', 'genus', 'family', 'order', 'class', 'phylum', 'domain'")
+    stop("\n | [", Sys.time(), "] prepare_data():\n",
+    " | Must choose one of the following taxonomic levels:\n",
+    " |     'asv', 'genus', 'family', 'order', 'class', 'phylum', 'domain'")
 
   }
 

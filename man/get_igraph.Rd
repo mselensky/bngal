@@ -9,7 +9,8 @@ get_igraph(prepro.data, directed. = FALSE)
 \arguments{
 \item{prepro.data}{Output from \code{\link{prepro_net_features}}}
 
-\item{directed.}{See \code{directed} option from \code{\link[igraph:graph_from_data_frame]{igraph::graph_from_data_frame}}}
+\item{directed.}{See \code{directed} option from \code{\link[igraph:graph_from_data_frame]{igraph::graph_from_data_frame}}.
+Defaults to \code{FALSE} for pairwise correlation data.}
 }
 \value{
 

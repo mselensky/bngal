@@ -83,10 +83,8 @@ plot_networks <- function (node.color.data, selected.By, graph.layout, out.dr,
     }
 
   } else {
-    stop("
-  | Unexpected input data for bngal::plot_networks()
-  |   ->Requires output from bngal::color_nodes()
-         ")
+    stop("\n | [", Sys.time(), "] Unexpected input data for bngal::plot_networks()\n",
+    "  |   ->Requires output from bngal::color_nodes()")
   }
 
   if (!dir.exists(out.dr)) {

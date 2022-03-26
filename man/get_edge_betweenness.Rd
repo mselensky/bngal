@@ -15,10 +15,14 @@ get_edge_betweenness(igraph.list)
 \description{
 This is a wrapper around \code{\link[igraph:cluster_edge_betweenness]{igraph::cluster_edge_betweenness()}}. This can
 be a memory- and time-intensive operation, especially for lower taxonomic
-levels. Edge betweenness is processed in parallel for each subcommunity
-by default to ease computational burden. For larger matrices of a single
-community, consider using \code{\link[parallel:mclapply]{parallel::mcmapply()}} to increase computation
-speed.
+levels. In this wrapper, edge betweenness is processed in parallel for each
+subcommunity by default in an attempt to ease runtime requirements. For larger
+matrices of a single community, consider using \code{\link[parallel:mclapply]{parallel::mcmapply()}} around
+\code{igraph::cluster_edge_betweenness()} to increase computational efficiency
+(support coming soon).
+}
+\details{
+Before running this function, consider
 }
 \examples{
 get_igraph_output <- bngal::get_igraph(prepro_data)

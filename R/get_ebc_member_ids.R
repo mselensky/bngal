@@ -34,10 +34,8 @@ get_ebc_member_ids <- function(betweenness.) {
     )
 
   } else {
-    stop("
-  | Unexpected input data for bngal::get_ebc_member_ids()
-  |   ->Requires output from bngal::cluster_edge_betweenness()
-         ")
+    stop("\n | [", Sys.time(), "] Unexpected input data for bngal::get_ebc_member_ids()\n",
+         " |   ->Requires output from bngal::cluster_edge_betweenness()")
   }
 
   member.ids

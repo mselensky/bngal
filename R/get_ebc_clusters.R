@@ -38,8 +38,7 @@ get_ebc_clusters <- function(prepro.data, ebc.member.ids, igraph.obj, core.ness=
   } else if (class(prepro.data$edges) %in% "list" &
              class(prepro.data$nodes) %in% "list") {
 
-    # fix this!
-    # make it actually parallel!
+    # might provide multicore support here if needed, but for now probably not worth the overhead:
     node.clusters. <- list()
     edges.only <- list()
     for (i in names(prepro.data$nodes)) {

@@ -2,10 +2,13 @@
 #'
 #' This is a wrapper around [`igraph::cluster_edge_betweenness()`]. This can
 #' be a memory- and time-intensive operation, especially for lower taxonomic
-#' levels. Edge betweenness is processed in parallel for each subcommunity
-#' by default to ease computational burden. For larger matrices of a single
-#' community, consider using [`parallel::mcmapply()`] to increase computation
-#' speed.
+#' levels. In this wrapper, edge betweenness is processed in parallel for each
+#' subcommunity by default in an attempt to ease runtime requirements. For larger
+#' matrices of a single community, consider using [`parallel::mcmapply()`] around
+#' `igraph::cluster_edge_betweenness()` to increase computational efficiency
+#' (support coming soon).
+#'
+#' Before running this function, consider
 #'
 #' @param igraph.list Output from [`bngal::get_igraph()`]
 #'
@@ -27,7 +30,8 @@ get_edge_betweenness <- function(igraph.list) {
     NCORES = 1
   }
 
-  cluster_ebc <- function (igraph.list) {
+  # better multicore performance currently being worked on, for now this placeholder:
+  cluster_eb <- function (igraph.list) {
     igraph::cluster_edge_betweenness(igraph.list)
   }
 
@@ -40,10 +44,8 @@ get_edge_betweenness <- function(igraph.list) {
     edge_betweenness <- cluster_ebc(igraph.list)
     list(all=edge_betweenness)
   } else {
-    stop("
-    | Unexpected input data.
-    |   ->Requires output from bngal::get_igraph()
-           ")
+    stop("\n | [", Sys.time(), "] Unexpected input data.\n",
+    " |   ->Requires output from bngal::get_igraph()")
   }
 
 }

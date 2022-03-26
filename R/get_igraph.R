@@ -5,7 +5,8 @@
 #' `bngal` pipeline.
 #'
 #' @param prepro.data Output from [`bngal::prepro_net_features`]
-#' @param directed. See `directed` option from [`igraph::graph_from_data_frame`]
+#' @param directed. See `directed` option from [`igraph::graph_from_data_frame`].
+#' Defaults to `FALSE` for pairwise correlation data.
 #'
 #' @return
 #' @export
@@ -17,13 +18,13 @@ get_igraph <- function(prepro.data, directed. = FALSE){
   if (any(class(prepro.data$nodes) %in% input.data.class)) {
     igraph.list <- igraph::graph_from_data_frame(d = prepro.data$edges,
                                                  vertices = prepro.data$nodes,
-                                                 directed = FALSE)
+                                                 directed = directed.)
   } else if (class(prepro.data$nodes) == "list") {
     igraph.list = list()
     for (i in names(prepro.data$edges)) {
       igraph.list[[i]] <- igraph::graph_from_data_frame(d = prepro.data$edges[[i]],
                                                         vertices = prepro.data$nodes[[i]],
-                                                        directed = FALSE)
+                                                        directed = directed.)
     }
   }
 

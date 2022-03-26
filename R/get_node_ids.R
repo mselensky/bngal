@@ -32,7 +32,7 @@ get_node_ids <- function(prepared.data, corr.cols){
     # tax_level corresponds to last column name
     # from bngal::prepare_network_data
     tax_level = names(prepared.data.df[,ncol(prepared.data.df)])
-    message(" | Taxonomic level detected: '", tax_level, "'")
+    message(" | [", Sys.time(), "] Taxonomic level detected: '", tax_level, "'")
 
     if(tax_level == "domain") {
       nodes. <- nodes.1 %>%
@@ -89,9 +89,8 @@ get_node_ids <- function(prepared.data, corr.cols){
 
   } else {
 
-    stop("
-  | Unexpected input data.
-  |   ->Is prepared.data the output from bngal::prepare_network_data() or bngal::split_network_data() ?
+    stop("\n | [", Sys.time(), "] Unexpected input data.", "\n",
+         " |   ->Is prepared.data the output from bngal::prepare_network_data() or bngal::split_network_data() ?
          ")
   }
 

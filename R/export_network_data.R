@@ -31,9 +31,8 @@ export_network_data <- function(node.color.data, tax.level, subset.column, out.d
     write_data(node.color.data, subset.column)
   } else {
     setwd(work.dr)
-    stop("
- | Unexpected input data for bngal::export_network_data()
- |   ->Requires output from bngal::color_nodes()
+    stop("\n | [", Sys.time(), "] Unexpected input data for bngal::export_network_data() \n",
+         " |   ->Requires output from bngal::color_nodes()
          ")
   }
   setwd(work.dr)
