@@ -4,7 +4,7 @@
 #'
 #' @param prepared.data Output from [`bngal::prepare_network_data`] or [`bngal::split_network_data`]
 #' @param transformation *Optional* Numeric transformation to apply to relative abundance data (default = none). `"log10"` accepted.
-#' @param correlation Metric for pairwise comparisions (see [`Hmisc::rcorr()`])
+#' @param correlation Metric for pairwise comparisons (see [`Hmisc::rcorr()`])
 #'
 #' @return
 #' @export

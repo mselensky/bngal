@@ -11,7 +11,7 @@ prepare_corr_matrix(prepared.data, transformation, correlation)
 
 \item{transformation}{\emph{Optional} Numeric transformation to apply to relative abundance data (default = none). \code{"log10"} accepted.}
 
-\item{correlation}{Metric for pairwise comparisions (see \code{\link[Hmisc:rcorr]{Hmisc::rcorr()}})}
+\item{correlation}{Metric for pairwise comparisons (see \code{\link[Hmisc:rcorr]{Hmisc::rcorr()}})}
 }
 \value{
 
