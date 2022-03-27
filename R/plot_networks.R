@@ -30,8 +30,8 @@ plot_networks <- function (node.color.data, selected.By, graph.layout, out.dr,
       stop("\n | Incorrect 'selected_By value.")
     }
 
-    # save correlation column as "value" (for edges width)
-    edges.[["value"]] = edges.[[3]]
+    # save absolute value of correlation column as "value" (for edges width)
+    edges.[["value"]] = abs(edges.[[3]])
 
     visNetwork(nodes = nodes.,
                edges = edges.,
