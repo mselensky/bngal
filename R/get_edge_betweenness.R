@@ -38,10 +38,10 @@ get_edge_betweenness <- function(igraph.list) {
   input.data.class = c("tbl_df", "tbl", "data.frame")
   if (class(igraph.list) == "list") {
     edge_betweenness <- mclapply(X = igraph.list,
-                                 FUN = cluster_ebc,
+                                 FUN = cluster_eb,
                                  mc.cores = NCORES)
   } else if (class(igraph.list) %in% input.data.class) {
-    edge_betweenness <- cluster_ebc(igraph.list)
+    edge_betweenness <- cluster_eb(igraph.list)
     list(all=edge_betweenness)
   } else {
     stop("\n | [", Sys.time(), "] Unexpected input data.\n",
