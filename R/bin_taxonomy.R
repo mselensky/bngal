@@ -31,13 +31,19 @@ bin_taxonomy <- function(asv.table, meta.data, tax.level) {
 
   # bin by defined taxonomic level (tax_level)
   if (tax.level == "asv"){
+    # long_rel_binned <- long_rel_full_tax %>%
+    #   group_by(`sample-id`, taxon) %>%
+    #   dplyr::mutate(rel_abun_binned = rel_abun) %>%
+    #   select(`sample-id`, rel_abun_binned, taxon, domain:species) %>%
+    #   distinct(`sample-id`, taxon, .keep_all = TRUE) %>%
+    #   ungroup() %>%
+    #   dplyr::rename(taxon_ = taxon)
     long_rel_binned <- long_rel_full_tax %>%
-      group_by(`sample-id`, taxon) %>%
+      dplyr::mutate(taxon_ = str_c(domain, phylum, class, order, family, genus, asv, sep = ";")) %>%
+      group_by(`sample-id`, taxon_) %>%
       dplyr::mutate(rel_abun_binned = rel_abun) %>%
-      select(`sample-id`, rel_abun_binned, taxon, domain:species) %>%
-      distinct(`sample-id`, taxon, .keep_all = TRUE) %>%
-      ungroup() %>%
-      dplyr::rename(taxon_ = taxon)
+      select(`sample-id`, rel_abun_binned, taxon_, domain:asv) %>%
+      distinct(`sample-id`, taxon_, .keep_all = TRUE) %>% ungroup()
   } else if (tax.level == "genus"){
     long_rel_binned <- long_rel_full_tax %>%
       group_by(`sample-id`, domain, phylum, class, order, family, genus) %>%
