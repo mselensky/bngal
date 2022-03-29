@@ -26,7 +26,7 @@ bin_taxonomy <- function(asv.table, meta.data, tax.level) {
   long_rel_full_tax <- asv.long %>%
     dplyr::mutate(taxonomy = str_remove_all(taxon, "d__|p__|c__|o__|f__|g__|s__")) %>%
     separate(taxonomy, sep=';',
-             c("domain", "phylum", "class", "order", "family", "genus", "species")) %>%
+             c("domain", "phylum", "class", "order", "family", "genus", "asv")) %>%
     dplyr::mutate(phylum = if_else(phylum == "Proteobacteria", class, phylum))
 
   # bin by defined taxonomic level (tax_level)
