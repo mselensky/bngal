@@ -1,15 +1,15 @@
 #' Get network node IDs
 #'
-#' This function yields a dataframe containing each unique node to be used in
-#' constructing a correlation network.
+#' This function yields a dataframe containing each unique, quality-filtered
+#' node to be used in constructing a correlation network.
 #'
 #' @param prepared.data Output from [`bngal::prepare_network_data`] or [`bngal::split_network_data`]
-#' @param corr.cols See [`bngal::prepare_network_data()`]
+#' @param corr.matrix Output from [`bngal::prepare_corr_data()`]
 #' @return
 #' @export
 #'
 #' @examples
-get_node_ids <- function(prepared.data, corr.cols){
+get_node_ids <- function(prepared.data, corr.matrix){
 
   prepared_data_df = prepared.data$data
 
@@ -34,64 +34,41 @@ get_node_ids <- function(prepared.data, corr.cols){
     tax_level = names(prepared.data.df[,ncol(prepared.data.df)])
     message(" | [", Sys.time(), "] Taxonomic level detected: '", tax_level, "'")
 
-    if(tax_level == "domain") {
-      nodes. <- nodes.1 %>%
-        dplyr::select(taxon_, domain)
-    } else if(tax_level == "phylum"){
-      nodes. <- nodes.1 %>%
-        dplyr::select(taxon_, domain:phylum)
-    } else if(tax_level == "class"){
-      nodes. <- nodes.1 %>%
-        dplyr::select(taxon_, domain:class)
-    } else if(tax_level == "order"){
-      nodes. <- nodes.1 %>%
-        dplyr::select(taxon_, domain:order)
-    } else if(tax_level == "family"){
-      nodes. <- nodes.1 %>%
-        dplyr::select(taxon_, domain:family)
-    } else if(tax_level == "genus"){
-      nodes. <- nodes.1 %>%
-        dplyr::select(taxon_, domain:genus)
-    } else if(tax_level == "asv"){
-      nodes. <- nodes.1 %>%
-        dplyr::select(taxon_, domain:asv)
-    } else {
-      stop()
-      message(" | ERROR, get_node_ids(): Must choose one of the following taxonomic levels:\n",
-              " | 'asv', 'genus', 'family', 'order', 'class', 'phylum', 'domain'\n"
-      )
-    }
+    taxa.levels = c("domain", "phylum", "class", "order", "family", "genus", "asv")
 
-    # join "node_type" column if optional corr.cols argument is supplied
-    if (!is.null(corr.cols)) {
-      nodes. <- nodes. %>%
-        left_join(., dplyr::select(nodes.1, taxon_, node_type), by = "taxon_")
+    if (tax_level %in% taxa.levels) {
+      nodes. <- nodes.1 %>%
+        select(taxon_, domain:.data[[tax_level]], node_type)
+    } else {
+      stop("\n | [", Sys.time(), "] get_node_ids(): Must choose one of the following taxonomic levels:\n",
+           " | 'asv', 'genus', 'family', 'order', 'class', 'phylum', 'domain'\n")
     }
 
     nodes. %>%
       dplyr::rename(label = taxon_) %>%
       tibble::rowid_to_column("id") %>%
-      dplyr::mutate(id = as.character(id))
+      dplyr::mutate(id = as.character(id)) %>%
+      filter(label %in% rownames(corr.matrix$P))
   }
 
   if (any(class(prepared_data_df) %in% c("tbl_df", "tbl", "data.frame"))) {
-    dat.out = get_ids(prepared_data_df, corr.cols)
+    dat.out = get_ids(prepared_data_df)
     message(
       " |   --Extracting node IDs from object '", deparse(substitute(prepared.data)), "'\n"
-      )
-    } else if (class(prepared_data_df) == "list"){
-      dat.out = parallel::mclapply(X = prepared_data_df,
-                                   FUN = function(i){get_ids(i, corr.cols)},
-                                   mc.cores = NCORES)
-      message(
-        " |   --Extracting node IDs from object '", deparse(substitute(prepared.data)), "'\n"
-        )
+    )
+  } else if (class(prepared_data_df) == "list"){
+    dat.out = parallel::mclapply(X = prepared_data_df,
+                                 FUN = function(i){get_ids(i)},
+                                 mc.cores = NCORES)
+    message(
+      " |   --Extracting node IDs from object '", deparse(substitute(prepared.data)), "'\n"
+    )
 
   } else {
 
-    stop("\n | [", Sys.time(), "] Unexpected input data.", "\n",
-         " |   ->Is prepared.data the output from bngal::prepare_network_data() or bngal::split_network_data() ?
-         ")
+    stop("\n | [", Sys.time(), "] Unexpected input data.\n",
+         " |   ->Is prepared.data the output from bngal::prepare_network_data() or bngal::split_network_data() ?\n",
+         " |   ->Is corr.matrix the output from bngal::prepare_corr_data() ?")
   }
 
   dat.out

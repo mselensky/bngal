@@ -4,22 +4,44 @@
 \alias{bin_taxonomy}
 \title{Bin ASV count table at specified level of taxonomic classification.}
 \usage{
-bin_taxonomy(asv.table, meta.data, tax.level)
+bin_taxonomy(
+  asv.table,
+  meta.data,
+  tax.level,
+  remove.singletons = TRUE,
+  cutoff.val,
+  direction,
+  compositional = TRUE
+)
 }
 \arguments{
-\item{asv.table}{ASV count table named by Silva-138 L7 taxonomies. Ideally rarefied and filtered as necessary.
+\item{asv.table}{ASV count table named by Silva-138 L7 taxonomies. Ideally rarefied and quality filtered as necessary, though this script automatically removes singletons in the dataset.
 First column must be named "\code{sample-id}" and must contain unique identifiers.}
 
 \item{meta.data}{Sample metadata corresponding to asv.table.}
 
 \item{tax.level}{Level of taxonomic classification at which to calculate relative abundance.}
+
+\item{remove.singletons}{\emph{Optional} Drop singleton ASV observations from the dataset. Default = \code{TRUE}}
+
+\item{cutoff.val}{\emph{Optional} Cutoff value for ASVs that comprise more or less than this fraction of a sample's community (values \code{0} to \code{1} accepted). Required if 'direction' specified.}
+
+\item{direction}{\emph{Optional} Return binned data \code{'lessThan'} or \code{'greaterThan'} than cutoff.val. Required if 'cutoff.val' specified.}
+
+\item{compositional}{\emph{Optional} Determines whether output returns relative abundance (\code{TRUE}) or binned count data (\code{FALSE}). Default = \code{TRUE}.}
 }
 \value{
 
 }
 \description{
-Bin ASV count table at specified level of taxonomic classification.
+This is the primary data formatting function of most \code{bngal} pipelines,
+including the first step of network analysis.
 }
 \examples{
-bin_taxonomy(asv_table, metadata, "class")
+# return long-form class-level count data
+bin_taxonomy(asv_table, metadata, "class", compositional = FALSE)
+
+# return long-form family-level relative abundance data
+bin_taxonomy(asv_table, metadata, "family")
+
 }

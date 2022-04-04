@@ -39,7 +39,7 @@ split_network_data <- function(prepared.data, subset.column) {
     unsplit.data <- prepared.data.df %>%
       filter(.data[[subset.column]] %in% pull(network.groups, .data[[subset.column]])) %>%
       group_by(.data[[subset.column]]) %>%
-      select(`sample-id`, node_type, rel_abun_binned, taxon_, domain:.data[[prepared.data$taxonomic_level]],
+      select(`sample-id`, node_type, norm_vals, taxon_, domain:.data[[prepared.data$taxonomic_level]],
              .data[[subset.column]])
 
       out.data = split(unsplit.data, f = as.factor(unsplit.data[[subset.column]]))

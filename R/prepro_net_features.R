@@ -40,7 +40,7 @@ prepro_net_features <- function(edges., node.ids, p.val.cutoff, correlation, cor
         filter(.data[[correlation]] > abs(correlation.cutoff) | .data[[correlation]] < -1*abs(correlation.cutoff))
     } else {
       stop("\n | [", Sys.time(), "] prepro_net_features():\n",
-      " |   ->sign must be 'positive', 'negative', or 'all', not ", "'",sign,"'")
+      " |   ->sign for ",correlation," must be 'positive', 'negative', or 'all', not ", "'",sign,"'")
     }
 
     edges_filt <- edges_filt %>%

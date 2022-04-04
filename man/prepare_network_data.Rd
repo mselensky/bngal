@@ -4,27 +4,20 @@
 \alias{prepare_network_data}
 \title{Prepare ASV count data for correlation network analysis}
 \usage{
-prepare_network_data(
-  asv.table,
-  meta.data,
-  tax.level,
-  direction,
-  cutoff.val,
-  corr.cols = NULL
-)
+prepare_network_data(binned.tax, meta.data, corr.cols)
 }
 \arguments{
-\item{asv.table}{See \code{\link[=bin_taxonomy]{bin_taxonomy()}}. Must be an absolute abundance ASV table.}
+\item{binned.tax}{Output from \code{\link[=bin_taxonomy]{bin_taxonomy()}}. Must be an absolute abundance ASV table.}
 
 \item{meta.data}{See \code{\link[=bin_taxonomy]{bin_taxonomy()}}}
+
+\item{corr.cols}{Metadata variables (such as sample environmental data) to include in network correlations. Variables must be supplied as a concatenated string of column names from \code{meta.data} (e.g., \code{c('var1','var2')}). Default = \code{NULL}}
 
 \item{tax.level}{Level of taxonomic classification at which to bin absolute abundance.}
 
 \item{direction}{Direction for abundance cutoff for data filtering (\code{"lessThan"}, \code{"greaterThan"} accepted)}
 
 \item{cutoff.val}{Cutoff value for binned taxa that comprise more or less than this fraction of a sample's community (values \code{0} to \code{1} accepted)}
-
-\item{corr.cols}{Metadata variables (such as sample environmental data) to include in network correlations. Variables must be supplied as a concatenated string of column names from \code{meta.data} (e.g., \code{c('var1','var2')}). Default = \code{NULL}}
 }
 \value{
 
@@ -33,11 +26,13 @@ prepare_network_data(
 This function prepares data for correlation network analysis at a specified
 level of taxonomic classification. Singleton ASVs are first removed from a
 provided ASV table, then taxa are binned at a defined taxonomic level.
-Binned data are then filtered either above or below a given abundance cutoff
-value based on user input.
+Binned data (from \code{\link[=bin_taxonomy]{bin_taxonomy()}}) are filtered either above or below
+a given abundance cutoff value based on user input. Corresponding metadata columns
+(such as a geochemical parameter for each sample) may be included in the
+preprocessed network data by specifying the \code{corr.cols} option.
+Microbial abundance and environmental metadata (if applicable) are normalized
+on a scale of 0-1 for downstream correlation matrix construction.
 }
 \examples{
-The following options results in a long-form dataframe of counts from `asv_table` binned by
-prepare_network_data(asv_table, metadata, "family", "greaterThan", 0.01)
 
 }

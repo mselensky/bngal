@@ -4,17 +4,17 @@
 \alias{get_node_ids}
 \title{Get network node IDs}
 \usage{
-get_node_ids(prepared.data, corr.cols)
+get_node_ids(prepared.data, corr.matrix)
 }
 \arguments{
 \item{prepared.data}{Output from \code{\link{prepare_network_data}} or \code{\link{split_network_data}}}
 
-\item{corr.cols}{See \code{\link[=prepare_network_data]{prepare_network_data()}}}
+\item{corr.matrix}{Output from \code{\link[=prepare_corr_data]{prepare_corr_data()}}}
 }
 \value{
 
 }
 \description{
-This function yields a dataframe containing each unique node to be used in
-constructing a correlation network.
+This function yields a dataframe containing each unique, quality-filtered
+node to be used in constructing a correlation network.
 }

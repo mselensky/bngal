@@ -59,19 +59,19 @@ export_cluster_data <- function(ebc.comp.data, quantile.cutoff) {
 
       high.core_low.abun[[i]] <- unfiltered.data[["data"]][[i]][[sub.comm]] %>%
         filter(core >= unfiltered.data[["core.quantile"]][[i]][[sub.comm]][[quantile.cutoff]]
-               & ebc_abun_sum <= unfiltered.data[["abun.quantile"]][[i]][[sub.comm]][[quantile.cutoff]]) %>%
+               & ebc_abun_sum < unfiltered.data[["abun.quantile"]][[i]][[sub.comm]][[quantile.cutoff]]) %>%
         distinct(taxon_, tax_level, core, degree, edge_btwn_cluster) %>%
         dplyr::mutate(taxa_group = "high.core_low.abun")
 
       low.core_high.abun[[i]] <- unfiltered.data[["data"]][[i]][[sub.comm]] %>%
-        filter(core <= unfiltered.data[["core.quantile"]][[i]][[sub.comm]][[quantile.cutoff]]
+        filter(core < unfiltered.data[["core.quantile"]][[i]][[sub.comm]][[quantile.cutoff]]
                & ebc_abun_sum >= unfiltered.data[["abun.quantile"]][[i]][[sub.comm]][[quantile.cutoff]]) %>%
         distinct(taxon_, tax_level, core, degree, edge_btwn_cluster) %>%
         dplyr::mutate(taxa_group = "low.core_high.abun")
 
       low.core_low.abun[[i]] <- unfiltered.data[["data"]][[i]][[sub.comm]] %>%
-        filter(core <= unfiltered.data[["core.quantile"]][[i]][[sub.comm]][[quantile.cutoff]]
-               & ebc_abun_sum <= unfiltered.data[["abun.quantile"]][[i]][[sub.comm]][[quantile.cutoff]]) %>%
+        filter(core < unfiltered.data[["core.quantile"]][[i]][[sub.comm]][[quantile.cutoff]]
+               & ebc_abun_sum < unfiltered.data[["abun.quantile"]][[i]][[sub.comm]][[quantile.cutoff]]) %>%
         distinct(taxon_, tax_level, core, degree, edge_btwn_cluster) %>%
         dplyr::mutate(taxa_group = "low.core_low.abun")
 

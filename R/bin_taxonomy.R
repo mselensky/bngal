@@ -1,26 +1,74 @@
 #' Bin ASV count table at specified level of taxonomic classification.
 #'
-#' @param asv.table ASV count table named by Silva-138 L7 taxonomies. Ideally rarefied and filtered as necessary.
+#' This is the primary data formatting function of most `bngal` pipelines,
+#' including the first step of network analysis.
+#'
+#' @param asv.table ASV count table named by Silva-138 L7 taxonomies. Ideally rarefied and quality filtered as necessary, though this script automatically removes singletons in the dataset.
 #'   First column must be named "`sample-id`" and must contain unique identifiers.
 #' @param meta.data Sample metadata corresponding to asv.table.
 #' @param tax.level Level of taxonomic classification at which to calculate relative abundance.
+#' @param remove.singletons *Optional* Drop singleton ASV observations from the dataset. Default = `TRUE`
+#' @param cutoff.val *Optional* Cutoff value for ASVs that comprise more or less than this fraction of a sample's community (values `0` to `1` accepted). Required if 'direction' specified.
+#' @param direction *Optional* Return binned data `'lessThan'` or `'greaterThan'` than cutoff.val. Required if 'cutoff.val' specified.
+#' @param compositional *Optional* Determines whether output returns relative abundance (`TRUE`) or binned count data (`FALSE`). Default = `TRUE`.
 #'
 #' @return
 #' @export
 #'
-#' @examples bin_taxonomy(asv_table, metadata, "class")
-bin_taxonomy <- function(asv.table, meta.data, tax.level) {
+#' @examples
+#' # return long-form class-level count data
+#' bin_taxonomy(asv_table, metadata, "class", compositional = FALSE)
+#'
+#' # return long-form family-level relative abundance data
+#' bin_taxonomy(asv_table, metadata, "family")
+#'
+bin_taxonomy <- function(asv.table, meta.data, tax.level, remove.singletons=TRUE, cutoff.val, direction, compositional = TRUE) {
+
+  taxa_levels = c("domain", "phylum", "class", "order", "family", "genus", "asv")
+
+  if (!tax.level %in% taxa_levels) {
+    stop("\n | [", Sys.time(), "] Must choose one of the following taxonomic levels:\n",
+         " |                       'asv', 'genus', 'family', 'order', 'class', 'phylum', 'domain';\n",
+         " |                       not '", tax.level, "'")
+  }
+
   # convert table to long-form dataframe, removing singletons
   asv.long <- asv.table %>%
     pivot_longer(cols = 2:ncol(.), names_to = "taxon", values_to = "count") %>%
-    group_by(taxon) %>%
     filter(count > 0) %>%
-    dplyr::mutate(n_taxa_obs = sum(count)) %>% # id singletons
-    filter(n_taxa_obs > 1) %>% # remove singletons
-    ungroup() %>%
-    group_by(`sample-id`) %>%
-    dplyr::mutate(rel_abun = count/sum(count)) %>% # calculate relative abundance
-    filter(rel_abun > 0 & !is.na(rel_abun))
+    group_by(taxon) %>%
+    dplyr::mutate(n_taxa_obs = sum(count)) # id ASV singletons
+
+  if (remove.singletons == TRUE) {
+
+    asv.long <- asv.long %>%
+      filter(n_taxa_obs > 1 & !is.na(count)) # remove ASV singletons
+
+  } else {
+    asv.long <- asv.long %>%
+      filter(!is.na(count))
+  }
+
+  if (!missing(direction)) {
+
+    # if direction is specified but cutoff.val isn't, stop
+    if (missing(cutoff.val)){
+      stop("\n | [", Sys.time(), "] Argument mismatch! `cutoff.val` missing\n",
+           " |                         * `cutoff.val` is required if `direction` is specified.\n",
+           " |                         * see `?bngal::bin_taxonomy` for more details.")
+    }
+
+
+    if (!missing(cutoff.val) & direction == "lessThan") {
+      asv.long <- asv.long %>%
+        group_by(`sample-id`) %>%
+        filter(count/sum(count) <= cutoff.val & count > 0)
+    } else if (!missing(cutoff.val) & direction == "greaterThan") {
+      asv.long <- asv.long %>%
+        group_by(`sample-id`) %>%
+        filter(count/sum(count) >= cutoff.val & count > 0)
+    }
+  }
 
   # split taxonomy into different levels
   long_rel_full_tax <- asv.long %>%
@@ -29,76 +77,39 @@ bin_taxonomy <- function(asv.table, meta.data, tax.level) {
              c("domain", "phylum", "class", "order", "family", "genus", "asv")) %>%
     dplyr::mutate(phylum = if_else(phylum == "Proteobacteria", class, phylum))
 
-  # bin by defined taxonomic level (tax_level)
-  if (tax.level == "asv"){
-    # long_rel_binned <- long_rel_full_tax %>%
-    #   group_by(`sample-id`, taxon) %>%
-    #   dplyr::mutate(rel_abun_binned = rel_abun) %>%
-    #   select(`sample-id`, rel_abun_binned, taxon, domain:species) %>%
-    #   distinct(`sample-id`, taxon, .keep_all = TRUE) %>%
-    #   ungroup() %>%
-    #   dplyr::rename(taxon_ = taxon)
-    long_rel_binned <- long_rel_full_tax %>%
-      dplyr::mutate(taxon_ = str_c(domain, phylum, class, order, family, genus, asv, sep = ";")) %>%
-      group_by(`sample-id`, taxon_) %>%
-      dplyr::mutate(rel_abun_binned = rel_abun) %>%
-      select(`sample-id`, rel_abun_binned, taxon_, domain:asv) %>%
-      distinct(`sample-id`, taxon_, .keep_all = TRUE) %>% ungroup()
-  } else if (tax.level == "genus"){
-    long_rel_binned <- long_rel_full_tax %>%
-      group_by(`sample-id`, domain, phylum, class, order, family, genus) %>%
-      dplyr::mutate(rel_abun_binned = sum(rel_abun)) %>%
-      select(`sample-id`, rel_abun_binned, domain:genus) %>%
-      distinct(`sample-id`, domain, phylum, class, order, family, genus, .keep_all = TRUE) %>%
-      ungroup() %>%
-      dplyr::mutate(taxon_ = str_c(domain, phylum, class, order, family, genus, sep = ";"))
-  } else if (tax.level == "family"){
-    long_rel_binned <- long_rel_full_tax %>%
-      group_by(`sample-id`, domain, phylum, class, order, family) %>%
-      dplyr::mutate(rel_abun_binned = sum(rel_abun)) %>%
-      select(`sample-id`, rel_abun_binned, domain:family) %>%
-      distinct(`sample-id`, domain, phylum, class, order, family, .keep_all = TRUE) %>%
-      ungroup() %>%
-      dplyr::mutate(taxon_ = str_c(domain, phylum, class, order, family, sep = ";"))
-  } else if (tax.level == "order"){
-    long_rel_binned <- long_rel_full_tax %>%
-      group_by(`sample-id`, domain, phylum, class, order) %>%
-      dplyr::mutate(rel_abun_binned = sum(rel_abun)) %>%
-      select(`sample-id`, rel_abun_binned, domain:order) %>%
-      distinct(`sample-id`, domain, phylum, class, order, .keep_all = TRUE) %>%
-      ungroup() %>%
-      dplyr::mutate(taxon_ = str_c(domain, phylum, class, order, sep = ";"))
-  } else if (tax.level == "class"){
-    long_rel_binned <- long_rel_full_tax %>%
-      group_by(`sample-id`, domain, phylum, class) %>%
-      dplyr::mutate(rel_abun_binned = sum(rel_abun)) %>%
-      select(`sample-id`, rel_abun_binned, domain:class) %>%
-      distinct(`sample-id`, domain, phylum, class, .keep_all = TRUE) %>%
-      ungroup() %>%
-      dplyr::mutate(taxon_ = str_c(domain, phylum, class, sep = ";"))
-  } else if (tax.level == "phylum"){
-    long_rel_binned <- long_rel_full_tax %>%
-      group_by(`sample-id`, domain, phylum) %>%
-      dplyr::mutate(rel_abun_binned = sum(rel_abun)) %>%
-      select(`sample-id`, rel_abun_binned, domain:phylum) %>%
-      distinct(`sample-id`, domain, phylum, .keep_all = TRUE) %>%
-      ungroup() %>%
-      dplyr::mutate(taxon_ = str_c(domain, phylum, sep = ";"))
-  } else if (tax.level == "domain"){
-    long_rel_binned <- long_rel_full_tax %>%
-      group_by(`sample-id`, domain) %>%
-      dplyr::mutate(rel_abun_binned = sum(rel_abun)) %>%
-      select(`sample-id`, rel_abun_binned, domain) %>%
-      distinct(`sample-id`, domain, .keep_all = TRUE) %>%
-      ungroup() %>%
-      dplyr::mutate(taxon_ = str_c(domain, sep = ";"),
-                    phylum = taxon_)
+  # default = calculate relative abundance; else bin counts (for e.g. prepare_network_data())
+  if (compositional == FALSE) {
+    # 'rel_abun_binned' in this case is really binned count data. column name will change downstream
+    long_binned <- long_rel_full_tax %>%
+      group_by(`sample-id`, across(domain:.data[[tax.level]])) %>%
+      dplyr::mutate(binned_count = sum(count)) %>%
+      select(`sample-id`, binned_count, domain:.data[[tax.level]]) %>%
+      distinct(`sample-id`, across(domain:.data[[tax.level]]), .keep_all = TRUE) %>%
+      ungroup()
+  } else if (compositional == TRUE) {
+    long_binned <- long_rel_full_tax %>%
+      group_by(`sample-id`, across(domain:.data[[tax.level]])) %>%
+      dplyr::mutate(binned_count = sum(count)) %>%
+      ungroup() %>% group_by(`sample-id`) %>%
+      dplyr::mutate(rel_abun_binned = binned_count/sum(binned_count)) %>%
+      select(`sample-id`, rel_abun_binned, domain:.data[[tax.level]]) %>%
+      distinct(`sample-id`, across(domain:.data[[tax.level]]), .keep_all = TRUE) %>%
+      ungroup()
+
   } else {
-    message("
-----------
-ERROR, bin_taxonomy(): Must choose one of the following taxonomic levels:
-                       'asv', 'genus', 'family', 'order', 'class', 'phylum', 'domain'
-----------
-          ")
+    stop("\n | [", Sys.time(), "] Invalid selection for argument 'compositional': TRUE or FALSE accepted")
   }
+
+  # bin taxonomic names for provided level of classification
+  taxa_cols=list()
+  for (i in taxa_levels) {
+    taxa_cols[[i]] <- paste(long_binned[[i]], sep=";")
+    if (i == tax.level) break
+  }
+  taxon_ = Reduce(paste, taxa_cols)
+  taxon_ = gsub(" ", ";", taxon_)
+  long_binned$taxon_ = taxon_
+
+  long_binned
+
 }

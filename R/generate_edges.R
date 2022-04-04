@@ -52,15 +52,6 @@ generate_edges <- function(corr.matrix, correlation, node.ids) {
                     from = id.y)
   }
 
-  # if (class(corr.matrix) != "list") {
-  #   corr_matrix <- list(corr.matrix)
-  # }
-
-  # extract rho and pvals and join with node ids to identify edges in network
-  # rho_pval <- map(corr_matrix, get_rho_pval)
-  # edges. <- map(rho_pval, ~join_ids(., node_ids))
-  corr.matrix=corr_matrix
-  correlation="spearman"
   if (class(corr.matrix) != "list") {
     rho_pval <- get_rho_pval(corr.matrix)
     edges. <- join_ids(rho_pval, node_ids)
@@ -70,7 +61,7 @@ generate_edges <- function(corr.matrix, correlation, node.ids) {
                                    mc.cores = NCORES)
     edges. = list()
     for (i in names(rho_pval)) {
-      edges.[[i]] <- join_ids(rho_pval[[i]], node_ids[[i]])
+      edges.[[i]] <- join_ids(rho_pval[[i]], node_ids)
     }
   }
   edges.
