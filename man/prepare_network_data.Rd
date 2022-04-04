@@ -12,12 +12,6 @@ prepare_network_data(binned.tax, meta.data, corr.cols)
 \item{meta.data}{See \code{\link[=bin_taxonomy]{bin_taxonomy()}}}
 
 \item{corr.cols}{Metadata variables (such as sample environmental data) to include in network correlations. Variables must be supplied as a concatenated string of column names from \code{meta.data} (e.g., \code{c('var1','var2')}). Default = \code{NULL}}
-
-\item{tax.level}{Level of taxonomic classification at which to bin absolute abundance.}
-
-\item{direction}{Direction for abundance cutoff for data filtering (\code{"lessThan"}, \code{"greaterThan"} accepted)}
-
-\item{cutoff.val}{Cutoff value for binned taxa that comprise more or less than this fraction of a sample's community (values \code{0} to \code{1} accepted)}
 }
 \value{
 

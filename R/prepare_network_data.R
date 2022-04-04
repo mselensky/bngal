@@ -12,9 +12,6 @@
 #'
 #' @param binned.tax Output from [`bngal::bin_taxonomy()`]. Must be an absolute abundance ASV table.
 #' @param meta.data See [`bngal::bin_taxonomy()`]
-#' @param tax.level Level of taxonomic classification at which to bin absolute abundance.
-#' @param direction Direction for abundance cutoff for data filtering (`"lessThan"`, `"greaterThan"` accepted)
-#' @param cutoff.val Cutoff value for binned taxa that comprise more or less than this fraction of a sample's community (values `0` to `1` accepted)
 #' @param corr.cols Metadata variables (such as sample environmental data) to include in network correlations. Variables must be supplied as a concatenated string of column names from `meta.data` (e.g., `c('var1','var2')`). Default = `NULL`
 #'
 #' @return
@@ -36,15 +33,21 @@ prepare_network_data <- function(binned.tax, meta.data, corr.cols) {
   } else {
 
     long_norm_binned <- binned.tax %>%
+      select(`sample-id`, taxon_, binned_count) %>%
       pivot_wider(names_from = "taxon_", values_from = "binned_count") %>%
       left_join(., select(metadata, `sample-id`, all_of(corr.cols)), by = "sample-id") %>%
-      # pivot binned count + correlated metadata columns only
-      pivot_longer(cols = (which(names(.) == tax.level) + 1):ncol(.), names_to = "taxon_", values_to = "binned_count") %>%
+      pivot_longer(cols = 2:ncol(.), names_to = "taxon_", values_to = "binned_count") %>%
       distinct(`sample-id`, taxon_, .keep_all = TRUE) %>%
       filter(!is.na(binned_count)) %>%
       group_by(`sample-id`) %>%
       # normalize environmental and seq count data (0 to 1)
       dplyr::mutate(norm_vals = (binned_count-min(binned_count))/(max(binned_count)-min(binned_count)))
+
+    # rejoin separated taxonomies
+    taxonomy_list <- unique(binned.tax[3:ncol(binned.tax)])
+
+    long_norm_binned <- long_norm_binned %>%
+      left_join(taxonomy_list, by = "taxon_")
 
   }
 
