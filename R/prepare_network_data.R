@@ -32,10 +32,24 @@ prepare_network_data <- function(binned.tax, meta.data, corr.cols) {
 
   } else {
 
+    env.corrs <- select(meta.data, `sample-id`, all_of(corr.cols))
+    # env.corrs <- na.omit(env.corrs)
+    suppressWarnings(
+      env.corrs <- env.corrs %>%
+        filter(`sample-id` %in% unique(binned.tax$`sample-id`)) %>%
+        dplyr::mutate(across(.cols = all_of(corr.cols), as.numeric)) %>%
+        pivot_longer(cols = 2:ncol(.), names_to = "env_var", values_to = "val") %>%
+        filter(!is.na(val)) %>%
+        group_by(env_var) %>%
+        dplyr::mutate(norm_vals = (val-min(val))/(max(val)-min(val))) %>%
+        select(-val) %>%
+        pivot_wider(names_from = "env_var", values_from = "norm_vals")
+    )
+
     long_norm_binned <- binned.tax %>%
       select(`sample-id`, taxon_, binned_count) %>%
       pivot_wider(names_from = "taxon_", values_from = "binned_count") %>%
-      left_join(., select(metadata, `sample-id`, all_of(corr.cols)), by = "sample-id") %>%
+      inner_join(., env.corrs, by = "sample-id") %>%
       pivot_longer(cols = 2:ncol(.), names_to = "taxon_", values_to = "binned_count") %>%
       distinct(`sample-id`, taxon_, .keep_all = TRUE) %>%
       filter(!is.na(binned_count)) %>%
@@ -49,21 +63,34 @@ prepare_network_data <- function(binned.tax, meta.data, corr.cols) {
     long_norm_binned <- long_norm_binned %>%
       left_join(taxonomy_list, by = "taxon_")
 
-  }
+    # warn user that the following samples dropped due to lack of metadata
+    # (this is for possible future support, currently the code keeps all samples regardless of metadata density)
+    all.samples = tibble(`sample-id` = unique(binned.tax$`sample-id`))
+    removed.samples = anti_join(all.samples, env.corrs, by = "sample-id")
+    if (nrow(removed.samples) > 0) {
+      warning(" | [", Sys.time(), "] The following samples were dropped from the network analysis due to a lack of metadata:")
+      for (i in unique(removed.samples$`sample-id`)) {
+        message(" | -- ", i)
+      }
+    }
 
-  # rename empty "taxon_" columns to corr_col names
-  long_norm_binned <- long_norm_binned %>%
-    dplyr::mutate(
-      node_type = if_else(is.na(taxon_),
-                          true = "env_var", false = "taxon"),
-      taxon_ = if_else(is.na(taxon_),
-                       true = domain, false = taxon_),
-      phylum = if_else(node_type == "env_var",
-                       true = "env_var", false = phylum)) %>%
-    dplyr::select(`sample-id`, node_type, everything())
+    # rename empty "taxon_" columns to corr_col names
+    long_norm_binned <- long_norm_binned %>%
+      dplyr::mutate(
+        node_type = if_else(is.na(domain),
+                            true = "env_var", false = "taxon"),
+        taxon_ = if_else(is.na(taxon_),
+                         true = domain, false = taxon_),
+        phylum = if_else(node_type == "env_var",
+                         true = "env_var", false = phylum)) %>%
+      dplyr::select(`sample-id`, node_type, everything())
+
+  }
 
   list(taxonomic_level = tax_level,
        data = long_norm_binned,
-       metadata = select(meta.data, `sample-id`, everything()))
+       metadata = meta.data %>%
+         filter(`sample-id` %in% unique(long_norm_binned$`sample-id`)))
+
 
 }

@@ -74,9 +74,9 @@ prepare_corr_data <- function(prepared.data, obs.cutoff, transformation) {
     message(" | ", length(unique(pw_full$taxa_pair)), " total possible pairwise '", tax_level, "'-level relationships observed across the dataset.")
 
     pw_joined <- left_join(pw_full, matrix.l, by = c("sample-id", "taxa1")) %>%
-      rename(taxa1_norm_val = norm_vals) %>%
+      dplyr::rename(taxa1_norm_val = norm_vals) %>%
       left_join(matrix.l, by = c("sample-id", "taxa2"="taxa1")) %>%
-      rename(taxa2_norm_val = norm_vals)
+      dplyr::rename(taxa2_norm_val = norm_vals)
 
     pw_counts <- pw_joined %>%
       group_by(taxa_pair) %>%
