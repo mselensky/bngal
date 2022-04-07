@@ -78,24 +78,19 @@ bin_taxonomy <- function(asv.table, meta.data, tax.level, remove.singletons=TRUE
     dplyr::mutate(phylum = if_else(phylum == "Proteobacteria", class, phylum))
 
   # default = calculate relative abundance; else bin counts (for e.g. prepare_network_data())
-  if (compositional == FALSE) {
-    # 'rel_abun_binned' in this case is really binned count data. column name will change downstream
-    long_binned <- long_rel_full_tax %>%
-      group_by(`sample-id`, across(domain:.data[[tax.level]])) %>%
-      dplyr::mutate(binned_count = sum(count)) %>%
-      select(`sample-id`, binned_count, domain:.data[[tax.level]]) %>%
-      distinct(`sample-id`, across(domain:.data[[tax.level]]), .keep_all = TRUE) %>%
-      ungroup()
-  } else if (compositional == TRUE) {
-    long_binned <- long_rel_full_tax %>%
-      group_by(`sample-id`, across(domain:.data[[tax.level]])) %>%
-      dplyr::mutate(binned_count = sum(count)) %>%
-      ungroup() %>% group_by(`sample-id`) %>%
-      dplyr::mutate(rel_abun_binned = binned_count/sum(binned_count)) %>%
-      select(`sample-id`, rel_abun_binned, domain:.data[[tax.level]]) %>%
-      distinct(`sample-id`, across(domain:.data[[tax.level]]), .keep_all = TRUE) %>%
-      ungroup()
+  long_binned <- long_rel_full_tax %>%
+    group_by(`sample-id`, across(domain:.data[[tax.level]])) %>%
+    dplyr::mutate(binned_count = sum(count)) %>%
+    select(`sample-id`, binned_count, domain:.data[[tax.level]]) %>%
+    distinct(`sample-id`, across(domain:.data[[tax.level]]), .keep_all = TRUE) %>%
+    ungroup()
 
+  if (compositional == TRUE) {
+    long_binned <- long_binned %>%
+      group_by(`sample-id`) %>%
+      dplyr::mutate(rel_abun_binned = binned_count/sum(binned_count))
+  } else if (compositional == FALSE) {
+    long_binned <- long_binned
   } else {
     stop("\n | [", Sys.time(), "] Invalid selection for argument 'compositional': TRUE or FALSE accepted")
   }
