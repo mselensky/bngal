@@ -31,7 +31,7 @@ get_node_ids <- function(prepared.data, corr.matrix){
 
     # tax_level corresponds to last column name
     # from bngal::prepare_network_data
-    tax_level = names(prepared.data.df[,ncol(prepared.data.df)])
+    tax_level = prepared.data$taxonomic_level
     message(" | [", Sys.time(), "] Taxonomic level detected: '", tax_level, "'")
 
     taxa.levels = c("domain", "phylum", "class", "order", "family", "genus", "asv")

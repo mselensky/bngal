@@ -23,7 +23,7 @@ prepare_network_data <- function(binned.tax, meta.data, corr.cols) {
 
   tax.level = names(binned.tax[ncol(binned.tax)-1])
 
-  if (missing(corr.cols)) {
+  if (missing(corr.cols) | is.null(corr.cols)) {
 
     long_norm_binned <- binned.tax %>%
       group_by(`sample-id`) %>%
@@ -74,18 +74,18 @@ prepare_network_data <- function(binned.tax, meta.data, corr.cols) {
       }
     }
 
-    # rename empty "taxon_" columns to corr_col names
-    long_norm_binned <- long_norm_binned %>%
-      dplyr::mutate(
-        node_type = if_else(is.na(domain),
-                            true = "env_var", false = "taxon"),
-        taxon_ = if_else(is.na(taxon_),
-                         true = domain, false = taxon_),
-        phylum = if_else(node_type == "env_var",
-                         true = "env_var", false = phylum)) %>%
-      dplyr::select(`sample-id`, node_type, everything())
-
   }
+
+  # rename empty "taxon_" columns to corr_col names
+  long_norm_binned <- long_norm_binned %>%
+    dplyr::mutate(
+      node_type = if_else(is.na(domain),
+                          true = "env_var", false = "taxon"),
+      taxon_ = if_else(is.na(taxon_),
+                       true = domain, false = taxon_),
+      phylum = if_else(node_type == "env_var",
+                       true = "env_var", false = phylum)) %>%
+    dplyr::select(`sample-id`, node_type, everything())
 
   list(taxonomic_level = tax_level,
        data = long_norm_binned,

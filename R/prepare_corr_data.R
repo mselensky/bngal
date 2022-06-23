@@ -8,12 +8,13 @@
 #' @param prepared.data Output from [`bngal::prepare_network_data`] or [`bngal::split_network_data`]
 #' @param transformation *Optional* Numeric transformation to apply to data (default = none). `"log10"` accepted.
 #' @param obs.cutoff *Optional* Minimum number of observations required per pairwise relationship to be included in correlation matrix (default = `10`).
+#' @param out.dr Required. Output directory for pairwise summary data.
 #'
 #' @return
 #' @export
 #'
-#' @examples
-prepare_corr_data <- function(prepared.data, obs.cutoff, transformation) {
+#' @examples prepare_corr_data(prepared.data, obs.cutoff, transformation, out.dr)
+prepare_corr_data <- function(prepared.data, obs.cutoff, transformation, out.dr) {
 
   # this is formatted for multithreading on a SLURM-directed HPC system,
   # but any *nix-like machine can multithread here as well. otherwise
@@ -26,7 +27,7 @@ prepare_corr_data <- function(prepared.data, obs.cutoff, transformation) {
     NCORES = 1
   }
 
-  comp_corr <- function(prepared_data, transformation, obs.cutoff) {
+  comp_corr <- function(prepared_data, transformation, obs.cutoff, out.dr) {
     if (missing(transformation)) {
       matrix. <- prepared_data %>%
         dplyr::select(`sample-id`, taxon_, norm_vals) %>%
@@ -63,15 +64,12 @@ prepare_corr_data <- function(prepared.data, obs.cutoff, transformation) {
       pw[[sample.name]]$taxa_pair = paste0(pw[[sample.name]]$taxa1, '~<>~', pw[[sample.name]]$taxa2)
       pw[[sample.name]]$`sample-id` = sample.name
 
-      # test3[[sample.name]] = semi_join(pw, samp_tabs[[sample.name]], by =c("taxa1"))
-      # test3[[sample.name]]$`sample-id` = sample.name
-      # test3[[sample.name]] <- test3[[sample.name]] %>% select(`sample-id`, taxa_pair)
       message(" |   * '", sample.name, "': ", nrow(pw[[sample.name]]))
     }
     message(" | --------------------------------------------------------------------")
 
     pw_full = suppressMessages(Reduce(full_join, pw))
-    message(" | ", length(unique(pw_full$taxa_pair)), " total possible pairwise '", tax_level, "'-level relationships observed across the dataset.")
+    message(" | [", Sys.time(), "] ", length(unique(pw_full$taxa_pair)), " unique '", tax_level, "'-level pairwise relationships observed across the dataset.")
 
     pw_joined <- left_join(pw_full, matrix.l, by = c("sample-id", "taxa1")) %>%
       dplyr::rename(taxa1_norm_val = norm_vals) %>%
@@ -97,21 +95,36 @@ prepare_corr_data <- function(prepared.data, obs.cutoff, transformation) {
 
     message(" | [", Sys.time(), "] Filtered data for correlation matrix:\n",
             " | * Minimum observation threshold: ", obs.cutoff, "\n",
-            " | * # of unique pairwise '", tax_level, "'-level relationships observed: ", nrow(pw_counts), "\n",
+            " | * # of unique pairwise '", tax_level, "'-level relationships passing threshold: ", nrow(pw_counts), "\n",
             " | * # of unique '", tax_level, "'-level taxa involved: ", ncol(matrix.out), "\n",
-            " | * # of total observations included: ", sum(pw_counts$n_pairs))
+            " | * # of total pairwise observations included: ", sum(pw_counts$n_pairs))
 
+    # export per-sample pairwise summary data to csv file
+    all_pw <- pw_full %>%
+      group_by(`sample-id`) %>%
+      dplyr::summarize(possible_pairwise = n())
+    passed_qc <- pw_filtered %>%
+      group_by(`sample-id`) %>%
+      dplyr::summarize(filtered_pairwise = n())
+
+    summ.out <- left_join(all_pw, passed_qc, by = "sample-id")
+    summ.out$tax_level = tax_level
+    write_csv(summ.out, paste0(out.dr, "/pairwise_summary_", tax_level, ".csv"))
+
+    # final output matrix
     as.matrix(matrix.out)
+
   }
 
   if (!is.null(nrow(prepared.data$data))) {
-    comp_corr(prepared.data$data, transformation, obs.cutoff)
+    comp_corr(prepared.data$data, transformation, obs.cutoff, out.dr)
 
   } else {
     dat.in = list()
     for (i in names(prepared.data$data)) {
       message("\n\n | [", Sys.time(), "] Preparing network data for subcommunity '", i, "' ...")
-      dat.in[[i]] <- comp_corr(prepared.data$data[[i]], transformation, obs.cutoff)
+      dat.in[[i]] <- comp_corr(prepared.data$data[[i]], transformation, obs.cutoff, out.dr)
     }
   }
+
 }
