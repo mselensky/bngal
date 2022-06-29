@@ -4,14 +4,16 @@
 \alias{color_nodes}
 \title{Color network nodes by edge between cluster ID and phylum}
 \usage{
-color_nodes(clusters.to.color, phylum.colors)
+color_nodes(binned.tax, clusters.to.color, phylum.colors)
 }
 \arguments{
+\item{binned.tax}{Output from \code{\link[=bin_taxonomy]{bin_taxonomy()}}}
+
 \item{clusters.to.color}{Output from \code{\link[=get_ebc_clusters]{get_ebc_clusters()}}}
 
 \item{phylum.colors}{\emph{Optional} Dataframe with hex color codes assigned to
-each phylum in the Silva 16SrRNA gene database (v. 138). Default color scheme
-provided, but if a custom color scheme is required, columns must be the
+each phylum in the Silva 16S rRNA gene database (v. 138). Default color scheme
+provided, but if a custom color scheme is desired, columns must be the
 following:
 \itemize{
 \item \code{phylum}: name of phylum in Silva database
@@ -23,5 +25,7 @@ following:
 
 }
 \description{
-Color network nodes by edge between cluster ID and phylum
+This function colors network nodes by phylum and by edge between cluster
+using the defaul \code{bngal} color schemes. A custom list of phylum colors can
+optionally be provided (see \code{phylum.colors} option).
 }

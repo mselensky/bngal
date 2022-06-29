@@ -4,7 +4,7 @@
 \alias{export_network_data}
 \title{Export network node and ebc cluster data}
 \usage{
-export_network_data(node.color.data, tax.level, subset.column, out.dr)
+export_network_data(node.color.data, tax.level, out.dr)
 }
 \arguments{
 \item{node.color.data}{Output from \code{\link[=color_nodes]{color_nodes()}}}

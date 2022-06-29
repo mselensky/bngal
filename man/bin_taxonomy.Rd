@@ -2,7 +2,7 @@
 % Please edit documentation in R/bin_taxonomy.R
 \name{bin_taxonomy}
 \alias{bin_taxonomy}
-\title{Bin ASV count table at specified level of taxonomic classification.}
+\title{Bin ASV count table at a specified level of taxonomic classification}
 \usage{
 bin_taxonomy(
   asv.table,

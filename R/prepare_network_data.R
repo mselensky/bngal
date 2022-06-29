@@ -68,7 +68,7 @@ prepare_network_data <- function(binned.tax, meta.data, corr.cols) {
     all.samples = tibble(`sample-id` = unique(binned.tax$`sample-id`))
     removed.samples = anti_join(all.samples, env.corrs, by = "sample-id")
     if (nrow(removed.samples) > 0) {
-      warning(" | [", Sys.time(), "] The following samples were dropped from the network analysis due to a lack of metadata:")
+      message(" | [", Sys.time(), "] The following samples were dropped from the network analysis due to a lack of metadata:")
       for (i in unique(removed.samples$`sample-id`)) {
         message(" | -- ", i)
       }

@@ -1,4 +1,4 @@
-#' Bin ASV count table at specified level of taxonomic classification.
+#' Bin ASV count table at a specified level of taxonomic classification
 #'
 #' This is the primary data formatting function of most `bngal` pipelines,
 #' including the first step of network analysis.
