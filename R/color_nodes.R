@@ -88,6 +88,8 @@ color_nodes <- function(binned.tax, clusters.to.color, phylum.colors) {
                                   "square", "dot")) %>%
     left_join(colorz, by = "edge_btwn_cluster") %>%
     dplyr::rename(edge_btwn_cluster_color = hex.code) %>%
+    dplyr::mutate(edge_btwn_cluster_color = if_else(is.na(edge_btwn_cluster_color), # color all other taxa nodes black
+                                                    "#000000", edge_btwn_cluster_color)) %>%
     left_join(., phylum.colors, by = "phylum") %>%
     dplyr::rename(phylum_color = hex.color)
 

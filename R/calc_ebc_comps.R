@@ -32,7 +32,7 @@ calc_ebc_comps <- function(ebc.nodes, binned.taxonomy, tax.level, metadata.cols)
   full.data.ebc <- full.data %>%
     left_join(select(binned.taxonomy[[tax.level]], -binned_count), by = c("sample-id", "taxon_")) %>%
     left_join(select(ebc.nodes.abun, -binned_count, -rel_abun_binned)) %>%
-    left_join(., select(metadata, `sample-id`, all_of(metadata.cols)),
+    left_join(., select(metadata, `sample-id`, any_of(metadata.cols)),
               by = c("sample-id")) %>%
     distinct(`sample-id`, taxon_, edge_btwn_cluster, .keep_all = T) %>%
     ungroup() %>% group_by(`sample-id`, edge_btwn_cluster) %>%
@@ -44,7 +44,7 @@ calc_ebc_comps <- function(ebc.nodes, binned.taxonomy, tax.level, metadata.cols)
     group_by(`sample-id`) %>%
     dplyr::mutate(ebc_abun_sum = ebc_count/sum(ebc_count))
 
-  phylum_colors2 <- dplyr::rename(phylum_colors, color_order = order)
+  phylum_colors <- dplyr::rename(bngal:::phylum_colors, color_order = order)
 
   full.data.ebc %>%
     select(-ebc_count) %>%

@@ -18,7 +18,8 @@ plot_networks(
 \arguments{
 \item{node.color.data}{Output from \code{\link[=color_nodes]{color_nodes()}}}
 
-\item{selected.By}{Drop-down option for interactive network plot. Values of \code{'phylum'}, \code{'edge_btwn_cluster'} accepted.}
+\item{selected.By}{Drop-down option for interactive network plot. Values of \code{'phylum'}, \code{'edge_btwn_cluster'}, or \code{'other'} accepted.
+If \code{'other'} is chosen, the desired custom color scheme must be saved as a column labeled \code{hex.color} (containing hex codes) in \code{node.color.data[[nodes]]}}
 
 \item{graph.layout}{igraph-style layout option for interactive network plot. Refer to the \href{https://igraph.org/r/html/latest/layout_.html}{igraph documentation} for the full list of options. See also \code{\link[visNetwork:visIgraphLayout]{visNetwork::visIgraphLayout()}}}
 
@@ -31,6 +32,8 @@ plot_networks(
 \item{cutoff.val}{\emph{Optional} See \code{\link[=prepare_network_data]{prepare_network_data()}}. For plot/output file name, if desired.}
 
 \item{pval.cutoff}{\emph{Optional} See \code{\link[=prepro_net_features]{prepro_net_features()}}. For plot/output file name, if desired.}
+
+\item{other.variable}{\emph{Optional} Only required if \code{selected.By == 'other'}. Name of nodes column by which to select node groupings.}
 }
 \value{
 
