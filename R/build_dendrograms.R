@@ -6,6 +6,7 @@
 #' @param binned.taxonomy Output from [bngal::bin_taxonomy()]
 #' @param metadata Sample metadata
 #' @param color.by Metadata column by which to color
+#' @param shape.by Metadata column for tippoint shape
 #' @param trans Transformation to apply to relative abundance data (default = none). Can be one of `"log10"`, `"log"`, `"sqrt"`, or `"none"`
 #'
 #' @return This function can be applied directly to the output from
@@ -17,7 +18,7 @@
 #' @export
 #'
 #' @examples build_dendrograms(binned_tax, metadata, "sample_type", "sqrt")
-build_dendrograms <- function(binned.taxonomy, metadata, color.by, trans="log10") {
+build_dendrograms <- function(binned.taxonomy, metadata, color.by, shape.by, trans="log10") {
   tax.levels <- c("phylum", "class", "order", "family", "genus", "asv")
   # create relative abundance matrices from binned_tax
   rel_abun_mats <- list()
@@ -65,7 +66,8 @@ build_dendrograms <- function(binned.taxonomy, metadata, color.by, trans="log10"
   for (i in tax.levels) {
     hclust_plots[[i]] <- ggt[[i]] %<+% ggt_df[[i]] +
       #geom_tiplab(aes(text = label, angle = 90)) +
-      geom_tippoint(aes(color = .data[[color.by]])) +
+      geom_tippoint(aes(color = .data[[color.by]],
+                        shape = .data[[shape.by]])) +
       coord_flip() +
       scale_y_reverse()
   }

@@ -17,7 +17,8 @@ plot_core_comp <- function(ebc.nodes.abun, tax.level, metadata, fill.by) {
   # sub.comm = sub-community network to be summarized (defined by subset_column global var)
 
   ebc.nodes.abun <- ebc.nodes.abun %>%
-    filter(!is.na(edge_btwn_cluster))
+    filter(!is.na(edge_btwn_cluster)) %>%
+    filter(!is.na(core))
 
   ebc.comp.plot <- ebc.nodes.abun %>%
     ungroup() %>%

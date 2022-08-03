@@ -15,7 +15,7 @@ corr_matrix <- function(filtered.matrix, correlation) {
   # this is formatted for multithreading on a SLURM-directed HPC system,
   # but any *nix-like machine can multithread here as well. otherwise
   # this runs on a single core.
-  if (Sys.getenv("SLURM_NTASKS") > 1) {
+  if (Sys.getenv("SLURM_NTASKS") >= 1) {
     NCORES = Sys.getenv("SLURM_NTASKS")
   } else if (parallel::detectCores() > 2) {
     NCORES = parallel::detectCores()-1
@@ -27,17 +27,19 @@ corr_matrix <- function(filtered.matrix, correlation) {
   # did prepared.data get split into subcommunities?
   # if so, break subcommunity data preparation steps across NCORES to multithread
   if (!is.null(nrow(filtered.matrix))) {
-    Hmisc::rcorr(filtered.matrix, type = correlation)
+    out <- Hmisc::rcorr(filtered.matrix, type = correlation)
 
   } else {
-    parallel::mclapply(X = filtered.matrix,
-                       FUN = function(i){Hmisc::rcorr(i, type = correlation)},
-                       mc.cores = NCORES)
+    out <- parallel::mclapply(X = filtered.matrix,
+                              FUN = function(i){Hmisc::rcorr(i, type = correlation)},
+                              mc.cores = NCORES)
 
     message(" | [", Sys.time(), "] Correlation matrices computed for the following subcommunities:")
     for (i in names(filtered.matrix)) {
       message(" |   --", i)
     }
   }
+
+  out
 
 }

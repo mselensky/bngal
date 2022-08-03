@@ -29,69 +29,96 @@ color_nodes <- function(binned.tax, clusters.to.color, phylum.colors) {
       dplyr::rename(phylum_order = order)
   }
 
+  # this is formatted for multicore processing on a SLURM-directed HPC system,
+  # but any *nix-like machine can multithread here as well. otherwise
+  # this will run on a single core.
+  if (Sys.getenv("SLURM_NTASKS") > 1) {
+    NCORES = Sys.getenv("SLURM_NTASKS")
+  } else if (parallel::detectCores() > 2) {
+    NCORES = parallel::detectCores()-1
+  } else {
+    NCORES = 1
+  }
 
-  full.data <- binned.tax %>%
-    left_join(clusters.to.color$nodes, by = c("taxon_" = "label")) %>%
-    ungroup() %>%
-    select(`sample-id`, taxon_, binned_count) %>%
-    pivot_wider(names_from = "taxon_", values_from = "binned_count") %>%
-    filter(!is.na(`sample-id`)) %>%
-    pivot_longer(cols = 2:ncol(.), names_to = "taxon_", values_to = "binned_count") %>%
-    dplyr::mutate(binned_count = if_else(is.na(binned_count), 0, binned_count))
+  # define subfunction for multicore support
+  color.nodes <- function(cluster.nodes, binned.tax) {
 
-  full.data.ebc <- full.data %>%
-    left_join(clusters.to.color$nodes, by = c("taxon_" = "label")) %>%
-    dplyr::mutate(group = "all",
-                  edge_btwn_cluster = if_else(is.na(edge_btwn_cluster), "no_cluster", as.character(edge_btwn_cluster))) %>%
-    distinct(`sample-id`, taxon_, edge_btwn_cluster, group, .keep_all = T) %>%
-    ungroup() %>% group_by(`sample-id`, edge_btwn_cluster, group) %>%
-    dplyr::mutate(ebc_count = sum(binned_count, na.rm=TRUE))
+    full.data <- binned.tax %>%
+      left_join(cluster.nodes, by = c("taxon_" = "label")) %>%
+      ungroup() %>%
+      select(`sample-id`, taxon_, binned_count) %>%
+      pivot_wider(names_from = "taxon_", values_from = "binned_count") %>%
+      filter(!is.na(`sample-id`)) %>%
+      pivot_longer(cols = 2:ncol(.), names_to = "taxon_", values_to = "binned_count") %>%
+      dplyr::mutate(binned_count = if_else(is.na(binned_count), 0, binned_count))
 
-  dat.out <- full.data.ebc %>%
-    distinct(`sample-id`, group, edge_btwn_cluster, ebc_count) %>%
-    group_by(`sample-id`) %>%
-    dplyr::mutate(ebc_abun_sum = ebc_count/sum(ebc_count),
-                  group = if_else(is.na(group), "all", group))
+    full.data.ebc <- full.data %>%
+      left_join(cluster.nodes, by = c("taxon_" = "label")) %>%
+      dplyr::mutate(group = "all",
+                    edge_btwn_cluster = if_else(is.na(edge_btwn_cluster), "no_cluster", as.character(edge_btwn_cluster))) %>%
+      distinct(`sample-id`, taxon_, edge_btwn_cluster, group, .keep_all = T) %>%
+      ungroup() %>% group_by(`sample-id`, edge_btwn_cluster, group) %>%
+      dplyr::mutate(ebc_count = sum(binned_count, na.rm=TRUE))
 
-  full.data <- dat.out %>%
-    left_join(select(full.data.ebc, -ebc_count), by = c("sample-id", "edge_btwn_cluster", "group"))
+    dat.out <- full.data.ebc %>%
+      distinct(`sample-id`, group, edge_btwn_cluster, ebc_count) %>%
+      group_by(`sample-id`) %>%
+      dplyr::mutate(ebc_abun_sum = ebc_count/sum(ebc_count),
+                    group = if_else(is.na(group), "all", group))
 
-  rm(full.data.ebc)
+    full.data <- dat.out %>%
+      left_join(select(full.data.ebc, -ebc_count), by = c("sample-id", "edge_btwn_cluster", "group"))
 
-  # this will arrange filled bars by summed EBC abundance
-  ebc_arranged <- full.data %>%
-    dplyr::arrange(ebc_abun_sum)
+    rm(full.data.ebc)
 
-  # manually color the top 20 most abundant ebc nodes. greyscale the rest
-  top_20_ebcs <- ebc_arranged %>%
-    group_by(edge_btwn_cluster) %>%
-    dplyr::summarize(sum_ebc_abun = sum(ebc_abun_sum)) %>%
-    dplyr::arrange(desc(sum_ebc_abun)) %>%
-    filter(!edge_btwn_cluster == "no_cluster") %>%
-    slice_max(n = 20, order_by = sum_ebc_abun)
+    # this will arrange filled bars by summed EBC abundance
+    ebc_arranged <- full.data %>%
+      dplyr::arrange(ebc_abun_sum)
 
-  # default EBC color scheme from bngal
-  ebc.colors <- bngal:::ebc_colors
+    # manually color the top 20 most abundant ebc nodes. greyscale the rest
+    top_20_ebcs <- ebc_arranged %>%
+      group_by(edge_btwn_cluster) %>%
+      dplyr::summarize(sum_ebc_abun = sum(ebc_abun_sum)) %>%
+      dplyr::arrange(desc(sum_ebc_abun)) %>%
+      filter(!edge_btwn_cluster == "no_cluster") %>%
+      slice_max(n = 20, order_by = sum_ebc_abun)
 
-  no_clust <- ebc.colors %>%
-    filter(color_name == "no_cluster")
-  top_20_ebcs$color_name = as.character(seq(1:nrow(top_20_ebcs)))
+    # default EBC color scheme from bngal
+    ebc.colors <- bngal:::ebc_colors
 
-  colorz <- top_20_ebcs %>%
-    left_join(ebc.colors, by = "color_name") %>%
-    full_join(no_clust, by = c("color_name", "hex.code")) %>%
-    dplyr::mutate(edge_btwn_cluster = if_else(is.na(edge_btwn_cluster), "no_cluster", edge_btwn_cluster))
+    no_clust <- ebc.colors %>%
+      filter(color_name == "no_cluster")
+    top_20_ebcs$color_name = as.character(seq(1:nrow(top_20_ebcs)))
 
-  nodes.colored <- clusters.to.color$nodes %>%
-    dplyr::mutate(edge_btwn_cluster = as.character(edge_btwn_cluster),
-                  shape = if_else(node_type == "env_var",
-                                  "square", "dot")) %>%
-    left_join(colorz, by = "edge_btwn_cluster") %>%
-    dplyr::rename(edge_btwn_cluster_color = hex.code) %>%
-    dplyr::mutate(edge_btwn_cluster_color = if_else(is.na(edge_btwn_cluster_color), # color all other taxa nodes black
-                                                    "#000000", edge_btwn_cluster_color)) %>%
-    left_join(., phylum.colors, by = "phylum") %>%
-    dplyr::rename(phylum_color = hex.color)
+    colorz <- top_20_ebcs %>%
+      left_join(ebc.colors, by = "color_name") %>%
+      full_join(no_clust, by = c("color_name", "hex.code")) %>%
+      dplyr::mutate(edge_btwn_cluster = if_else(is.na(edge_btwn_cluster), "no_cluster", edge_btwn_cluster))
 
-  list(nodes = nodes.colored, edges = clusters.to.color$edges)
+    nodes.colored <- cluster.nodes %>%
+      dplyr::mutate(edge_btwn_cluster = as.character(edge_btwn_cluster),
+                    shape = if_else(node_type == "env_var",
+                                    "square", "dot")) %>%
+      left_join(colorz, by = "edge_btwn_cluster") %>%
+      dplyr::rename(edge_btwn_cluster_color = hex.code) %>%
+      dplyr::mutate(edge_btwn_cluster_color = if_else(is.na(edge_btwn_cluster_color), # color all other taxa nodes black
+                                                      "#000000", edge_btwn_cluster_color)) %>%
+      left_join(., phylum.colors, by = "phylum") %>%
+      dplyr::rename(phylum_color = hex.color)
+
+  }
+
+  if (any(class(clusters.to.color$nodes) == "list")) {
+
+    nodes.out <- parallel::mclapply(X = clusters.to.color$nodes,
+                                    FUN = function(i) {color.nodes(i, binned.tax)},
+                                    mc.cores = NCORES)
+
+
+
+  } else {
+    nodes.out <- color.nodes(clusters.to.color$nodes, binned.tax)
+  }
+
+  list(nodes = nodes.out, edges = clusters.to.color$edges)
 }

@@ -2,8 +2,7 @@
 #'
 #' This function prepares data for correlation network analysis at a specified
 #' level of taxonomic classification. Singleton ASVs are first removed from a
-#' provided ASV table, then taxa are binned at a defined taxonomic level.
-#' Binned data (from [`bngal::bin_taxonomy()`]) are filtered either above or below
+#' provided binned data (from [`bngal::bin_taxonomy()`]) that are filtered either above or below
 #' a given abundance cutoff value based on user input. Corresponding metadata columns
 #' (such as a geochemical parameter for each sample) may be included in the
 #' preprocessed network data by specifying the `corr.cols` option.
@@ -19,9 +18,11 @@
 #'
 #' @examples
 #'
-prepare_network_data <- function(binned.tax, meta.data, corr.cols) {
+prepare_network_data <- function(binned.tax, meta.data, corr.cols, sub.comms) {
 
-  tax.level = names(binned.tax[ncol(binned.tax)-1])
+  # define subfunction for optional parallelization
+
+  prepare.data <- function(binned.tax, meta.data, corr.cols) {
 
   if (missing(corr.cols) | is.null(corr.cols)) {
 
@@ -91,6 +92,39 @@ prepare_network_data <- function(binned.tax, meta.data, corr.cols) {
        data = long_norm_binned,
        metadata = meta.data %>%
          filter(`sample-id` %in% unique(long_norm_binned$`sample-id`)))
+  }
+
+
+  # optionally split dataframe into list of subcommunities based on provided metadata column
+  if (!is.null(sub.comms)) {
+
+    # this is formatted for multithreading on a SLURM-directed HPC system,
+    # but any *nix-like machine can multithread here as well. otherwise
+    # this runs on a single core.
+    if (Sys.getenv("SLURM_NTASKS") >= 1) {
+      NCORES = Sys.getenv("SLURM_NTASKS")
+    } else if (parallel::detectCores() > 2) {
+      NCORES = parallel::detectCores()-1
+    } else {
+      NCORES = 1
+    }
+
+    df <- binned.tax %>%
+      left_join(., select(meta.data, `sample-id`, all_of(sub.comms)), by = "sample-id")
+    split.df <- split(df, df[[sub.comms]])
+    for (i in names(split.df)) {
+      split.df[[i]] <- split.df[[i]] %>%
+        dplyr::select(-all_of(sub.comms))
+    }
+
+    parallel::mclapply(X = split.df,
+                       FUN = function(i){prepare.data(i, meta.data, corr.cols)},
+                       mc.cores = NCORES)
+
+  } else { # otherwise run on single core
+    prepare.data(binned.tax, meta.data, corr.cols)
+  }
+
 
 
 }

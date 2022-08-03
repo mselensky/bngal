@@ -109,7 +109,13 @@ prepare_corr_data <- function(prepared.data, obs.cutoff, transformation, out.dr)
 
     summ.out <- left_join(all_pw, passed_qc, by = "sample-id")
     summ.out$tax_level = tax_level
-    write_csv(summ.out, paste0(out.dr, "/pairwise_summary_", tax_level, ".csv"))
+
+    if (!is.null(nrow(prepared.data$data))) {
+      write_csv(summ.out, file.path(out.dr, paste0("pairwise_summary_", tax_level, ".csv")))
+    } else {
+        write_csv(summ.out, file.path(out.dr, paste0("pairwise_summary_", tax_level, "-", i, ".csv")))
+    }
+
 
     # final output matrix
     as.matrix(matrix.out)
@@ -120,11 +126,18 @@ prepare_corr_data <- function(prepared.data, obs.cutoff, transformation, out.dr)
     comp_corr(prepared.data$data, transformation, obs.cutoff, out.dr)
 
   } else {
+    # will add multicore support sometime in the future:
+    # parallel::mclapply(X = prepared.data,
+    #                    FUN = function(i){comp_corr(i$data, transformation, obs.cutoff, out.dr)},
+    #                    mc.cores = NCORES)
     dat.in = list()
-    for (i in names(prepared.data$data)) {
-      message("\n\n | [", Sys.time(), "] Preparing network data for subcommunity '", i, "' ...")
-      dat.in[[i]] <- comp_corr(prepared.data$data[[i]], transformation, obs.cutoff, out.dr)
+    for (i in names(prepared.data)) {
+      message("\n | [", Sys.time(), "] Preparing network data for subcommunity '", i, "' ...")
+      dat.in[[i]] <- comp_corr(prepared.data[[i]]$data, transformation, obs.cutoff, out.dr)
+      message(" | * Subcommunity analyzed: ", i)
+      message(" | --------------------------------------------------------------------")
     }
+    dat.in
   }
 
 }

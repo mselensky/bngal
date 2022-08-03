@@ -35,7 +35,7 @@ get_edge_betweenness <- function(igraph.list) {
     igraph::cluster_edge_betweenness(igraph.list)
   }
 
-  input.data.class = c("tbl_df", "tbl", "data.frame")
+  input.data.class = c("tbl_df", "tbl", "data.frame", "igraph")
   if (class(igraph.list) == "list") {
     edge_betweenness <- mclapply(X = igraph.list,
                                  FUN = cluster_eb,

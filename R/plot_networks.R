@@ -81,7 +81,17 @@ plot_networks <- function (node.color.data, selected.By, graph.layout, out.dr,
     }
   }
 
+  func.group.data <- system.file("data", "16S_families.csv", package = "bngal")
+  func.groups <- read_csv(func.group.data, col_types = cols())
+
   if (!is.null(nrow(nodes.))) {
+
+    if (tax_level %in% c("family", "genus", "asv") & selected.By == "other") {
+      nodes. <- nodes. %>%
+        left_join(., func.groups, by = c("phylum", "class", "order", "family")) %>%
+        dplyr::rename(hex.color=hex.code)
+    }
+
     subset.values = "all"
     plot.out <- plot_vis_nets(nodes., edges., subset.values, selected.By,
                               graph.layout,
@@ -89,16 +99,23 @@ plot_networks <- function (node.color.data, selected.By, graph.layout, out.dr,
     plot.out = list(all=plot.out)
 
   } else if (class(nodes.) == "list") {
-    subset.values = names(node.color.data$nodes)
+    subset.values = names(nodes.)
 
     plot.out = list()
     for (i in subset.values) {
+
+      if (tax_level %in% c("family", "genus", "asv") & selected.By == "other") {
+        nodes.[[i]] <- nodes.[[i]] %>%
+          left_join(., func.groups, by = c("phylum", "class", "order", "family")) %>%
+          dplyr::rename(hex.color=hex.code)
+      }
+
       plot.out[[i]] <- plot_vis_nets(nodes.[[i]],
                                      edges.[[i]],
                                      i,
-                                     selected_By,
+                                     selected.By,
                                      graph.layout,
-                                     sign, tax_level, correlation, pval.cutoff, direction)
+                                     sign, tax_level, correlation, pval.cutoff, direction, other.variable)
     }
 
   } else {
@@ -107,7 +124,7 @@ plot_networks <- function (node.color.data, selected.By, graph.layout, out.dr,
   }
 
   if (!dir.exists(out.dr)) {
-    dir.create(out.dr)
+    dir.create(out.dr, recursive = TRUE)
   }
 
   work.dir = getwd()

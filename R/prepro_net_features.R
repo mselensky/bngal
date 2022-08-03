@@ -49,7 +49,8 @@ prepro_net_features <- function(edges., node.ids, p.val.cutoff, correlation, cor
       dplyr::mutate(degree = sum(n()),
                     color = if_else(.data[[correlation]] > 0,
                                     true = "#2f0f70", false = "#ed362f")) %>% # color edges by direction of relationship
-      dplyr::select(from, to, all_of(correlation), p_value, degree, color)
+      dplyr::select(from, to, all_of(correlation), p_value, degree, color) %>%
+      filter(!is.na(from) & !is.na(to))
   }
 
   format_nodes <- function (node.ids, edges_filt) {

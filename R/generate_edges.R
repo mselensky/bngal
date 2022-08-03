@@ -54,14 +54,14 @@ generate_edges <- function(corr.matrix, correlation, node.ids) {
 
   if (class(corr.matrix) != "list") {
     rho_pval <- get_rho_pval(corr.matrix)
-    edges. <- join_ids(rho_pval, node_ids)
+    edges. <- join_ids(rho_pval, node.ids)
   } else if (class(corr.matrix) == "list") {
     rho_pval <- parallel::mclapply(X = corr.matrix,
                                    FUN = get_rho_pval,
                                    mc.cores = NCORES)
     edges. = list()
     for (i in names(rho_pval)) {
-      edges.[[i]] <- join_ids(rho_pval[[i]], node_ids)
+      edges.[[i]] <- join_ids(rho_pval[[i]], node.ids[[i]])
     }
   }
   edges.
