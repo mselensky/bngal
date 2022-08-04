@@ -28,7 +28,7 @@ prepare_corr_data <- function(prepared.data, obs.cutoff, transformation, out.dr)
   }
 
   comp_corr <- function(prepared_data, transformation, obs.cutoff, out.dr) {
-    if (missing(transformation)) {
+    if (missing(transformation) | is.null(transformation)) {
       matrix. <- prepared_data %>%
         dplyr::select(`sample-id`, taxon_, norm_vals) %>%
         pivot_wider(names_from = "taxon_",
@@ -94,10 +94,10 @@ prepare_corr_data <- function(prepared.data, obs.cutoff, transformation, out.dr)
       column_to_rownames("sample-id")
 
     message(" | [", Sys.time(), "] Filtered data for correlation matrix:\n",
-            " | * Minimum observation threshold: ", obs.cutoff, "\n",
-            " | * # of unique pairwise '", tax_level, "'-level relationships passing threshold: ", nrow(pw_counts), "\n",
-            " | * # of unique '", tax_level, "'-level taxa involved: ", ncol(matrix.out), "\n",
-            " | * # of total pairwise observations included: ", sum(pw_counts$n_pairs))
+            " |   * Minimum observation threshold: ", obs.cutoff, "\n",
+            " |   * # of unique pairwise '", tax_level, "'-level relationships passing threshold: ", nrow(pw_counts), "\n",
+            " |   * # of unique '", tax_level, "'-level taxa involved: ", ncol(matrix.out), "\n",
+            " |   * # of total pairwise observations included: ", sum(pw_counts$n_pairs))
 
     # export per-sample pairwise summary data to csv file
     all_pw <- pw_full %>%
@@ -113,7 +113,7 @@ prepare_corr_data <- function(prepared.data, obs.cutoff, transformation, out.dr)
     if (!is.null(nrow(prepared.data$data))) {
       write_csv(summ.out, file.path(out.dr, paste0("pairwise_summary_", tax_level, ".csv")))
     } else {
-        write_csv(summ.out, file.path(out.dr, paste0("pairwise_summary_", tax_level, "-", i, ".csv")))
+      write_csv(summ.out, file.path(out.dr, paste0("pairwise_summary_", tax_level, "-", i, ".csv")))
     }
 
 
@@ -134,10 +134,18 @@ prepare_corr_data <- function(prepared.data, obs.cutoff, transformation, out.dr)
     for (i in names(prepared.data)) {
       message("\n | [", Sys.time(), "] Preparing network data for subcommunity '", i, "' ...")
       dat.in[[i]] <- comp_corr(prepared.data[[i]]$data, transformation, obs.cutoff, out.dr)
-      message(" | * Subcommunity analyzed: ", i)
+      message(" |   * Subcommunity analyzed: ", i)
       message(" | --------------------------------------------------------------------")
     }
-    dat.in
+
   }
+
+  for (i in names(dat.in)) {
+    if (length(dat.in[[i]]) == 0) {
+      dat.in[[i]] <- NULL
+      message(" |   * WARNING: subcommunity '", i, "' removed from '", tax_level, "'-level network analysis due to lack of data after quality filtering.")
+    }
+  }
+  dat.in
 
 }

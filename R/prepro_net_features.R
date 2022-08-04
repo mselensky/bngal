@@ -74,7 +74,7 @@ prepro_net_features <- function(edges., node.ids, p.val.cutoff, correlation, cor
   } else if (class(edges.) %in% "list" &
              class(node.ids) %in% "list") {
     # parallel approach is at least twice as fast but I can't figure out how to transform
-    # the output data lolol
+    # the output data lol
     # t_init=Sys.time()
     # dat.out <- parallel::mcmapply(edges., node.ids,
     #                               FUN = function(i, j){preprocess_data(i, j)},
@@ -90,10 +90,18 @@ prepro_net_features <- function(edges., node.ids, p.val.cutoff, correlation, cor
       nodes_f[[i]] = format_nodes(node.ids[[i]], edges_f[[i]])
     }
 
-
     # standardize output: data$edges and .$nodes
     dat.out.seq = list(edges = edges_f,
                        nodes = nodes_f)
+
+    for (i in names(dat.out.seq$nodes)) {
+      if (nrow(dat.out.seq$nodes[[i]]) == 0) {
+        message(" |   * WARNING: subcommunity '", i, "' removed from '", tax_level, "'-level network analysis due to lack of significant pairwise associations.")
+        dat.out.seq$nodes[[i]] <- NULL
+        dat.out.seq$edges[[i]] <- NULL
+      }
+    }
+    dat.out.seq
 
   } else {
     stop("\n | [", Sys.time(), "] Unexpected input data.\n",
