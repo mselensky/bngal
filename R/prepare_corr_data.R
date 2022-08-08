@@ -123,7 +123,7 @@ prepare_corr_data <- function(prepared.data, obs.cutoff, transformation, out.dr)
   }
 
   if (!is.null(nrow(prepared.data$data))) {
-    comp_corr(prepared.data$data, transformation, obs.cutoff, out.dr)
+    dat.in <- comp_corr(prepared.data$data, transformation, obs.cutoff, out.dr)
 
   } else {
     # will add multicore support sometime in the future:
