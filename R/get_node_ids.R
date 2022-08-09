@@ -41,7 +41,7 @@ get_node_ids <- function(prepared.data, corr.matrix){
     if (any(class(prepared.data.df) == "list")) {
       tax_level = names(prepared.data.df[[i]][ncol(prepared.data.df[[i]])])
     } else {
-      tax_level = names(prepared.data.df[ncol(prepared.data.df)])
+      tax_level = prepared.data.df$taxonomic_level
     }
     #message(" | [", Sys.time(), "] Taxonomic level detected: '", tax_level, "'")
 
