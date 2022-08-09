@@ -68,7 +68,7 @@ get_node_ids <- function(prepared.data, corr.matrix){
   #message(" |   --Extracting node IDs from object '", deparse(substitute(prepared.data)), "'\n")
 
   if (any(names(prepared.data) %in% c("taxonomic_level", "data", "metadata"))) {
-    dat.out = get_ids(prepared.data, tax_level)
+    dat.out = get_ids(prepared.data.df, tax_level)
   } else if (any(names(prepared.data[[1]]) %in% c("taxonomic_level", "data", "metadata"))) {
     dat.out = parallel::mclapply(X = prepared.data.df,
                                  FUN = function(i){get_ids(i, tax_level)},
