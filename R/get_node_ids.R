@@ -11,15 +11,6 @@
 #' @examples
 get_node_ids <- function(prepared.data, corr.matrix){
 
-  if (!is.null(nrow(prepared.data$data))) {
-    prepared_data_df = prepared.data$data
-  } else {
-    prepared_data_df = list()
-    for (i in names(prepared.data)) {
-      prepared_data_df[[i]] <- prepared.data[[i]]$data
-    }
-  }
-
   # this is formatted for multicore processing on a SLURM-directed HPC system,
   # but any *nix-like machine can multithread here as well. otherwise
   # this will run on a single core.
@@ -31,19 +22,22 @@ get_node_ids <- function(prepared.data, corr.matrix){
     NCORES = 1
   }
 
-  get_ids <- function(prepared.data.df, corr.cols) {
+  if (any(names(prepared.data) %in% c("taxonomic_level", "data", "metadata"))) {
+    prepared.data.df = prepared.data$data
+    tax_level = prepared.data[["taxonomic_level"]]
+  } else {
+    prepared.data.df = list()
+    for (i in names(prepared.data)) {
+      prepared.data.df[[i]] <- prepared.data[[i]]$data
+      tax_level = prepared.data[[i]][["taxonomic_level"]]
+    }
+  }
+
+  get_ids <- function(prepared.data.df, tax_level) {
+
     nodes.1 <- prepared.data.df %>%
       as.data.frame() %>%
       distinct(taxon_, .keep_all = TRUE)
-
-    # tax_level corresponds to last column name
-    # from bngal::prepare_network_data
-    if (any(class(prepared.data.df) == "list")) {
-      tax_level = names(prepared.data.df[[i]][ncol(prepared.data.df[[i]])])
-    } else {
-      tax_level = prepared.data.df$taxonomic_level
-    }
-    #message(" | [", Sys.time(), "] Taxonomic level detected: '", tax_level, "'")
 
     taxa.levels = c("domain", "phylum", "class", "order", "family", "genus", "asv")
 
@@ -60,31 +54,24 @@ get_node_ids <- function(prepared.data, corr.matrix){
       tibble::rowid_to_column("id") %>%
       dplyr::mutate(id = as.character(id))
 
-    if (any(class(prepared_data_df) %in% c("tbl_df", "tbl", "data.frame"))) {
+    if (any(names(prepared.data) %in% c("taxonomic_level", "data", "metadata"))) {
       nodes. <- nodes. %>%
         filter(label %in% rownames(corr.matrix$P))
-    } else if (class(prepared_data_df) == "list") {
+    } else {
       nodes. <- nodes. %>%
         filter(label %in% rownames(corr.matrix[[i]]$P))
     }
 
-    # if (class(prepared.data.df) == "list") {
-    #   nodes. <- nodes. %>%
-    #     filter(label %in% rownames(corr.matrix[[i]]$P))
-    # } else {
-    #   nodes. <- nodes. %>%
-    #     filter(label %in% rownames(corr.matrix$P))
-    # }
     nodes.
   }
 
   #message(" |   --Extracting node IDs from object '", deparse(substitute(prepared.data)), "'\n")
 
-  if (any(class(prepared_data_df) %in% c("tbl_df", "tbl", "data.frame"))) {
-    dat.out = get_ids(prepared_data_df)
-  } else if (any(class(prepared_data_df) == "list")) {
-    dat.out = parallel::mclapply(X = prepared_data_df,
-                                 FUN = function(i){get_ids(i)},
+  if (any(names(prepared.data) %in% c("taxonomic_level", "data", "metadata"))) {
+    dat.out = get_ids(prepared.data, tax_level)
+  } else if (any(names(prepared.data[[1]]) %in% c("taxonomic_level", "data", "metadata"))) {
+    dat.out = parallel::mclapply(X = prepared.data.df,
+                                 FUN = function(i){get_ids(i, tax_level)},
                                  mc.cores = NCORES)
 
   } else {
