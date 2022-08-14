@@ -4,7 +4,7 @@
 \alias{prepare_network_data}
 \title{Prepare ASV count data for correlation network analysis}
 \usage{
-prepare_network_data(binned.tax, meta.data, corr.cols)
+prepare_network_data(binned.tax, meta.data, corr.cols, sub.comms)
 }
 \arguments{
 \item{binned.tax}{Output from \code{\link[=bin_taxonomy]{bin_taxonomy()}}. Must be an absolute abundance ASV table.}
@@ -12,6 +12,8 @@ prepare_network_data(binned.tax, meta.data, corr.cols)
 \item{meta.data}{See \code{\link[=bin_taxonomy]{bin_taxonomy()}}}
 
 \item{corr.cols}{Metadata variables (such as sample environmental data) to include in network correlations. Variables must be supplied as a concatenated string of column names from \code{meta.data} (e.g., \code{c('var1','var2')}). Default = \code{NULL}}
+
+\item{sub.comms}{\emph{Optional} Metadata column by which to separate networks.}
 }
 \value{
 
@@ -19,8 +21,7 @@ prepare_network_data(binned.tax, meta.data, corr.cols)
 \description{
 This function prepares data for correlation network analysis at a specified
 level of taxonomic classification. Singleton ASVs are first removed from a
-provided ASV table, then taxa are binned at a defined taxonomic level.
-Binned data (from \code{\link[=bin_taxonomy]{bin_taxonomy()}}) are filtered either above or below
+provided binned data (from \code{\link[=bin_taxonomy]{bin_taxonomy()}}) that are filtered either above or below
 a given abundance cutoff value based on user input. Corresponding metadata columns
 (such as a geochemical parameter for each sample) may be included in the
 preprocessed network data by specifying the \code{corr.cols} option.

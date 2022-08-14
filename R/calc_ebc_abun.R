@@ -4,7 +4,7 @@
 #' @param binned.taxonomy
 #' @param metadata.cols
 #'
-#' @return
+#' @return **deprecated**
 #' @export
 #'
 #' @examples

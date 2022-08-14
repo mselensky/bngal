@@ -7,7 +7,7 @@
 make_matrix(long_data, count_column_name, row_names)
 }
 \arguments{
-\item{long_data}{long-form microbial count data (ideally rarefied)}
+\item{long_data}{Output from \code{\link[=bin_taxonomy]{bin_taxonomy()}}}
 
 \item{count_column_name}{name of count column}
 

@@ -12,7 +12,8 @@ plot_networks(
   sign,
   direction,
   cutoff.val,
-  pval.cutoff
+  pval.cutoff,
+  other.variable
 )
 }
 \arguments{

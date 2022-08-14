@@ -10,7 +10,7 @@ calc_ebc_abun(ebc.nodes, binned.taxonomy, metadata.cols)
 \item{metadata.cols}{}
 }
 \value{
-
+\strong{deprecated}
 }
 \description{
 Calculate abundance of edge between clusters

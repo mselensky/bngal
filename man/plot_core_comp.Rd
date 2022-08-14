@@ -7,7 +7,13 @@
 plot_core_comp(ebc.nodes.abun, tax.level, metadata, fill.by)
 }
 \arguments{
-\item{fill.by}{}
+\item{ebc.nodes.abun}{Output from \code{\link[=ebc_compositions]{ebc_compositions()}}}
+
+\item{tax.level}{Level of taxonomic classification at which to create dendrogram}
+
+\item{metadata}{See \code{\link[=bin_taxonomy]{bin_taxonomy()}}}
+
+\item{fill.by}{\emph{Optional} Metadata column by which to fill EBC composition plots}
 }
 \value{
 

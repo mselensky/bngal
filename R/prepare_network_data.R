@@ -12,6 +12,7 @@
 #' @param binned.tax Output from [`bngal::bin_taxonomy()`]. Must be an absolute abundance ASV table.
 #' @param meta.data See [`bngal::bin_taxonomy()`]
 #' @param corr.cols Metadata variables (such as sample environmental data) to include in network correlations. Variables must be supplied as a concatenated string of column names from `meta.data` (e.g., `c('var1','var2')`). Default = `NULL`
+#' @param sub.comms *Optional* Metadata column by which to separate networks.
 #'
 #' @return
 #' @export

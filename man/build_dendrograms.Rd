@@ -4,7 +4,13 @@
 \alias{build_dendrograms}
 \title{Build dendrograms}
 \usage{
-build_dendrograms(binned.taxonomy, metadata, color.by, trans = "log10")
+build_dendrograms(
+  binned.taxonomy,
+  metadata,
+  color.by,
+  trans = "log10",
+  sub.comms
+)
 }
 \arguments{
 \item{binned.taxonomy}{Output from \code{\link[=bin_taxonomy]{bin_taxonomy()}}}
@@ -14,6 +20,8 @@ build_dendrograms(binned.taxonomy, metadata, color.by, trans = "log10")
 \item{color.by}{Metadata column by which to color}
 
 \item{trans}{Transformation to apply to relative abundance data (default = none). Can be one of \code{"log10"}, \code{"log"}, \code{"sqrt"}, or \code{"none"}}
+
+\item{sub.comms}{\emph{(Optional)} Metadata column by which to split dendrograms into subcommunities}
 }
 \value{
 This function can be applied directly to the output from
