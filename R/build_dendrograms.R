@@ -32,7 +32,7 @@ build_dendrograms <- function(binned.taxonomy, metadata, color.by, trans="log10"
     # if no subcommunity column is defined, refer to full community as "all"
     if (missing(sub.comms) | is.null(sub.comms)) {
       test[[i]] <- list("all" = binned.taxonomy[[i]])
-      threads = "all"
+      threads[[i]] = "all"
 
     } else {
 
