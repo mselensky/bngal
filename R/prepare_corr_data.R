@@ -105,13 +105,13 @@ prepare_corr_data <- function(prepared.data, obs.cutoff, transformation, out.dr)
       dplyr::summarize(possible_pairwise = n())
     passed_qc <- pw_filtered %>%
       group_by(`sample-id`) %>%
-      dplyr::summarize(filtered_pairwise = n())
+      dplyr::summarize(prefiltered_pairwise = n())
 
     summ.out <- left_join(all_pw, passed_qc, by = "sample-id")
     summ.out$tax_level = tax_level
 
     if (!is.null(nrow(prepared.data$data))) {
-      write_csv(summ.out, file.path(out.dr, paste0("pairwise_summary_", tax_level, ".csv")))
+      write_csv(summ.out, file.path(out.dr, paste0("pairwise_summary_", tax_level, "all.csv")))
     } else {
       write_csv(summ.out, file.path(out.dr, paste0("pairwise_summary_", tax_level, "-", i, ".csv")))
     }
