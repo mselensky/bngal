@@ -8,18 +8,21 @@
 #' @param color.by Metadata column by which to color
 #' @param trans Transformation to apply to relative abundance data (default = none). Can be one of `"log10"`, `"log"`, `"sqrt"`, or `"none"`
 #' @param sub.comms *(Optional)* Metadata column by which to split dendrograms into subcommunities
+#' @param cores *(Optional)* Number of CPUs (default = 1)
 #'
 #' @return This function can be applied directly to the output from
 #' [bngal::bin_taxonomy()].
 #' A list is returned:
-#'   * tip_data: underlying dendrogram data; can be used in [bngal::plot_core_abun()]
+#'   * tip_data: underlying dendrogram data; can be used in [bngal::build_taxa.barplot()]
 #'   * hclust_plots: hierarchical clustering plot\cr
 #'   * legends: legend corresponding to hclust_plot\cr
 #' @export
 #'
 #' @examples build_dendrograms(binned_tax, metadata, "sample_type", "sqrt")
-build_dendrograms <- function(binned.taxonomy, metadata, color.by, trans="log10", sub.comms) {
+build_dendrograms <- function(binned.taxonomy, metadata, color.by, trans="log10", sub.comms, cores = 1) {
   tax.levels <- c("phylum", "class", "order", "family", "genus", "asv")
+
+  NCORES=as.numeric(cores)
 
   # split binned.taxonomy by optional sub.comms
   test = list()
@@ -41,7 +44,8 @@ build_dendrograms <- function(binned.taxonomy, metadata, color.by, trans="log10"
     }
 
   }
-  message(" | [", Sys.time(), "] Formatting complete.")
+  # message(" | [", Sys.time(), "] Formatting complete.")
+  gc()
 
   # create relative abundance matrices from split binned.taxonomy
   rel_abun_mats=list()
@@ -100,64 +104,98 @@ build_dendrograms <- function(binned.taxonomy, metadata, color.by, trans="log10"
     names(hclust_res[[i]]) = threads[[i]]
 
   }
-  message(" | [", Sys.time(), "] Relative abundance matrices created.")
+  # message(" | [", Sys.time(), "] Relative abundance matrices created.")
+  gc()
 
   ggt <- list()
   ggt_df <- list()
   hclust_plots <- list()
   for (i in tax.levels) {
+
     # use ggtree to manipulate dendrogram as needed for aesthetics
-    # ggt[[i]] <- ggtree(hclust_res[[i]])
+    for (x in names(hclust_res[[i]])) {
 
-    ggt[[i]] <- parallel::mclapply(X = threads[[i]],
-                                   FUN = function(x) {
-                                     ggtree(hclust_res[[i]][[x]])
-                                   },
-                                   mc.cores = NCORES)
-    names(ggt[[i]]) = threads[[i]]
+      ggt[[i]][[x]] <- ggtree(hclust_res[[i]][[x]])
+      message(" | [", Sys.time(), "] ggtree for '", x, "' completed at ", i,"' level.")
+      ggt_df[[i]][[x]] <- get.tree(ggt[[i]][[x]])$tip.label %>%
+        as.data.frame() %>%
+        rename(`sample-id` = ".") %>%
+        left_join(metadata, by = "sample-id")
 
-    ggt_df[[i]] <- parallel::mclapply(X = threads[[i]],
-                                      FUN = function(x) {
-                                        get.tree(ggt[[i]][[x]])$tip.label %>%
-                                          as.data.frame() %>%
-                                          rename(`sample-id` = ".") %>%
-                                          left_join(metadata, by = "sample-id")
-                                      },
-                                      mc.cores = NCORES)
-    names(ggt_df[[i]]) = threads[[i]]
+      hclust_plots[[i]][[x]] <- suppressMessages(
+        ggt[[i]][[x]] %<+% ggt_df[[i]][[x]] +
+          #geom_tiplab(aes(text = label, angle = 90)) +
+          coord_flip() +
+          scale_y_reverse()
+      )
 
-    hclust_plots[[i]] <- parallel::mclapply(X = threads[[i]],
-                                            FUN = function(x) {
-                                              suppressMessages(
-                                                ggt[[i]][[x]] %<+% ggt_df[[i]][[x]] +
-                                                  #geom_tiplab(aes(text = label, angle = 90)) +
-                                                  coord_flip() +
-                                                  scale_y_reverse()
-                                              )
-                                            },
-                                            mc.cores = NCORES)
-    names(hclust_plots[[i]]) = threads[[i]]
-
-    if (missing(color.by) | is.null(color.by)) {
-
-      hclust_plots[[i]] <- parallel::mclapply(X = threads[[i]],
-                                              FUN = function(x) {
-                                                hclust_plots[[i]][[x]] +
-                                                  geom_tippoint()
-                                              },
-                                              mc.cores = NCORES)
-    } else {
-      hclust_plots[[i]] <- parallel::mclapply(X = threads[[i]],
-                                              FUN = function(x) {
-                                                hclust_plots[[i]][[x]] +
-                                                  geom_tippoint(aes(color = .data[[color.by]]))
-                                              },
-                                              mc.cores = NCORES)
+      if (missing(color.by) | is.null(color.by)) {
+        hclust_plots[[i]][[x]] <- hclust_plots[[i]][[x]] +
+          geom_tippoint()
+      } else {
+        hclust_plots[[i]][[x]] <- hclust_plots[[i]][[x]] +
+          geom_tippoint(aes(color = .data[[color.by]]))
+      }
     }
-    names(hclust_plots[[i]]) = threads[[i]]
+
+    # message(" | [", Sys.time(), "] Base dendrograms constructed at the '", i,"' level.")
 
   }
-  message(" | [", Sys.time(), "] Raw dendrogram plots created.")
+
+    # ggt[[i]] <- parallel::mclapply(X = threads[[i]],
+    #                                FUN = function(x) {
+    #                                  ggtree(hclust_res[[i]][[x]])
+    #                                },
+    #                                mc.cores = NCORES)
+    # names(ggt[[i]]) = threads[[i]]
+    #
+    # gc()
+
+    # ggt_df[[i]] <- parallel::mclapply(X = threads[[i]],
+    #                                   FUN = function(x) {
+    #                                     get.tree(ggt[[i]][[x]])$tip.label %>%
+    #                                       as.data.frame() %>%
+    #                                       rename(`sample-id` = ".") %>%
+    #                                       left_join(metadata, by = "sample-id")
+    #                                   },
+    #                                   mc.cores = NCORES)
+    # names(ggt_df[[i]]) = threads[[i]]
+
+    # gc()
+    #
+    # hclust_plots[[i]] <- parallel::mclapply(X = threads[[i]],
+    #                                         FUN = function(x) {
+    #                                           suppressMessages(
+    #                                             ggt[[i]][[x]] %<+% ggt_df[[i]][[x]] +
+    #                                               #geom_tiplab(aes(text = label, angle = 90)) +
+    #                                               coord_flip() +
+    #                                               scale_y_reverse()
+    #                                           )
+    #                                         },
+    #                                         mc.cores = NCORES)
+    # names(hclust_plots[[i]]) = threads[[i]]
+    #
+    # gc()
+#
+#     if (missing(color.by) | is.null(color.by)) {
+#
+#       hclust_plots[[i]] <- parallel::mclapply(X = threads[[i]],
+#                                               FUN = function(x) {
+#                                                 hclust_plots[[i]][[x]] +
+#                                                   geom_tippoint()
+#                                               },
+#                                               mc.cores = NCORES)
+#       gc()
+#     } else {
+#       hclust_plots[[i]] <- parallel::mclapply(X = threads[[i]],
+#                                               FUN = function(x) {
+#                                                 hclust_plots[[i]][[x]] +
+#                                                   geom_tippoint(aes(color = .data[[color.by]]))
+#                                               },
+#                                               mc.cores = NCORES)
+#       gc()
+#     }
+#     names(hclust_plots[[i]]) = threads[[i]]
 
   legends <- list()
   ordered_names <- list()
@@ -173,7 +211,8 @@ build_dendrograms <- function(binned.taxonomy, metadata, color.by, trans="log10"
 
     }
   }
-  message(" | [", Sys.time(), "] Dendrogram legends created.")
+  # message(" | [", Sys.time(), "] Dendrogram legends created.")
+  gc()
 
 
   plot_label_data <- list()
@@ -191,6 +230,8 @@ build_dendrograms <- function(binned.taxonomy, metadata, color.by, trans="log10"
                                                mc.cores = NCORES)
     names(plot_label_data[[i]]) = threads[[i]]
 
+    gc()
+
     merged_labs[[i]] <- parallel::mclapply(X = threads[[i]],
                                            FUN = function(x) {
                                              ordered_names[[i]][[x]] %>%
@@ -201,9 +242,11 @@ build_dendrograms <- function(binned.taxonomy, metadata, color.by, trans="log10"
                                            },
                                            mc.cores = NCORES)
     names(merged_labs[[i]]) = threads[[i]]
+    gc()
 
     message(" | [", Sys.time(), "] Final dendrograms constructed at the '", i, "' level.")
   }
+  gc()
 
   list(tip_data = merged_labs,
        hclust_plots = hclust_plots,

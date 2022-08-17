@@ -9,7 +9,8 @@ build_dendrograms(
   metadata,
   color.by,
   trans = "log10",
-  sub.comms
+  sub.comms,
+  cores = 1
 )
 }
 \arguments{
@@ -22,13 +23,15 @@ build_dendrograms(
 \item{trans}{Transformation to apply to relative abundance data (default = none). Can be one of \code{"log10"}, \code{"log"}, \code{"sqrt"}, or \code{"none"}}
 
 \item{sub.comms}{\emph{(Optional)} Metadata column by which to split dendrograms into subcommunities}
+
+\item{cores}{\emph{(Optional)} Number of CPUs (default = 1)}
 }
 \value{
 This function can be applied directly to the output from
 \code{\link[=bin_taxonomy]{bin_taxonomy()}}.
 A list is returned:
 \itemize{
-\item tip_data: underlying dendrogram data; can be used in \code{\link[=plot_core_abun]{plot_core_abun()}}
+\item tip_data: underlying dendrogram data; can be used in \code{\link[=build_taxa.barplot]{build_taxa.barplot()}}
 \item hclust_plots: hierarchical clustering plot\cr
 \item legends: legend corresponding to hclust_plot\cr
 }

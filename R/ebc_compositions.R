@@ -42,17 +42,21 @@ ebc_compositions <- function(ebc.nodes, binned.taxonomy, alpha.div, tax.level, m
       pivot_longer(cols = 2:ncol(.), names_to = "taxon_", values_to = "binned_count") %>%
       dplyr::mutate(binned_count = if_else(is.na(binned_count), 0, binned_count))
 
+    tax.levels = c("phylum", "class", "order", "family", "genus", "asv")
+    select.by.tax = names(select(as.data.frame(t(data.frame(row.names = tax.levels))), phylum:.data[[tax.level]]))
+
     full.data.ebc <- full.data %>%
       left_join(select(full_abun_data, -binned_count), by = c("sample-id", "taxon_")) %>%
       left_join(select(ebc.nodes.abun, -binned_count, -rel_abun_binned),
+                by = c("sample-id", "taxon_", "domain", all_of(select.by.tax))) %>%
                 #by = c("sample-id", "taxon_", "domain", "phylum", "class", "order", "family", "genus", "asv")
-      ) %>%
       dplyr::mutate(rel_abun_binned = if_else(binned_count == 0, 0, rel_abun_binned),
                     edge_btwn_cluster = if_else(is.na(edge_btwn_cluster), 0, as.numeric(edge_btwn_cluster))) %>%
       left_join(., select(metadata, `sample-id`, any_of(metadata.cols)),
                 by = c("sample-id")) %>%
       group_by(`sample-id`, edge_btwn_cluster) %>%
       dplyr::mutate(ebc_count = sum(binned_count, na.rm=TRUE))
+
 
     full.data.ebc.summ <- full.data.ebc %>%
       distinct(`sample-id`, edge_btwn_cluster, ebc_count) %>%
