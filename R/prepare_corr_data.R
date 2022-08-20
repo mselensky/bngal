@@ -111,7 +111,7 @@ prepare_corr_data <- function(prepared.data, obs.cutoff, transformation, out.dr)
     summ.out$tax_level = tax_level
 
     if (!is.null(nrow(prepared.data$data))) {
-      write_csv(summ.out, file.path(out.dr, paste0("pairwise_summary_", tax_level, "all.csv")))
+      write_csv(summ.out, file.path(out.dr, paste0("pairwise_summary_", tax_level, "-all.csv")))
     } else {
       write_csv(summ.out, file.path(out.dr, paste0("pairwise_summary_", tax_level, "-", i, ".csv")))
     }

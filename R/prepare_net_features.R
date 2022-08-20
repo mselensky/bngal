@@ -14,7 +14,7 @@
 #' @export
 #'
 #' @examples
-prepro_net_features <- function(edges., node.ids, p.val.cutoff, correlation, correlation.cutoff, sign) {
+prepare_net_features <- function(edges., node.ids, p.val.cutoff, correlation, correlation.cutoff, sign) {
 
   # this is formatted for multicore processing on a SLURM-directed HPC system,
   # but any *nix-like machine can multithread here as well. otherwise
