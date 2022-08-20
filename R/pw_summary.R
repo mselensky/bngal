@@ -1,7 +1,7 @@
 #' Summarize and export pairwise data for each sample after quality control
 #'
 #' @param binned.taxonomy Output from [`bngal::bin_taxonomy()`]
-#' @param preprocessed.features Required. Output from [`bngal::prepro_net_features()`]
+#' @param preprocessed.features Required. Output from [`bngal::prepare_net_features()`]
 #' @param out.dr Required. Output directory for pairwise summary data. Should be the same path as defined in [`bngal::prepare_corr_data()`]
 #' @param cores *(Optional)* Number of CPUs. Default = 1
 #'

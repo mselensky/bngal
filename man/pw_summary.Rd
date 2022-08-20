@@ -9,7 +9,7 @@ pw_summary(binned.taxonomy, preprocessed.features, out.dr, cores = 1)
 \arguments{
 \item{binned.taxonomy}{Output from \code{\link[=bin_taxonomy]{bin_taxonomy()}}}
 
-\item{preprocessed.features}{Required. Output from \code{\link[=prepro_net_features]{prepro_net_features()}}}
+\item{preprocessed.features}{Required. Output from \code{\link[=prepare_net_features]{prepare_net_features()}}}
 
 \item{out.dr}{Required. Output directory for pairwise summary data. Should be the same path as defined in \code{\link[=prepare_corr_data]{prepare_corr_data()}}}
 

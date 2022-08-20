@@ -1,6 +1,6 @@
 #' Return taxonomic compositions of each edge between cluster
 #'
-#' @param prepro.data Output from [`bngal::prepro_net_features()`]
+#' @param prepro.data Output from [`bngal::prepare_net_features`]
 #' @param ebc.member.ids Output from [`bngal::get_ebc_member_ids()`]
 #' @param igraph.obj Output from [`bngal::get_igraph()`]
 #' @param core.ness See `mode` argument from [`igraph::coreness()`]. Default = `"all"`

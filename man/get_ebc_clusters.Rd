@@ -7,7 +7,7 @@
 get_ebc_clusters(prepro.data, ebc.member.ids, igraph.obj, core.ness = "all")
 }
 \arguments{
-\item{prepro.data}{Output from \code{\link[=prepro_net_features]{prepro_net_features()}}}
+\item{prepro.data}{Output from \code{\link{prepare_net_features}}}
 
 \item{ebc.member.ids}{Output from \code{\link[=get_ebc_member_ids]{get_ebc_member_ids()}}}
 

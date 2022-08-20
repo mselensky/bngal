@@ -4,7 +4,7 @@
 #' generate igraph objects for each subcommunity defined earlier in the
 #' `bngal` pipeline.
 #'
-#' @param prepro.data Output from [`bngal::prepro_net_features`]
+#' @param prepro.data Output from [`bngal::prepare_net_features`]
 #' @param directed. See `directed` option from [`igraph::graph_from_data_frame`].
 #' Defaults to `FALSE` for pairwise correlation data.
 #'
