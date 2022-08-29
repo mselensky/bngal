@@ -3,10 +3,8 @@ Title: Biological Network Graphing and Learning
 Version: 0.0.0.9000
 Authors@R: 
     person("Matthew", "Selensky", , "mselensky@gmail.com", role = c("aut", "cre"))
-Description: Biological Network Graphing and Learning (bngal) - description
-    coming soon.
-License: `use_gpl3_license()` or friends to pick a
-    license
+Description: Biological Network Graph Analysis and Learning (bngal) is a software package developed to create co-occurrence networks from microbial taxonomic abundance data.
+License: `use_gpl3_license()` or friends to pick a license
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.1.2
@@ -19,6 +17,13 @@ Imports:
   grid,
   gridExtra,
   viridis,
-  vegan
+  vegan,
+  parallel,
+  tidyr,
+  ggpubr,
+  plotly,
+  purrr,
+  viridis,
+  optparse
 Depends: 
     R (>= 2.10)

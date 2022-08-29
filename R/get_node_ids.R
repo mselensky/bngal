@@ -3,7 +3,7 @@
 #' This function yields a dataframe containing each unique, quality-filtered
 #' node to be used in constructing a correlation network.
 #'
-#' @param prepared.data Output from [`bngal::prepare_network_data`] or [`bngal::split_network_data`]
+#' @param prepared.data Output from [`bngal::prepare_network_data`]
 #' @param corr.matrix Output from [`bngal::prepare_corr_data()`]
 #' @return
 #' @export

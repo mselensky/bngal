@@ -7,7 +7,7 @@
 get_node_ids(prepared.data, corr.matrix)
 }
 \arguments{
-\item{prepared.data}{Output from \code{\link{prepare_network_data}} or \code{\link{split_network_data}}}
+\item{prepared.data}{Output from \code{\link{prepare_network_data}}}
 
 \item{corr.matrix}{Output from \code{\link[=prepare_corr_data]{prepare_corr_data()}}}
 }

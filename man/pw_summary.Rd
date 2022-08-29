@@ -4,12 +4,14 @@
 \alias{pw_summary}
 \title{Summarize and export pairwise data for each sample after quality control}
 \usage{
-pw_summary(binned.taxonomy, preprocessed.features, out.dr, cores = 1)
+pw_summary(corr.data, preprocessed.features, tax.level, out.dr, cores = 1)
 }
 \arguments{
-\item{binned.taxonomy}{Output from \code{\link[=bin_taxonomy]{bin_taxonomy()}}}
+\item{corr.data}{Output from \code{\link[=prepare_corr_data]{prepare_corr_data()}}}
 
 \item{preprocessed.features}{Required. Output from \code{\link[=prepare_net_features]{prepare_net_features()}}}
+
+\item{tax.level}{Taxonomic level at which to summarize pairwise data.}
 
 \item{out.dr}{Required. Output directory for pairwise summary data. Should be the same path as defined in \code{\link[=prepare_corr_data]{prepare_corr_data()}}}
 

@@ -24,8 +24,8 @@ plot_networks <- function (node.color.data, filled.by, graph.layout, out.dr,
     plot.type = filled.by
   }
 
-  pdf.path = file.path(out.dr, "network-plots", "pdfs", plot.type, tax_level)
-  html.path = file.path(out.dr, "network-plots", "html", plot.type, tax_level)
+  pdf.path = file.path(out.dr, "network-plots", tax_level, "pdfs", plot.type)
+  html.path = file.path(out.dr, "network-plots", tax_level, "html", plot.type)
 
   if (!dir.exists(pdf.path)) dir.create(pdf.path, recursive = TRUE)
   if (!dir.exists(html.path)) dir.create(html.path, recursive = TRUE)
@@ -80,7 +80,7 @@ plot_networks <- function (node.color.data, filled.by, graph.layout, out.dr,
 
     # scale node diameters
     core_scale = abs(V(igraph.obj)$core)
-    norm_core = 5*(0.2+(core_scale-min(core_scale))/(max(core_scale)-min(core_scale)))
+    norm_core = 5*(0.35+(core_scale-min(core_scale))/(max(core_scale)-min(core_scale)))
     V(igraph.obj)$norm_core <- norm_core
 
     node_size_cut = cut(core_scale, n, dig.lab = min(core_scale))
@@ -106,7 +106,7 @@ plot_networks <- function (node.color.data, filled.by, graph.layout, out.dr,
          layout = layout,
          margin = 0
     )
-    legend("topleft",
+    legend("topright",
            title = expression(paste("| ", rho, " |")),
            legend = levels(edge_widths_cut),
            lty = 1,
@@ -117,7 +117,7 @@ plot_networks <- function (node.color.data, filled.by, graph.layout, out.dr,
            inset = -0.05,
            y.intersp = 0.7
     )
-    legend("bottomleft",
+    legend("right",
            legend = c(min(core_scale),
                       (max(core_scale)-min(core_scale))/2,
                       max(core_scale)),
@@ -131,10 +131,14 @@ plot_networks <- function (node.color.data, filled.by, graph.layout, out.dr,
            y.intersp = 0.7)
     if (filled.by == "edge_btwn_cluster") {
 
+      # if EBC color is black, lump into "other" category
       ebc.leg.cols <- nodes.[[subset.values]] %>%
-        distinct(edge_btwn_cluster, color)
+        distinct(edge_btwn_cluster, color) %>%
+        filter(color != "#000000") %>%
+        dplyr::mutate(edge_btwn_cluster = as.character(edge_btwn_cluster))
+      ebc.leg.cols <- rbind(ebc.leg.cols, c("edge_btwn_cluster" = "other", "color" = "#000000"))
 
-      legend("topright",
+      legend("topleft",
              #inset=c(-0.2,0),
              bty = "n",
              title = "EBC",
@@ -228,10 +232,12 @@ plot_networks <- function (node.color.data, filled.by, graph.layout, out.dr,
     }
 
     subset.values = "all"
+    nodes. = list("all" = nodes.)
+    edges. = list("all" = edges.)
     plot.out <- plot_nets(nodes., edges., subset.values, filled.by,
                           graph.layout,
                           sign, tax_level, correlation, pval.cutoff, direction, other.variable)
-    plot.out = list(all=plot.out)
+    plot.out = list("all"=plot.out)
 
   } else if (class(nodes.) == "list") {
     subset.values = names(nodes.)
