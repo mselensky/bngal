@@ -25,6 +25,7 @@ pw_summary <- function(corr.data, preprocessed.features, tax.level, out.dr, core
   if (class(preprocessed.features$nodes) %in%  input.data.class) {
     preprocessed.features$edges = list("all" = preprocessed.features$edges)
     preprocessed.features$nodes = list("all" = preprocessed.features$nodes)
+    corr.data = list("all" = corr.data)
   }
 
   message(" | [", Sys.time(), "] Number of unique nodes passing final quality filtering: ")

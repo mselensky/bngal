@@ -14,18 +14,19 @@
 #' @export
 #'
 #' @examples prepare_corr_data(prepared.data, obs.cutoff, transformation, out.dr)
-prepare_corr_data <- function(prepared.data, obs.cutoff, transformation, out.dr) {
+prepare_corr_data <- function(prepared.data, obs.cutoff, transformation, out.dr, cores = 1) {
 
+  NCORES = cores
   # this is formatted for multithreading on a SLURM-directed HPC system,
   # but any *nix-like machine can multithread here as well. otherwise
   # this runs on a single core.
-  if (Sys.getenv("SLURM_NTASKS") > 1) {
-    NCORES = Sys.getenv("SLURM_NTASKS")
-  } else if (parallel::detectCores() > 2) {
-    NCORES = parallel::detectCores()-1
-  } else {
-    NCORES = 1
-  }
+  # if (Sys.getenv("SLURM_NTASKS") > 1) {
+  #   NCORES = Sys.getenv("SLURM_NTASKS")
+  # } else if (parallel::detectCores() > 2) {
+  #   NCORES = parallel::detectCores()-1
+  # } else {
+  #   NCORES = 1
+  # }
 
   comp_corr <- function(prepared_data, transformation, obs.cutoff, out.dr) {
     if (missing(transformation) | is.null(transformation)) {
@@ -60,11 +61,16 @@ prepare_corr_data <- function(prepared.data, obs.cutoff, transformation, out.dr)
     z <- matrix.l %>%
       distinct(taxon_, node_type)
 
+    # make taxon key to save memory on long taxa names
+    taxon.key <- z %>%
+      dplyr::mutate(taxon_id = seq(1:nrow(.))) %>%
+      select(-node_type)
+
     pw.taxa <- function(z) {
       n = as.numeric(nrow(z))
       r = 2
       z = as.data.frame(z)
-      pw.z = t(combn(z[["taxon_"]], m = r))
+      pw.z = t(combn(z[["taxon_id"]], m = r))
       pw.z.df = data.frame("taxa1" = pw.z[,1], "taxa2" = pw.z[,2])
       taxa_pair = paste0(pw.z.df$taxa1, "~<>~", pw.z.df$taxa2)
       #`sample-id` = unique(z$`sample-id`)
@@ -73,13 +79,18 @@ prepare_corr_data <- function(prepared.data, obs.cutoff, transformation, out.dr)
     }
     message(" | --------------------------------------------------------------------")
     message(" | [", Sys.time(), "] Filtering data for '", tax_level, "'-level correlation matrix...")
-    pw <- pw.taxa(z)
+    pw <- pw.taxa(taxon.key)
     message(" | [", Sys.time(), "] ", length(unique(pw$taxa_pair)), " unique '", tax_level, "'-level pairwise relationships observed before observational threshold filtering.")
 
     # return number of pre-filtered observations per taxa pair and filter out
     # comparisons under observational threshold
+    # this section requires a lot of memory for large matrices so we create a
+    # unique numeric "taxon_id" for each "taxon_"
+
     pw_all <- matrix.l %>%
-      left_join(pw, by = c("taxon_" = "taxa1"))
+      left_join(taxon.key, by = "taxon_") %>%
+      dplyr::select(-taxon_) %>%
+      left_join(pw, by = c("taxon_id" = "taxa1"))
 
     pw_counts <- pw_all %>%
       group_by(taxa_pair) %>%
@@ -92,8 +103,10 @@ prepare_corr_data <- function(prepared.data, obs.cutoff, transformation, out.dr)
 
     # output matrix
     pw_filtered.mat <- pw_filtered %>%
-      distinct(`sample-id`, taxon_) %>%
+      distinct(`sample-id`, taxon_id) %>%
+      left_join(., taxon.key, by = "taxon_id") %>%
       left_join(., select(matrix.l, -node_type), by = c("sample-id", "taxon_")) %>%
+      select(-taxon_id) %>%
       pivot_wider(names_from = "taxon_", values_from = "norm_vals") %>%
       replace(is.na(.), 0)
 
@@ -131,7 +144,7 @@ prepare_corr_data <- function(prepared.data, obs.cutoff, transformation, out.dr)
       pivot_wider(names_from = "name", values_from = "pres") %>%
       column_to_rownames("sample-id")
 
-    pre_obs_filt_nodes <- as.data.frame(rowSums(matrix.bin))
+    pre_obs_filt_nodes <- as.data.frame(rowSums(matrix.bin, na.rm = TRUE))
     names(pre_obs_filt_nodes) <- "input.nodes"
 
     a <- split(pre_obs_filt_nodes, rownames(pre_obs_filt_nodes))
