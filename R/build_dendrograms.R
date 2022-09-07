@@ -25,27 +25,25 @@ build_dendrograms <- function(binned.taxonomy, metadata, color.by, trans="log10"
   NCORES=as.numeric(cores)
 
   # split binned.taxonomy by optional sub.comms
-  test = list()
+  community.counts = list()
   threads = list()
   for (i in tax.levels) {
 
     # if no subcommunity column is defined, refer to full community as "all"
     if (missing(sub.comms) | is.null(sub.comms)) {
-      test[[i]] <- list("all" = binned.taxonomy[[i]])
+      community.counts[[i]] <- list("all" = binned.taxonomy[[i]])
       threads[[i]] = "all"
 
     } else {
 
       binned.taxonomy[[i]] <- binned.taxonomy[[i]] %>%
         left_join(select(metadata, `sample-id`, .data[[sub.comms]]), by = "sample-id")
-      test[[i]] <- split(binned.taxonomy[[i]], binned.taxonomy[[i]][[sub.comms]])
-      threads[[i]] = names(test[[i]])
+      community.counts[[i]] <- split(binned.taxonomy[[i]], binned.taxonomy[[i]][[sub.comms]])
+      threads[[i]] = names(community.counts[[i]])
 
     }
 
   }
-  # message(" | [", Sys.time(), "] Formatting complete.")
-  gc()
 
   # create relative abundance matrices from split binned.taxonomy
   rel_abun_mats=list()
@@ -54,7 +52,7 @@ build_dendrograms <- function(binned.taxonomy, metadata, color.by, trans="log10"
   for (i in tax.levels) {
     rel_abun_mats[[i]] <- parallel::mclapply(X = threads[[i]],
                                              FUN = function(x){
-                                               bngal::make_matrix(test[[i]][[x]],
+                                               bngal::make_matrix(community.counts[[i]][[x]],
                                                                   "rel_abun_binned",
                                                                   "sample-id") %>%
                                                  replace_na(replace = 0)
@@ -89,9 +87,9 @@ build_dendrograms <- function(binned.taxonomy, metadata, color.by, trans="log10"
                                                mc.cores = NCORES)
     } else {
       message("
-        -----ERROR-| build_dendrogram():
-                     'trans' variable must be missing or one of
-                     'log10', 'log', 'sqrt', 'none'.
+  -----ERROR-| build_dendrogram():
+               'trans' variable must be missing or one of
+               'log10', 'log', 'sqrt', 'none'.
                 ")}
     names(rel_abun_dist[[i]]) = threads[[i]]
 
@@ -104,8 +102,6 @@ build_dendrograms <- function(binned.taxonomy, metadata, color.by, trans="log10"
     names(hclust_res[[i]]) = threads[[i]]
 
   }
-  # message(" | [", Sys.time(), "] Relative abundance matrices created.")
-  gc()
 
   ggt <- list()
   ggt_df <- list()
@@ -116,7 +112,6 @@ build_dendrograms <- function(binned.taxonomy, metadata, color.by, trans="log10"
     for (x in names(hclust_res[[i]])) {
 
       ggt[[i]][[x]] <- ggtree(hclust_res[[i]][[x]])
-      message(" | [", Sys.time(), "] ggtree for '", x, "' completed at ", i,"' level.")
       ggt_df[[i]][[x]] <- get.tree(ggt[[i]][[x]])$tip.label %>%
         as.data.frame() %>%
         rename(`sample-id` = ".") %>%
@@ -211,9 +206,6 @@ build_dendrograms <- function(binned.taxonomy, metadata, color.by, trans="log10"
 
     }
   }
-  # message(" | [", Sys.time(), "] Dendrogram legends created.")
-  gc()
-
 
   plot_label_data <- list()
   merged_labs <- list()
@@ -230,8 +222,6 @@ build_dendrograms <- function(binned.taxonomy, metadata, color.by, trans="log10"
                                                mc.cores = NCORES)
     names(plot_label_data[[i]]) = threads[[i]]
 
-    gc()
-
     merged_labs[[i]] <- parallel::mclapply(X = threads[[i]],
                                            FUN = function(x) {
                                              ordered_names[[i]][[x]] %>%
@@ -242,11 +232,9 @@ build_dendrograms <- function(binned.taxonomy, metadata, color.by, trans="log10"
                                            },
                                            mc.cores = NCORES)
     names(merged_labs[[i]]) = threads[[i]]
-    gc()
 
     message(" | [", Sys.time(), "] Final dendrograms constructed at the '", i, "' level.")
   }
-  gc()
 
   list(tip_data = merged_labs,
        hclust_plots = hclust_plots,

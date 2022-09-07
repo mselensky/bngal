@@ -4,7 +4,7 @@
 \alias{prepare_corr_data}
 \title{Filter preprocessed data for correlation matrix}
 \usage{
-prepare_corr_data(prepared.data, obs.cutoff, transformation, out.dr)
+prepare_corr_data(prepared.data, obs.cutoff, transformation, out.dr, cores = 1)
 }
 \arguments{
 \item{prepared.data}{Output from \code{\link{prepare_network_data}} or \code{\link{split_network_data}}}

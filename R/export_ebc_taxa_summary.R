@@ -11,7 +11,7 @@
 #' @examples
 export_ebc_taxa_summary <- function(binned.taxonomy, ebc.nodes.abun, tax.level, out.dr) {
 
-  for (x in names(ebc_comps[[tax.level]])) {
+  for (x in names(ebc.nodes.abun[[tax.level]])) {
 
     communities = unique(ebc.nodes.abun[[tax.level]][[x]]$`sample-id`)
     n_samples = length(communities)

@@ -61,6 +61,7 @@ plot_core_comp <- function(ebc.nodes.abun, tax.level, metadata, fill.by) {
       scale_shape_manual(values = c("env_var" = 24, "taxon" = 21)) +
       xlab("Coreness centrality") + ylab("Network cluster")
 
+    suppressWarnings(
     core.abun.grobs[[i]] <-
       ggpubr::ggarrange(ebc.comp.plot +
                           theme(legend.position = "none"),
@@ -70,8 +71,8 @@ plot_core_comp <- function(ebc.nodes.abun, tax.level, metadata, fill.by) {
                         heights = c(3,.5)) %>%
       ggpubr::annotate_figure(text_grob(paste0(tax.level, "-level node summaries for '", i, "' communities"),
                                         face = "italic"))
+    )
   }
 
-  gridExtra::marrangeGrob(core.abun.grobs, nrow=1, ncol=1)
-
+    gridExtra::marrangeGrob(core.abun.grobs, nrow=1, ncol=1)
 }

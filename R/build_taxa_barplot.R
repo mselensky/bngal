@@ -244,20 +244,21 @@ build_taxa.barplot <- function(plotdata, tax.level, dendrogram, fill.by="phylum"
       work.dir = getwd()
       setwd(out.dr.taxa.bp)
       filename = paste0(tax.level, "-", x, "-clustered-barplot-", fill.by)
-      ggplot2::ggsave(filename = paste0(filename, ".pdf"),
-                      plot = out.plot)
+      suppressMessages(
+        ggplot2::ggsave(filename = paste0(filename, ".pdf"),
+                        plot = out.plot)
+      )
       if (!dir.exists("legends")) dir.create("legends")
-      ggplot2::ggsave(filename = file.path("legends", paste0(filename, "-legend.pdf")),
-                      plot = out.legend)
+      suppressMessages(
+        ggplot2::ggsave(filename = file.path("legends", paste0(filename, "-legend.pdf")),
+                        plot = out.legend)
+      )
       setwd(work.dir)
 
     }
+
+    #message(" | [", Sys.time(), "] Exported summary barplots to:\n |   ", file.path(out.dr.taxa.bp, tax.level))
+
   }
-
-  message(" | [", Sys.time(), "] Exported summary barplots to:\n |   ", out.dr.taxa.bp)
-
-  message("
-     -----Note--| You can make this into an interactive barplot with `interactive==TRUE` !
-                | However, only the static version can be fed into other bngal visualization functions.")
 
 }
