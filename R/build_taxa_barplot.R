@@ -88,8 +88,7 @@ build_taxa.barplot <- function(plotdata, tax.level, dendrogram, fill.by="phylum"
         distinct(edge_btwn_cluster.plot, edge_btwn_cluster_color) %>%
         filter(edge_btwn_cluster.plot != "other") %>%
         filter(edge_btwn_cluster.plot != "none") %>%
-        add_row(edge_btwn_cluster.plot = "other", edge_btwn_cluster_color = "#000000",
-                edge_btwn_cluster.plot = "none", edge_btwn_cluster_color = "#f0f0f0")
+        add_row(edge_btwn_cluster.plot = c("other", "none"), edge_btwn_cluster_color = c("#000000", "#f0f0f0"))
 
       ebc.colors <- ebc.color.order.plot %>%
         pull(edge_btwn_cluster_color, edge_btwn_cluster.plot)
