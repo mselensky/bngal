@@ -79,22 +79,24 @@ build_taxa.barplot <- function(plotdata, tax.level, dendrogram, fill.by="phylum"
                                                   as.numeric(edge_btwn_cluster))) %>%
         dplyr::arrange(edge_btwn_cluster) %>%
         dplyr::mutate(edge_btwn_cluster = if_else(edge_btwn_cluster == 9999,
-                                                  "no_cluster",
+                                                  "none",
                                                   as.character(edge_btwn_cluster))) %>%
         dplyr::mutate(edge_btwn_cluster.plot = if_else(edge_btwn_cluster_color == "#000000",
-                                                       "other_cluster",
+                                                       "other",
                                                        edge_btwn_cluster))
       ebc.color.order.plot <- ebc.color.order %>%
         distinct(edge_btwn_cluster.plot, edge_btwn_cluster_color) %>%
-        filter(edge_btwn_cluster.plot != "other_cluster") %>%
-        add_row(edge_btwn_cluster.plot = "other_cluster", edge_btwn_cluster_color = "#000000")
+        filter(edge_btwn_cluster.plot != "other") %>%
+        filter(edge_btwn_cluster.plot != "none") %>%
+        add_row(edge_btwn_cluster.plot = "other", edge_btwn_cluster_color = "#000000",
+                edge_btwn_cluster.plot = "none", edge_btwn_cluster_color = "#f0f0f0")
 
       ebc.colors <- ebc.color.order.plot %>%
         pull(edge_btwn_cluster_color, edge_btwn_cluster.plot)
 
       taxa_barplot.d <- taxa_barplot.d %>%
         dplyr::mutate(edge_btwn_cluster = if_else(edge_btwn_cluster == 0,
-                                                  "no_cluster",
+                                                  "none",
                                                   as.character(edge_btwn_cluster))) %>%
         left_join(select(ebc.color.order, -edge_btwn_cluster_color), by = "edge_btwn_cluster")
 
