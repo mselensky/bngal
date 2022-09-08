@@ -103,141 +103,130 @@ build_dendrograms <- function(binned.taxonomy, metadata, color.by, trans="log10"
 
   }
 
-  ggt <- list()
-  ggt_df <- list()
+  # ggt <- list()
+  # ggt_df <- list()
   hclust_plots <- list()
+  ordered_names <- list()
   for (i in tax.levels) {
 
     # use ggtree to manipulate dendrogram as needed for aesthetics
     for (x in names(hclust_res[[i]])) {
 
-      ggt[[i]][[x]] <- ggtree(hclust_res[[i]][[x]])
-      ggt_df[[i]][[x]] <- get.tree(ggt[[i]][[x]])$tip.label %>%
-        as.data.frame() %>%
-        rename(`sample-id` = ".") %>%
+      # extract dendrogram segment data
+      dendrogram. = as.dendrogram(hclust_res[[i]][[x]])
+      dendrogram_data <- ggdendro::dendro_data(dendrogram.)
+      dendrogram_segments <- dendrogram_data$segments # contains all dendrogram segment data
+
+      # get terminal dendrogram segments
+      dendrogram_ends <- dendrogram_segments %>%
+        filter(yend == 0) %>% # filter for terminal dendrogram ends
+        left_join(dendrogram_data$labels, by = "x") %>%
+        rename(`sample-id` = label) %>%
         left_join(metadata, by = "sample-id")
 
-      hclust_plots[[i]][[x]] <- suppressMessages(
-        ggt[[i]][[x]] %<+% ggt_df[[i]][[x]] +
-          #geom_tiplab(aes(text = label, angle = 90)) +
-          coord_flip() +
-          scale_y_reverse()
-      )
+      # avoid overplotting by removing ends from dendrogram segments
+      dendrogram_segments <- dendrogram_segments %>%
+        filter(!yend == 0)
+
+      # dendrogram_ends also contains hc-ordered sample info, export for later plotting
+      ordered_names[[i]][[x]] <- dendrogram_ends %>%
+        select(`sample-id`, x) %>%
+        dplyr::rename(hc.order=x)
+
+      # plot dendrogram
+      hclust_plots[[i]][[x]] <- ggplot() +
+        geom_segment(data = dendrogram_segments,
+                     aes(x=x, y=y, xend=xend, yend=yend)) +
+        # scale_y_reverse() +
+        # scale_x_reverse() +
+        theme_minimal() +
+        theme(legend.position = "top",
+              axis.title.x = element_blank(),
+              axis.text.x = element_blank(),
+              panel.grid=element_blank()) +
+        ylab("Manhattan distance")
+
+
+      # ggt[[i]][[x]] <- ggtree(hclust_res[[i]][[x]])
+      # ggt_df[[i]][[x]] <- get.tree(ggt[[i]][[x]])$tip.label %>%
+      #   as.data.frame() %>%
+      #   rename(`sample-id` = ".") %>%
+      #   left_join(metadata, by = "sample-id")
+      #
+      # hclust_plots[[i]][[x]] <- suppressMessages(
+      #   ggt[[i]][[x]] %<+% ggt_df[[i]][[x]] +
+      #     #geom_tiplab(aes(text = label, angle = 90)) +
+      #     coord_flip() +
+      #     scale_y_reverse()
+      # )
 
       if (missing(color.by) | is.null(color.by)) {
         hclust_plots[[i]][[x]] <- hclust_plots[[i]][[x]] +
-          geom_tippoint()
+          geom_segment(data = dendrogram_ends,
+                       aes(x=x, y=y.x, xend=xend, yend=yend)) +
+          geom_point(data = dendrogram_ends,
+                     aes(x=x, y=0))
       } else {
         hclust_plots[[i]][[x]] <- hclust_plots[[i]][[x]] +
-          geom_tippoint(aes(color = .data[[color.by]]))
+          geom_segment(data = dendrogram_ends,
+                       aes(x=x, y=y.x, xend=xend, yend=yend,
+                           color = .data[[color.by]])) +
+          geom_point(data = dendrogram_ends,
+                     aes(x=x, y=0, color = .data[[color.by]]))
       }
     }
+
+    message(" | [", Sys.time(), "] Final dendrograms constructed at the '", i, "' level.")
 
     # message(" | [", Sys.time(), "] Base dendrograms constructed at the '", i,"' level.")
 
   }
 
-    # ggt[[i]] <- parallel::mclapply(X = threads[[i]],
-    #                                FUN = function(x) {
-    #                                  ggtree(hclust_res[[i]][[x]])
-    #                                },
-    #                                mc.cores = NCORES)
-    # names(ggt[[i]]) = threads[[i]]
-    #
-    # gc()
-
-    # ggt_df[[i]] <- parallel::mclapply(X = threads[[i]],
-    #                                   FUN = function(x) {
-    #                                     get.tree(ggt[[i]][[x]])$tip.label %>%
-    #                                       as.data.frame() %>%
-    #                                       rename(`sample-id` = ".") %>%
-    #                                       left_join(metadata, by = "sample-id")
-    #                                   },
-    #                                   mc.cores = NCORES)
-    # names(ggt_df[[i]]) = threads[[i]]
-
-    # gc()
-    #
-    # hclust_plots[[i]] <- parallel::mclapply(X = threads[[i]],
-    #                                         FUN = function(x) {
-    #                                           suppressMessages(
-    #                                             ggt[[i]][[x]] %<+% ggt_df[[i]][[x]] +
-    #                                               #geom_tiplab(aes(text = label, angle = 90)) +
-    #                                               coord_flip() +
-    #                                               scale_y_reverse()
-    #                                           )
-    #                                         },
-    #                                         mc.cores = NCORES)
-    # names(hclust_plots[[i]]) = threads[[i]]
-    #
-    # gc()
+  # legends <- list()
+  #
+  # for (i in tax.levels) {
+  #   for (x in names(hclust_plots[[i]])) {
+  #
+  #     # export hclust_plot legend as separate object
+  #     legends[[i]][[x]] <- hclust_plots[[i]][[x]] %>%
+  #       ggpubr::get_legend()
+  #
+  #     # ordered names for dendrogram
+  #     ordered_names[[i]][[x]] <- tibble(`sample-id` = get_taxa_name(hclust_plots[[i]][[x]]))
+  #
+  #   }
+  # }
 #
-#     if (missing(color.by) | is.null(color.by)) {
+#   plot_label_data <- list()
+#   merged_labs <- list()
+#   for (i in tax.levels) {
+#     # merge `ordered_names` with ggt[[i]][[x]]$data to join `y` values,
+#     # which is what we need for ordering figure
 #
-#       hclust_plots[[i]] <- parallel::mclapply(X = threads[[i]],
-#                                               FUN = function(x) {
-#                                                 hclust_plots[[i]][[x]] +
-#                                                   geom_tippoint()
-#                                               },
-#                                               mc.cores = NCORES)
-#       gc()
-#     } else {
-#       hclust_plots[[i]] <- parallel::mclapply(X = threads[[i]],
-#                                               FUN = function(x) {
-#                                                 hclust_plots[[i]][[x]] +
-#                                                   geom_tippoint(aes(color = .data[[color.by]]))
-#                                               },
-#                                               mc.cores = NCORES)
-#       gc()
-#     }
-#     names(hclust_plots[[i]]) = threads[[i]]
+#     plot_label_data[[i]] <- parallel::mclapply(X = threads[[i]],
+#                                                FUN = function(x) {
+#                                                  ggt[[i]][[x]]$data %>%
+#                                                    rename(`sample-id` = label) %>%
+#                                                    filter(!is.na(`sample-id`))
+#                                                },
+#                                                mc.cores = NCORES)
+#     names(plot_label_data[[i]]) = threads[[i]]
+#
+#     merged_labs[[i]] <- parallel::mclapply(X = threads[[i]],
+#                                            FUN = function(x) {
+#                                              ordered_names[[i]][[x]] %>%
+#                                                left_join(., plot_label_data[[i]][[x]], by = "sample-id") %>%
+#                                                rownames_to_column("plot_order") %>%
+#                                                select(`sample-id`, plot_order, node) %>%
+#                                                dplyr::mutate(plot_order = as.numeric(plot_order))
+#                                            },
+#                                            mc.cores = NCORES)
+#     names(merged_labs[[i]]) = threads[[i]]
+#
+#     # message(" | [", Sys.time(), "] Final dendrograms constructed at the '", i, "' level.")
+#   }
 
-  legends <- list()
-  ordered_names <- list()
-  for (i in tax.levels) {
-    for (x in names(hclust_plots[[i]])) {
-
-      # export hclust_plot legend as separate object
-      legends[[i]][[x]] <- hclust_plots[[i]][[x]] %>%
-        ggpubr::get_legend()
-
-      # ordered names for dendrogram
-      ordered_names[[i]][[x]] <- tibble(`sample-id` = get_taxa_name(hclust_plots[[i]][[x]]))
-
-    }
-  }
-
-  plot_label_data <- list()
-  merged_labs <- list()
-  for (i in tax.levels) {
-    # merge `ordered_names` with ggt[[i]][[x]]$data to join `y` values,
-    # which is what we need for ordering figure
-
-    plot_label_data[[i]] <- parallel::mclapply(X = threads[[i]],
-                                               FUN = function(x) {
-                                                 ggt[[i]][[x]]$data %>%
-                                                   rename(`sample-id` = label) %>%
-                                                   filter(!is.na(`sample-id`))
-                                               },
-                                               mc.cores = NCORES)
-    names(plot_label_data[[i]]) = threads[[i]]
-
-    merged_labs[[i]] <- parallel::mclapply(X = threads[[i]],
-                                           FUN = function(x) {
-                                             ordered_names[[i]][[x]] %>%
-                                               left_join(., plot_label_data[[i]][[x]], by = "sample-id") %>%
-                                               rownames_to_column("plot_order") %>%
-                                               select(`sample-id`, plot_order, node) %>%
-                                               dplyr::mutate(plot_order = as.numeric(plot_order))
-                                           },
-                                           mc.cores = NCORES)
-    names(merged_labs[[i]]) = threads[[i]]
-
-    message(" | [", Sys.time(), "] Final dendrograms constructed at the '", i, "' level.")
-  }
-
-  list(tip_data = merged_labs,
-       hclust_plots = hclust_plots,
-       legends = legends)
+  list(ordered_names = ordered_names,
+       hclust_plots = hclust_plots)
 
 }

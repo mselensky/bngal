@@ -15,20 +15,21 @@
 #' @examples
 build_taxa.barplot <- function(plotdata, tax.level, dendrogram, fill.by="phylum", interactive=TRUE, out.dr, metadata.cols, other.variable) {
 
-  dendro_names <- names(dendrogram[["tip_data"]][[tax.level]])
+  dendro_names <- names(dendrogram[["ordered_names"]][[tax.level]])
   out.dr.taxa.bp = file.path(out.dr, "taxa-barplots", fill.by)
   if (!dir.exists(out.dr.taxa.bp)) dir.create(out.dr.taxa.bp, recursive = TRUE)
 
   for (x in dendro_names) {
 
-    dat.in = plotdata[[tax.level]][[x]]
-    hc.order = pull(dendrogram[["tip_data"]][[tax.level]][[x]], `sample-id`, node)
-    communities = pull(dendrogram[["tip_data"]][[tax.level]][[x]], `sample-id`)
+    dat.in = plotdata[[tax.level]][[x]] %>%
+      left_join(dendrogram[["ordered_names"]][[tax.level]][[x]], by = "sample-id")
+    hc.order = pull(dendrogram[["ordered_names"]][[tax.level]][[x]], `sample-id`, hc.order)
+    communities = pull(dendrogram[["ordered_names"]][[tax.level]][[x]], `sample-id`)
 
     # this will arrange filled bars by summed EBC abundance
     ebc_arranged <- dat.in %>%
       filter(`sample-id` %in% communities) %>%
-      distinct(`sample-id`, edge_btwn_cluster, ebc_abun_sum) %>%
+      distinct(`sample-id`, edge_btwn_cluster, hc.order, ebc_abun_sum) %>%
       dplyr::arrange(as.numeric(ebc_abun_sum))
     ebc_arranged["bar_order"] = seq(1:nrow(ebc_arranged))
 
@@ -73,8 +74,11 @@ build_taxa.barplot <- function(plotdata, tax.level, dendrogram, fill.by="phylum"
       ebc.color.order <- taxa_barplot.d %>%
         ungroup() %>% distinct(edge_btwn_cluster, edge_btwn_cluster_color) %>%
         filter(edge_btwn_cluster %in% ebc_legend_order$edge_btwn_cluster) %>%
-        dplyr::arrange(edge_btwn_cluster) %>%
         dplyr::mutate(edge_btwn_cluster = if_else(edge_btwn_cluster == 0,
+                                                  9999,
+                                                  as.numeric(edge_btwn_cluster))) %>%
+        dplyr::arrange(edge_btwn_cluster) %>%
+        dplyr::mutate(edge_btwn_cluster = if_else(edge_btwn_cluster == 9999,
                                                   "no_cluster",
                                                   as.character(edge_btwn_cluster))) %>%
         dplyr::add_row(edge_btwn_cluster = "other_cluster", edge_btwn_cluster_color = "#000000")
@@ -108,18 +112,23 @@ build_taxa.barplot <- function(plotdata, tax.level, dendrogram, fill.by="phylum"
       }
 
       func.groups <- read_csv(system.file("data", "16S_families.csv", package = "bngal"), col_types = cols())
+      func.groups.key <- read_csv(system.file("data", "groupings.csv", package = "bngal"), col_types = cols())
 
       taxa_barplot.d <- dat.in %>%
         filter(`sample-id` %in% communities) %>%
         left_join(., func.groups, by = c("phylum", "class", "order", "family")) %>%
+        left_join(., func.groups.key, by = "grouping") %>%
         dplyr::arrange(desc(as.numeric(edge_btwn_cluster)))
 
       taxa.group.colors <- taxa_barplot.d %>%
         ungroup() %>%
-        distinct(.data[[fill.by]], hex.code) %>%
-        filter(!is.na(.data[[fill.by]]))
+        distinct(grouping_ID, hex.code) %>%
+        filter(!is.na(grouping_ID) & !is.na(hex.code))
 
-      group.colorz = pull(taxa.group.colors, hex.code, .data[[fill.by]])
+      taxa.group.colors$grouping_ID = factor(taxa.group.colors$grouping_ID,
+                                             levels = func.groups.key$grouping_ID)
+
+      group.colorz = pull(taxa.group.colors, hex.code, grouping_ID)
 
     } else {
       stop("\n | [", Sys.time(), "] 'fill.by' must be one of 'phylum', 'ebc', 'grouping', or 'other'")
@@ -128,7 +137,7 @@ build_taxa.barplot <- function(plotdata, tax.level, dendrogram, fill.by="phylum"
     # initialize plot
     taxa_barplot <- taxa_barplot.d %>%
       ggplot() +
-      theme_bw()
+      theme_minimal()
 
     if (fill.by == "phylum") {
 
@@ -137,13 +146,10 @@ build_taxa.barplot <- function(plotdata, tax.level, dendrogram, fill.by="phylum"
         pull(hex.color, phylum)
 
       taxa_barplot <- taxa_barplot +
-        geom_bar(aes(factor(`sample-id`, levels = hc.order), rel_abun_binned,
+        geom_bar(aes(hc.order, rel_abun_binned * 100,
                      fill = phylum,
                      text = paste("<br>sample: ", `sample-id`,
                                   "<br>shannon diversity: ", round(value,3),
-                                  # "<br>cave: ", cave_name,
-                                  # "<br>region: ", region,
-                                  # "<br>water column zone: ", zone,
                                   "<br>-------------------",
                                   "<br>p: ", phylum,
                                   "<br>full taxon ID: ", taxon_,
@@ -154,29 +160,24 @@ build_taxa.barplot <- function(plotdata, tax.level, dendrogram, fill.by="phylum"
                      )),
                  stat = "identity") +
         scale_fill_manual(values = phylum.colors) +
-        labs(fill = "Phylum") +
-        ggtitle(paste0("'", x, "' communities filled by phylum"))
+        labs(fill = "Phylum")
     } else if (fill.by == "ebc") {
       taxa_barplot <- taxa_barplot +
-        geom_bar(aes(factor(`sample-id`, levels = hc.order), ebc_abun_sum,
+        geom_bar(aes(hc.order, ebc_abun_sum*100,
                      fill = as.factor(edge_btwn_cluster),
                      text = paste0("<br>sample: ", `sample-id`,
                                    "<br>shannon diversity: ", round(value,3),
-                                   # "<br>zone: ", zone,
-                                   # "<br>cave: ", cave_name,
-                                   # "<br>region: ", region,
                                    "<br>-------------------",
                                    "<br>edge between cluster: ", edge_btwn_cluster,
                                    "<br>cluster abundance: ", ebc_abun_sum)
         ),
         stat = "identity") +
         scale_fill_manual(values = ebc.colors, na.value = "#000000") +
-        labs(fill = "Edge between cluster (EBC)") +
-        ggtitle(paste0("'", x, "' communities filled by edge between cluster ID"))
+        labs(fill = "Edge between cluster (EBC)")
     } else if (fill.by == "grouping") {
       taxa_barplot <- taxa_barplot +
-        geom_bar(aes(factor(`sample-id`, levels = hc.order), rel_abun_binned,
-                     fill = as.factor(.data[[fill.by]]),
+        geom_bar(aes(as.numeric(hc.order), rel_abun_binned * 100,
+                     fill = as.factor(grouping_ID),
                      text = paste("<br>sample: ", `sample-id`,
                                   "<br>shannon diversity: ", round(value,3),
                                   "<br>-------------------",
@@ -188,12 +189,10 @@ build_taxa.barplot <- function(plotdata, tax.level, dendrogram, fill.by="phylum"
                                   "<br>edge between cluster: ", edge_btwn_cluster
                      )),
                  stat = "identity") +
-        guides(fill = guide_legend(title="Grouping")) +
-        scale_fill_manual(values = group.colorz) +
-        ggtitle(paste0("'", x, "' communities filled by family functional groupings"))
+        scale_fill_manual(values = group.colorz, na.value = "#000000")
     } else if (fill.by == "other") {
       taxa_barplot <- taxa_barplot +
-        geom_bar(aes(factor(`sample-id`, levels = hc.order), rel_abun_binned,
+        geom_bar(aes(hc.order, rel_abun_binned * 100,
                      fill = as.factor(.data[[other.variable]]),
                      text = paste("<br>sample: ", `sample-id`,
                                   "<br>shannon diversity: ", round(value,3),
@@ -206,8 +205,7 @@ build_taxa.barplot <- function(plotdata, tax.level, dendrogram, fill.by="phylum"
                                   "<br>edge between cluster: ", edge_btwn_cluster
                      )),
                  stat = "identity") +
-        scale_fill_manual(values = custom.colorz) +
-        ggtitle(label = paste0("'", x, "' communities filled by ", other.variable))
+        scale_fill_manual(values = custom.colorz)
     } else {
       stop("\n | [", Sys.time(), "] 'fill.by' values not inherited from taxa_barplot.d")
     }
@@ -231,33 +229,68 @@ build_taxa.barplot <- function(plotdata, tax.level, dendrogram, fill.by="phylum"
                               selfcontained = T)
       setwd(work.dir)
 
-
     } else if (interactive==FALSE) {
-      out.plot <- taxa_barplot +
-        theme(legend.position = "none",
-              axis.text.x = element_blank(),
-              axis.title.x = element_blank())
 
-      out.legend <- ggpubr::get_legend(taxa_barplot) %>%
-        ggpubr::as_ggplot()
+        if (fill.by == "phylum") {
+          out.plot <- taxa_barplot +
+            guides(fill=guide_legend(nrow = 2, byrow = FALSE)) +
+            theme(legend.position = "none",
+                  axis.text.x = element_blank(),
+                  axis.title.x = element_blank(),
+                  panel.grid=element_blank())
+
+          out.legend <- ggpubr::get_legend(taxa_barplot) %>%
+            ggpubr::as_ggplot()
+
+          filename = paste0(tax.level, "-", x, "-clustered-barplot-", fill.by)
+
+          if (!dir.exists("legends")) dir.create("legends")
+          suppressMessages(
+            ggplot2::ggsave(filename = file.path("legends", paste0(filename, "-legend.pdf")),
+                            plot = out.legend)
+          )
+
+        } else if (fill.by == "grouping") {
+          out.plot <- taxa_barplot +
+            guides(fill=guide_legend(nrow = 2, byrow = FALSE,
+                                     title="Grouping")) +
+            theme(legend.position = "bottom",
+                  axis.text.x = element_blank(),
+                  axis.title.x = element_blank(),
+                  panel.grid=element_blank())
+        } else {
+          out.plot <- taxa_barplot +
+            guides(fill=guide_legend(nrow = 2, byrow = FALSE)) +
+            theme(legend.position = "bottom",
+                  axis.text.x = element_blank(),
+                  axis.title.x = element_blank(),
+                  panel.grid=element_blank())
+        }
+
+      dendro_to_plot = dendrogram[["hclust_plots"]][[tax.level]][[x]]
+      n_samples = nrow(dendrogram[["ordered_names"]][[tax.level]][[x]])
+
+      out.plot.joined <- ggpubr::ggarrange(dendro_to_plot +
+                                             coord_cartesian(xlim = c(1,n_samples)),
+                                           out.plot +
+                                             ylab("Relative abundance (%)") +
+                                             coord_cartesian(xlim = c(1,n_samples)),
+                                           heights = c(1,2),
+                                           align = "v",
+                                           ncol = 1, hjust = -0.1,
+                                           labels = paste0("'", x, "' communities clustered at the '", i, "' level"))
 
       work.dir = getwd()
       setwd(out.dr.taxa.bp)
       filename = paste0(tax.level, "-", x, "-clustered-barplot-", fill.by)
       suppressMessages(
         ggplot2::ggsave(filename = paste0(filename, ".pdf"),
-                        plot = out.plot)
+                        plot = out.plot.joined)
       )
-      if (!dir.exists("legends")) dir.create("legends")
-      suppressMessages(
-        ggplot2::ggsave(filename = file.path("legends", paste0(filename, "-legend.pdf")),
-                        plot = out.legend)
-      )
+
       setwd(work.dir)
 
     }
-
-    #message(" | [", Sys.time(), "] Exported summary barplots to:\n |   ", file.path(out.dr.taxa.bp, tax.level))
 
   }
 

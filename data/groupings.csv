@@ -1,0 +1,20 @@
+grouping,grouping_ID
+Sulfate-reducing bacteria,SRB
+Sulfur-oxidizing bacteria,SOB
+Anammox bacteria,AMOX
+Ammonia-oxidizing archaea,AOA
+Ammonia-oxidizing bacteria,AOB
+Nitrite-oxidizing bacteria,NOB
+Iron-reducing bacteria,FeRB
+Iron-oxidizing bacteria,FeOB
+Methylotrophic bacteria,CH3B
+Methanotrophic bact. (type I),CH4B_I
+Methanotrophic bact. (other),CH4B_O
+Methanogenic archaea,CH4A
+oxygenic photoautotroph,OPA
+anoxygenic photoautotroph,APA
+photoheterotroph,PH
+chemoorganoheterotroph,COO
+multiple,multiple
+DPANN,DPANN
+unknown/uncultured,unk/unc
