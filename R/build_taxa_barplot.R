@@ -33,7 +33,7 @@ build_taxa.barplot <- function(plotdata, tax.level, dendrogram, fill.by="phylum"
       dplyr::arrange(as.numeric(ebc_abun_sum))
     ebc_arranged["bar_order"] = seq(1:nrow(ebc_arranged))
 
-    # rename sum_ebc_abun to rel_abun_ebc_tot
+    # order ebc legend by overall ebc abundance
     ebc_legend_order <- ebc_arranged %>%
       group_by(edge_btwn_cluster) %>%
       dplyr::summarise(sum_ebc_abun = sum(ebc_abun_sum)/as.numeric(length(unique(ebc_arranged$`sample-id`)))) %>%
@@ -81,14 +81,22 @@ build_taxa.barplot <- function(plotdata, tax.level, dendrogram, fill.by="phylum"
         dplyr::mutate(edge_btwn_cluster = if_else(edge_btwn_cluster == 9999,
                                                   "no_cluster",
                                                   as.character(edge_btwn_cluster))) %>%
-        dplyr::add_row(edge_btwn_cluster = "other_cluster", edge_btwn_cluster_color = "#000000")
-      ebc.colors <- ebc.color.order %>%
-        pull(edge_btwn_cluster_color, edge_btwn_cluster)
+        dplyr::mutate(edge_btwn_cluster.plot = if_else(edge_btwn_cluster_color == "#000000",
+                                                       "other_cluster",
+                                                       edge_btwn_cluster))
+      ebc.color.order.plot <- ebc.color.order %>%
+        distinct(edge_btwn_cluster.plot, edge_btwn_cluster_color) %>%
+        filter(edge_btwn_cluster.plot != "other_cluster") %>%
+        add_row(edge_btwn_cluster.plot = "other_cluster", edge_btwn_cluster_color = "#000000")
+
+      ebc.colors <- ebc.color.order.plot %>%
+        pull(edge_btwn_cluster_color, edge_btwn_cluster.plot)
 
       taxa_barplot.d <- taxa_barplot.d %>%
         dplyr::mutate(edge_btwn_cluster = if_else(edge_btwn_cluster == 0,
                                                   "no_cluster",
-                                                  as.character(edge_btwn_cluster)))
+                                                  as.character(edge_btwn_cluster))) %>%
+        left_join(select(ebc.color.order, -edge_btwn_cluster_color), by = "edge_btwn_cluster")
 
 
     } else if (fill.by == "other") {
@@ -164,7 +172,7 @@ build_taxa.barplot <- function(plotdata, tax.level, dendrogram, fill.by="phylum"
     } else if (fill.by == "ebc") {
       taxa_barplot <- taxa_barplot +
         geom_bar(aes(hc.order, ebc_abun_sum*100,
-                     fill = as.factor(edge_btwn_cluster),
+                     fill = as.factor(edge_btwn_cluster.plot),
                      text = paste0("<br>sample: ", `sample-id`,
                                    "<br>shannon diversity: ", round(value,3),
                                    "<br>-------------------",
@@ -173,7 +181,7 @@ build_taxa.barplot <- function(plotdata, tax.level, dendrogram, fill.by="phylum"
         ),
         stat = "identity") +
         scale_fill_manual(values = ebc.colors, na.value = "#000000") +
-        labs(fill = "Edge between cluster (EBC)")
+        labs(fill = "EBC")
     } else if (fill.by == "grouping") {
       taxa_barplot <- taxa_barplot +
         geom_bar(aes(as.numeric(hc.order), rel_abun_binned * 100,
@@ -189,7 +197,8 @@ build_taxa.barplot <- function(plotdata, tax.level, dendrogram, fill.by="phylum"
                                   "<br>edge between cluster: ", edge_btwn_cluster
                      )),
                  stat = "identity") +
-        scale_fill_manual(values = group.colorz, na.value = "#000000")
+        scale_fill_manual(values = group.colorz, na.value = "#000000") +
+        labs(fill = "Grouping")
     } else if (fill.by == "other") {
       taxa_barplot <- taxa_barplot +
         geom_bar(aes(hc.order, rel_abun_binned * 100,
@@ -250,14 +259,6 @@ build_taxa.barplot <- function(plotdata, tax.level, dendrogram, fill.by="phylum"
                             plot = out.legend)
           )
 
-        } else if (fill.by == "grouping") {
-          out.plot <- taxa_barplot +
-            guides(fill=guide_legend(nrow = 2, byrow = FALSE,
-                                     title="Grouping")) +
-            theme(legend.position = "bottom",
-                  axis.text.x = element_blank(),
-                  axis.title.x = element_blank(),
-                  panel.grid=element_blank())
         } else {
           out.plot <- taxa_barplot +
             guides(fill=guide_legend(nrow = 2, byrow = FALSE)) +

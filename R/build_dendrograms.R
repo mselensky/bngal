@@ -103,8 +103,6 @@ build_dendrograms <- function(binned.taxonomy, metadata, color.by, trans="log10"
 
   }
 
-  # ggt <- list()
-  # ggt_df <- list()
   hclust_plots <- list()
   ordered_names <- list()
   for (i in tax.levels) {
@@ -146,20 +144,6 @@ build_dendrograms <- function(binned.taxonomy, metadata, color.by, trans="log10"
               panel.grid=element_blank()) +
         ylab("Manhattan distance")
 
-
-      # ggt[[i]][[x]] <- ggtree(hclust_res[[i]][[x]])
-      # ggt_df[[i]][[x]] <- get.tree(ggt[[i]][[x]])$tip.label %>%
-      #   as.data.frame() %>%
-      #   rename(`sample-id` = ".") %>%
-      #   left_join(metadata, by = "sample-id")
-      #
-      # hclust_plots[[i]][[x]] <- suppressMessages(
-      #   ggt[[i]][[x]] %<+% ggt_df[[i]][[x]] +
-      #     #geom_tiplab(aes(text = label, angle = 90)) +
-      #     coord_flip() +
-      #     scale_y_reverse()
-      # )
-
       if (missing(color.by) | is.null(color.by)) {
         hclust_plots[[i]][[x]] <- hclust_plots[[i]][[x]] +
           geom_segment(data = dendrogram_ends,
@@ -176,55 +160,9 @@ build_dendrograms <- function(binned.taxonomy, metadata, color.by, trans="log10"
       }
     }
 
-    message(" | [", Sys.time(), "] Final dendrograms constructed at the '", i, "' level.")
-
-    # message(" | [", Sys.time(), "] Base dendrograms constructed at the '", i,"' level.")
+    message(" | [", Sys.time(), "] Dendrograms constructed at the '", i, "' level.")
 
   }
-
-  # legends <- list()
-  #
-  # for (i in tax.levels) {
-  #   for (x in names(hclust_plots[[i]])) {
-  #
-  #     # export hclust_plot legend as separate object
-  #     legends[[i]][[x]] <- hclust_plots[[i]][[x]] %>%
-  #       ggpubr::get_legend()
-  #
-  #     # ordered names for dendrogram
-  #     ordered_names[[i]][[x]] <- tibble(`sample-id` = get_taxa_name(hclust_plots[[i]][[x]]))
-  #
-  #   }
-  # }
-#
-#   plot_label_data <- list()
-#   merged_labs <- list()
-#   for (i in tax.levels) {
-#     # merge `ordered_names` with ggt[[i]][[x]]$data to join `y` values,
-#     # which is what we need for ordering figure
-#
-#     plot_label_data[[i]] <- parallel::mclapply(X = threads[[i]],
-#                                                FUN = function(x) {
-#                                                  ggt[[i]][[x]]$data %>%
-#                                                    rename(`sample-id` = label) %>%
-#                                                    filter(!is.na(`sample-id`))
-#                                                },
-#                                                mc.cores = NCORES)
-#     names(plot_label_data[[i]]) = threads[[i]]
-#
-#     merged_labs[[i]] <- parallel::mclapply(X = threads[[i]],
-#                                            FUN = function(x) {
-#                                              ordered_names[[i]][[x]] %>%
-#                                                left_join(., plot_label_data[[i]][[x]], by = "sample-id") %>%
-#                                                rownames_to_column("plot_order") %>%
-#                                                select(`sample-id`, plot_order, node) %>%
-#                                                dplyr::mutate(plot_order = as.numeric(plot_order))
-#                                            },
-#                                            mc.cores = NCORES)
-#     names(merged_labs[[i]]) = threads[[i]]
-#
-#     # message(" | [", Sys.time(), "] Final dendrograms constructed at the '", i, "' level.")
-#   }
 
   list(ordered_names = ordered_names,
        hclust_plots = hclust_plots)
