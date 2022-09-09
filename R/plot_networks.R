@@ -251,23 +251,12 @@ plot_networks <- function (node.color.data, filled.by, graph.layout, out.dr,
 
   }
 
-  # # import functional grouping data
-  # func.group.data <- system.file("data", "16S_families.csv", package = "bngal")
-  # func.groups <- read_csv(func.group.data, col_types = cols())
-  # func.groups.key <- read_csv(system.file("data", "groupings.csv", package = "bngal"), col_types = cols())
-
   # rename for clarity
   nodes. = node.color.data$nodes
   edges. = node.color.data$edges
 
 
   if (!is.null(nrow(nodes.))) {
-
-    if (tax_level %in% c("family", "genus", "asv") & filled.by == "other") {
-      nodes. <- nodes. %>%
-        left_join(., func.groups, by = c("phylum", "class", "order", "family")) %>%
-        dplyr::rename(hex.color=hex.code)
-    }
 
     subset.values = "all"
     nodes. = list("all" = nodes.)
@@ -282,13 +271,6 @@ plot_networks <- function (node.color.data, filled.by, graph.layout, out.dr,
 
     plot.out = list()
     for (i in subset.values) {
-
-      # if (tax_level %in% c("family", "genus", "asv") & filled.by == "other") {
-      #   nodes.[[i]] <- nodes.[[i]] %>%
-      #     left_join(., func.groups, by = c("phylum", "class", "order", "family")) %>%
-      #     left_join(., func.groups.key, by = "grouping") %>%
-      #     dplyr::rename(hex.color=hex.code)
-      # }
 
       plot.out[[i]] <- plot_nets(nodes.,
                                  edges.,
@@ -310,9 +292,7 @@ plot_networks <- function (node.color.data, filled.by, graph.layout, out.dr,
   } else {
     export_visnet_plot(plot.out, filled.by)
   }
-  # test <- mclapply(X = plot.out,
-  #                  FUN = function(i){export_net_plot(i, "phylum")},
-  #                  mc.cores = NCORES)
+
   setwd(work.dir)
 
 }
