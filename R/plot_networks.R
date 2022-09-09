@@ -150,6 +150,29 @@ plot_networks <- function (node.color.data, filled.by, graph.layout, out.dr,
              x.intersp = 0.6,
              #ncol = 2
       )
+    } else if (filled.by == "other") {
+
+      obs.grouping.colors <- nodes.[[subset.values]] %>%
+        ungroup() %>%
+        distinct(grouping_ID, color) %>%
+        filter(!is.na(grouping_ID))
+      plot.grouping.colors <- func.groups.key %>%
+        semi_join(., obs.grouping.colors, by = "grouping_ID") %>%
+        left_join(., obs.grouping.colors, by = "grouping_ID")
+
+
+      legend("topleft",
+             #inset=c(-0.2,0),
+             bty = "n",
+             title = "Grouping",
+             legend = plot.grouping.colors$grouping_ID,
+             col = plot.grouping.colors$color,
+             pch = 19,
+             pt.cex = (max(norm_core)-min(norm_core))/2,
+             y.intersp = 0.9,
+             x.intersp = 0.6,
+             #ncol = 2
+      )
     }
     suppressMessages(
       dev.off()
@@ -217,6 +240,7 @@ plot_networks <- function (node.color.data, filled.by, graph.layout, out.dr,
   # import functional grouping data
   func.group.data <- system.file("data", "16S_families.csv", package = "bngal")
   func.groups <- read_csv(func.group.data, col_types = cols())
+  func.groups.key <- read_csv(system.file("data", "groupings.csv", package = "bngal"), col_types = cols())
 
   # rename for clarity
   nodes. = node.color.data$nodes
@@ -248,6 +272,7 @@ plot_networks <- function (node.color.data, filled.by, graph.layout, out.dr,
       if (tax_level %in% c("family", "genus", "asv") & filled.by == "other") {
         nodes.[[i]] <- nodes.[[i]] %>%
           left_join(., func.groups, by = c("phylum", "class", "order", "family")) %>%
+          left_join(., func.groups.key, by = "grouping") %>%
           dplyr::rename(hex.color=hex.code)
       }
 
