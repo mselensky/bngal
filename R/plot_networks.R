@@ -40,7 +40,21 @@ plot_networks <- function (node.color.data, filled.by, graph.layout, out.dr,
     } else if (filled.by == "other") {
       if (missing(other.variable)) {
         stop("\n | [", Sys.time(), "] If filled.by='other', then you must define 'other.variable' as the column by which to select your nodes!")
-      } else nodes.[[subset.values]]$color = nodes.[[subset.values]]$hex.color
+      } else {
+
+        # import functional grouping data
+        func.group.data <- system.file("data", "16S_families.csv", package = "bngal")
+        func.groups <- read_csv(func.group.data, col_types = cols())
+        func.groups.key <- read_csv(system.file("data", "groupings.csv", package = "bngal"), col_types = cols())
+
+        if (tax_level %in% c("family", "genus", "asv") & filled.by == "other") {
+          nodes.[[subset.values]] <- nodes.[[subset.values]] %>%
+            left_join(., func.groups, by = c("phylum", "class", "order", "family")) %>%
+            left_join(., func.groups.key, by = "grouping") %>%
+            dplyr::rename(hex.color=hex.code)
+        }
+        nodes.[[subset.values]]$color = nodes.[[subset.values]]$hex.color
+        }
     } else {
       stop("\n | [", Sys.time(), "] Incorrect 'filled.by' value.")
     }
@@ -237,10 +251,10 @@ plot_networks <- function (node.color.data, filled.by, graph.layout, out.dr,
 
   }
 
-  # import functional grouping data
-  func.group.data <- system.file("data", "16S_families.csv", package = "bngal")
-  func.groups <- read_csv(func.group.data, col_types = cols())
-  func.groups.key <- read_csv(system.file("data", "groupings.csv", package = "bngal"), col_types = cols())
+  # # import functional grouping data
+  # func.group.data <- system.file("data", "16S_families.csv", package = "bngal")
+  # func.groups <- read_csv(func.group.data, col_types = cols())
+  # func.groups.key <- read_csv(system.file("data", "groupings.csv", package = "bngal"), col_types = cols())
 
   # rename for clarity
   nodes. = node.color.data$nodes
@@ -269,12 +283,12 @@ plot_networks <- function (node.color.data, filled.by, graph.layout, out.dr,
     plot.out = list()
     for (i in subset.values) {
 
-      if (tax_level %in% c("family", "genus", "asv") & filled.by == "other") {
-        nodes.[[i]] <- nodes.[[i]] %>%
-          left_join(., func.groups, by = c("phylum", "class", "order", "family")) %>%
-          left_join(., func.groups.key, by = "grouping") %>%
-          dplyr::rename(hex.color=hex.code)
-      }
+      # if (tax_level %in% c("family", "genus", "asv") & filled.by == "other") {
+      #   nodes.[[i]] <- nodes.[[i]] %>%
+      #     left_join(., func.groups, by = c("phylum", "class", "order", "family")) %>%
+      #     left_join(., func.groups.key, by = "grouping") %>%
+      #     dplyr::rename(hex.color=hex.code)
+      # }
 
       plot.out[[i]] <- plot_nets(nodes.,
                                  edges.,
