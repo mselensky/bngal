@@ -19,6 +19,7 @@ build_taxa.barplot <- function(plotdata, tax.level, dendrogram, fill.by="phylum"
   out.dr.taxa.bp = file.path(out.dr, "taxa-barplots", fill.by)
   if (!dir.exists(out.dr.taxa.bp)) dir.create(out.dr.taxa.bp, recursive = TRUE)
 
+  legend.out = list()
   for (x in dendro_names) {
 
     dat.in = plotdata[[tax.level]][[x]] %>%
@@ -243,23 +244,31 @@ build_taxa.barplot <- function(plotdata, tax.level, dendrogram, fill.by="phylum"
 
         if (fill.by == "phylum") {
           out.plot <- taxa_barplot +
-            guides(fill=guide_legend(nrow = 2, byrow = FALSE)) +
             theme(legend.position = "none",
                   axis.text.x = element_blank(),
                   axis.title.x = element_blank(),
                   panel.grid=element_blank())
 
-          out.legend <- ggpubr::get_legend(taxa_barplot) %>%
-            ggpubr::as_ggplot()
+          taxa_barplot_legend <- taxa_barplot +
+            guides(fill=guide_legend(ncol=6))
 
-          filename = paste0(tax.level, "-", x, "-clustered-barplot-", fill.by)
-          legends.path = file.path(out.dr.taxa.bp, "legends")
+          out.legend <- ggpubr::get_legend(taxa_barplot_legend) %>%
+            ggpubr::as_ggplot() #+
+            #guides(fill=guide_legend(ncol=6))
 
-          if (!dir.exists(legends.path)) dir.create(legends.path)
-          suppressMessages(
-            ggplot2::ggsave(filename = file.path(legends.path, paste0(filename, "-legend.pdf")),
-                            plot = out.legend)
-          )
+          filename = paste0(x, "-clustered-barplot", fill.by)
+          out.dr.taxa.bp.p = file.path(out.dr, "taxa-barplots")
+          legends.path = file.path(out.dr.taxa.bp.p, "legends")
+
+          legend.out[[x]][['legend']] = out.legend
+          legend.out[[x]][['path']] = legends.path
+
+          # if (!dir.exists(legends.path)) dir.create(legends.path)
+          # suppressMessages(
+          #   ggplot2::ggsave(filename = file.path(legends.path, paste0(filename, "-legend.pdf")),
+          #                   plot = out.legend,
+          #                   width = 11, height = 8.5, units = "in")
+          # )
 
         } else {
           out.plot <- taxa_barplot +
@@ -281,7 +290,7 @@ build_taxa.barplot <- function(plotdata, tax.level, dendrogram, fill.by="phylum"
                                            heights = c(1,2),
                                            align = "v",
                                            ncol = 1, hjust = -0.1,
-                                           labels = paste0("'", x, "' communities clustered at the '", i, "' level"))
+                                           labels = paste0("'", x, "' communities clustered at the '", tax.level, "' level"))
 
       work.dir = getwd()
       setwd(out.dr.taxa.bp)
@@ -296,5 +305,19 @@ build_taxa.barplot <- function(plotdata, tax.level, dendrogram, fill.by="phylum"
     }
 
   }
+
+  # export phylum legend color key
+  if (fill.by == "phylum"){
+    out.legend = legend.out[[1]][['legend']]
+    legends.path = legend.out[[1]][['path']]
+
+    if (!dir.exists(legends.path)) dir.create(legends.path)
+    suppressMessages(
+      ggplot2::ggsave(filename = file.path(legends.path, paste0("phylum-legend.pdf")),
+                      plot = out.legend,
+                      width = 11, height = 8.5, units = "in")
+    )
+  }
+
 
 }
