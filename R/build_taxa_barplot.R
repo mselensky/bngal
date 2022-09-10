@@ -253,10 +253,11 @@ build_taxa.barplot <- function(plotdata, tax.level, dendrogram, fill.by="phylum"
             ggpubr::as_ggplot()
 
           filename = paste0(tax.level, "-", x, "-clustered-barplot-", fill.by)
+          legends.path = file.path(out.dr.taxa.bp, "legends")
 
-          if (!dir.exists("legends")) dir.create("legends")
+          if (!dir.exists(legends.path)) dir.create(legends.path)
           suppressMessages(
-            ggplot2::ggsave(filename = file.path("legends", paste0(filename, "-legend.pdf")),
+            ggplot2::ggsave(filename = file.path(legends.path, paste0(filename, "-legend.pdf")),
                             plot = out.legend)
           )
 
