@@ -273,7 +273,7 @@ build_taxa.barplot <- function(plotdata, tax.level, dendrogram, fill.by="phylum"
 
         } else {
           out.plot <- taxa_barplot +
-            guides(fill=guide_legend(nrow = 2, byrow = FALSE)) +
+            guides(fill=guide_legend(nrow = 3, byrow = FALSE)) +
             theme(legend.position = "bottom",
                   axis.text.x = element_blank(),
                   axis.title.x = element_blank(),
