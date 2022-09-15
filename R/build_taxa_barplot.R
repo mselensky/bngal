@@ -200,7 +200,8 @@ build_taxa.barplot <- function(plotdata, tax.level, dendrogram, fill.by="phylum"
                      )),
                  stat = "identity") +
         scale_fill_manual(values = group.colorz, na.value = "#000000") +
-        labs(fill = "Grouping")
+        theme(legend.title = element_blank())
+        #labs(fill = "Grouping")
     } else if (fill.by == "other") {
       taxa_barplot <- taxa_barplot +
         geom_bar(aes(hc.order, rel_abun_binned * 100,
