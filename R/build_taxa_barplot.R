@@ -308,7 +308,7 @@ build_taxa.barplot <- function(plotdata, tax.level, dendrogram, fill.by="phylum"
   }
 
   # export phylum legend color key
-  if (fill.by == "phylum"){
+  if (fill.by == "phylum" & interactive == FALSE){
     out.legend = legend.out[[1]][['legend']]
     legends.path = legend.out[[1]][['path']]
 

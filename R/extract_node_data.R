@@ -8,6 +8,8 @@
 #' @examples
 extract_node_data <- function(network.data) {
 
+  tax.levels <- c("phylum", "class", "order", "family", "genus", "asv")
+
   if (!is.null(nrow(network.data$nodes$asv))) {
     # list nodes and edges each under "all" for downstream syntax
     network.data.list=list()
@@ -21,7 +23,7 @@ extract_node_data <- function(network.data) {
   rm(network.data)
 
   # a horrid double for loop to add "tax_level" to each node dataframe for each subnetwork
-  tax.levels <- c("phylum", "class", "order", "family", "genus", "asv")
+
   network.nodes = list()
   for (i in tax.levels) {
     for (x in names(network.data.list$nodes[[i]])) {
