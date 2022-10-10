@@ -102,7 +102,24 @@ plot_networks <- function (node.color.data, filled.by, graph.layout, out.dr,
     edge_color  = E(igraph.obj)$color
 
     set.seed(1)
-    layout = layout_nicely(igraph.obj)
+
+    if (graph.layout == "layout_in_circle") {
+      layout = layout_in_circle(igraph.obj)
+    } else if (graph.layout == "layout_nicely") {
+      layout = layout_nicely(igraph.obj)
+    } else if (graph.layout == "layout_with_fr") {
+      layout = layout_with_fr(igraph.obj)
+    } else if (graph.layout == "layout_with_graphopt") {
+      layout = layout_with_graphopt(igraph.obj)
+    } else if (graph.layout == "layout_with_gem") {
+      layout = layout_with_gem(igraph.obj)
+    } else if (graph.layout == "layout_with_kk") {
+      layout = layout_with_kk(igraph.obj)
+    } else if (graph.layout == "layout_with_dh") {
+      layout = layout_with_dh(igraph.obj)
+    } else {
+      layout = layout_nicely(igraph.obj)
+    }
 
     if (filled.by == "other") {
       pdf(file = file.path(pdf_path, paste0(subset.values, "-", tax_level, "-by-grouping.pdf")))
