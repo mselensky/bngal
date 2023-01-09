@@ -92,12 +92,12 @@ plot_networks <- function (node.color.data, filled.by, graph.layout, out.dr,
     edge_widths_cut = cut(edge_widths, n, dig.lab = min(edge_widths))
 
 
-    # scale node diameters
-    core_scale = abs(V(igraph.obj)$core)
-    norm_core = 5*(0.35+(core_scale-min(core_scale))/(max(core_scale)-min(core_scale)))
-    V(igraph.obj)$norm_core <- norm_core
+    # scale node diameters (note: .$value = node degree)
+    node_scale = abs(V(igraph.obj)$value)
+    norm_node = 5*(0.35+(node_scale-min(node_scale))/(max(node_scale)-min(node_scale)))
+    V(igraph.obj)$norm_node <- norm_node
 
-    node_size_cut = cut(core_scale, n, dig.lab = min(core_scale))
+    node_size_cut = cut(node_scale, n, dig.lab = min(node_scale))
     vertex_shapes = V(igraph.obj)$shape
     edge_color  = E(igraph.obj)$color
 
@@ -128,7 +128,7 @@ plot_networks <- function (node.color.data, filled.by, graph.layout, out.dr,
     }
     plot(igraph.obj,
          vertex.label = NA,
-         vertex.size = norm_core,
+         vertex.size = norm_node,
          vertex.shapes = vertex_shapes,
          edge.color = edge_color,
          edge.width	= norm_widths,
@@ -149,15 +149,15 @@ plot_networks <- function (node.color.data, filled.by, graph.layout, out.dr,
            y.intersp = 0.7
     )
     legend("right",
-           legend = c(min(core_scale),
-                      (max(core_scale)-min(core_scale))/2,
-                      max(core_scale)),
-           title = "Coreness",
+           legend = c(min(node_scale),
+                      (max(node_scale)-min(node_scale))/2,
+                      max(node_scale)),
+           title = "Degree",
            pch = 21,
            bty = "n",
-           pt.cex = c(min(norm_core),
-                      (max(norm_core)-min(norm_core))/2,
-                      max(norm_core))/2.5,
+           pt.cex = c(min(norm_node),
+                      (max(norm_node)-min(norm_node))/2,
+                      max(norm_node))/2.5,
            inset = -0.05,
            y.intersp = 0.7)
     if (filled.by == "edge_btwn_cluster") {
@@ -176,7 +176,7 @@ plot_networks <- function (node.color.data, filled.by, graph.layout, out.dr,
              legend = ebc.leg.cols$edge_btwn_cluster,
              col = ebc.leg.cols$color,
              pch = 19,
-             pt.cex = (max(norm_core)-min(norm_core))/2,
+             pt.cex = (max(norm_node)-min(norm_node))/2,
              y.intersp = 0.9,
              x.intersp = 0.6,
              #ncol = 2
@@ -199,7 +199,7 @@ plot_networks <- function (node.color.data, filled.by, graph.layout, out.dr,
              legend = plot.grouping.colors$grouping_ID,
              col = plot.grouping.colors$color,
              pch = 19,
-             pt.cex = (max(norm_core)-min(norm_core))/2,
+             pt.cex = (max(norm_node)-min(norm_node))/2,
              y.intersp = 0.9,
              x.intersp = 0.6,
              #ncol = 2
@@ -214,11 +214,12 @@ plot_networks <- function (node.color.data, filled.by, graph.layout, out.dr,
     # visNetwork inverses y axis layout for some reason...
     layout2 <- as.matrix(data.frame(layout[,1], -1*layout[,2]))
     V(igraph.obj)$shape=V(igraph.obj)$shape_visN
-    E(igraph.obj)$title = paste0(correlation, ": ", round(edge_widths_orig, 2), " ||| ",
+    E(igraph.obj)$title = paste0(correlation, ": ", round(edge_widths_orig, 2), "<br>",
                                  "p-value: ", round(E(igraph.obj)$p_value, 3))
-    V(igraph.obj)$title = paste0("Phylum: ", V(igraph.obj)$phylum, " ||| ",
-                                 "EBC: ", V(igraph.obj)$edge_btwn_cluster, " ||| ",
-                                 "Coreness: ", V(igraph.obj)$core)
+    V(igraph.obj)$title = paste0("Phylum: ", V(igraph.obj)$phylum, "<br>",
+                                 "EBC: ", V(igraph.obj)$edge_btwn_cluster, "<br>",
+                                 "Coreness: ", V(igraph.obj)$core, "<br>",
+                                 "Degree: ", V(igraph.obj)$value)
 
     visnet.nodes <- igraph::as_data_frame(igraph.obj, what = "vertices")
     visnet.nodes$id = visnet.nodes$name
