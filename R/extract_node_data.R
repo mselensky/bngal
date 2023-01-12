@@ -36,7 +36,7 @@ extract_node_data <- function(network.data) {
     network.nodes[[i]] <- Reduce(bind_rows, network.data.list$nodes[[i]])
 
     network.nodes[[i]] <- network.nodes[[i]] %>%
-      distinct(label, edge_btwn_cluster, .keep_all = T) %>%
+      distinct(label, edge_btwn_cluster, sub_comm, .keep_all = T) %>%
       dplyr::rename(degree=value,
                     taxon_=label)
 
