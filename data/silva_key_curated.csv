@@ -1,114 +1,115 @@
-Silva_phylum,phylum_color,superphylum_color,phylum_order,superphylum,subdomain,culture_status
-__,#000000,#000000,210,unresolved,unresolved,uncultured
-10bav-F6,#000000,#000000,208,unresolved,unresolved Bacteria,uncultured
-Abditibacteriota,#C43F27,#C43F27,8,unresolved Terrabacteria,Terrabacteria,cultured
-Acetothermia,#7B644C,#FAA951,21,DST,Terrabacteria,cultured
-Acidobacteriota,#B7D6D8,#46BFAE,54,PANNAM,Gracilicutes,cultured
-Actinobacteriota,#EE3224,#C43F27,5,unresolved Terrabacteria,Terrabacteria,cultured
-Aenigmarchaeota,#826393,#8E5AA5,100,DPANN,Archaea,uncultured
-Aerophobota,#361510,#C43F27,3,unresolved Terrabacteria,Terrabacteria,uncultured
-Alphaproteobacteria,#7F8185,#46BFAE,62,PANNAM,Gracilicutes,cultured
-Altiarchaeota,#BE7FB6,#BE7FB6,96,Altiarchaeota,Archaea,cultured
-AncK6,#000000,#000000,207,unresolved,unresolved Bacteria,uncultured
-Apal-E12,#000000,#000000,206,unresolved,unresolved Bacteria,uncultured
-Aquificota,#90B1BF,#46BFAE,48,PANNAM,Gracilicutes,cultured
-Archaea,#000000,#000000,212,unresolved,unresolved Archaea,uncultured
-Armatimonadota,#571F17,#C43F27,9,unresolved Terrabacteria,Terrabacteria,cultured
-Asgardarchaeota,#4A2E8B,#4A2E8B,116,Asgard,Archaea,uncultured
-Bacteria,#000000,#000000,211,unresolved,unresolved Bacteria,uncultured
-Bacteroidota,#5364AE,#3B5BA9,90,FCB,Gracilicutes,cultured
-Bdellovibrionota,#363738,#46BFAE,64,PANNAM,Gracilicutes,co-culture?
-Betaproteobacteria,#7F8185,#46BFAE,62,PANNAM,Gracilicutes,cultured
-BHI80-139,#000000,#000000,205,unresolved,unresolved Bacteria,uncultured
-Caldatribacteriota,#782617,#C43F27,4,unresolved Terrabacteria,Terrabacteria,cultured
-Caldisericota,#FBB264,#FAA951,26,DST,Terrabacteria,cultured
-Calditrichota,#6175B9,#3B5BA9,85,FCB,Gracilicutes,cultured
-Calescamantes,#3C7E73,#46BFAE,49,PANNAM,Gracilicutes,uncultured
-Campilobacterota,#51AD92,#46BFAE,46,PANNAM,Gracilicutes,cultured
-Chloroflexi,#E8713A,#E8713A,14,CCD,Terrabacteria,cultured
-Chrysiogenetota,#56989C,#46BFAE,56,PANNAM,Gracilicutes,cultured
-CK-2C2-2,#000000,#000000,204,unresolved,unresolved Bacteria,uncultured
-Cloacimonadota,#7B8BC5,#3B5BA9,71,FCB,Gracilicutes,uncultured
-Coprothermobacterota,#7A461D,#FAA951,24,DST,Terrabacteria,cultured
-Crenarchaeota,#706384,#6C53A2,113,TACK,Archaea,cultured
-Cyanobacteria,#E8B139,#E8B13A,12,CMS,Terrabacteria,cultured
-Dadabacteria,#B1B3B8,#46BFAE,63,PANNAM,Gracilicutes,uncultured
-Deferribacterota,#508C8F,#46BFAE,57,PANNAM,Gracilicutes,cultured
-Deferrisomatota,#BEC5D0,#46BFAE,65,PANNAM,Gracilicutes,co-culture?
-Deinococcota,#FAA951,#FAA951,23,DST,Terrabacteria,cultured
-Deltaproteobacteria,#BEC5D0,#46BFAE,65,PANNAM,Gracilicutes,co-culture?
-Dependentiae,#46BC96,#46BFAE,47,PANNAM,Gracilicutes,co-culture?
-Desantisbacteria,#E6C939,#E6C939,31,basal Gracilicutes,Gracilicutes,cultured
-Desulfobacterota,#BEC5D0,#46BFAE,65,PANNAM,Gracilicutes,co-culture?
-Dictyoglomota,#B93A26,#C43F27,2,unresolved Terrabacteria,Terrabacteria,cultured
-DTB120,#000000,#000000,203,unresolved,unresolved Bacteria,uncultured
-Edwardsbacteria,#55A3C2,#3B5BA9,75,FCB,Gracilicutes,uncultured
-Elusimicrobiota,#FEEB8E,#E6C939,32,basal Gracilicutes,Gracilicutes,cultured
-Entotheonellaeota,#000000,#000000,202,unresolved,unresolved Bacteria,uncultured
-Euryarchaeota,#662F90,#662F90,95,Methanomada,Archaea,cultured
-FCPU426,#000000,#000000,201,unresolved,unresolved Bacteria,uncultured
-Fermentibacterota,#B7E4F7,#3B5BA9,73,FCB,Gracilicutes,uncultured
-Fervidibacteria,#000000,#000000,200,unresolved,unresolved Bacteria,uncultured
-Fibrobacterota,#6198D0,#3B5BA9,81,FCB,Gracilicutes,co-culture?
-Firestonebacteria,#5098B5,#3B5BA9,66,FCB,Gracilicutes,uncultured
-Firmicutes,#ED8B7E,#C43F27,7,unresolved Terrabacteria,Terrabacteria,cultured
-Fusobacteriota,#C0A932,#E6C939,28,basal Gracilicutes,Gracilicutes,cultured
-FW113,#000000,#000000,199,unresolved,unresolved Bacteria,uncultured
-GAL15,#000000,#000000,198,unresolved,unresolved Bacteria,uncultured
-Gammaproteobacteria,#7F8185,#46BFAE,62,PANNAM,Gracilicutes,cultured
-Gemmatimonadota,#6EA9DC,#3B5BA9,76,FCB,Gracilicutes,uncultured
-GN01,#000000,#000000,197,unresolved,unresolved Bacteria,uncultured
-Hadarchaeota,#CE56A0,#CE56A0,154,Stygia,Archaea,uncultured
-Halanaerobiaeota,#ED8B7E,#C43F27,7,unresolved Terrabacteria,Terrabacteria,cultured
-Halobacterota,#993467,#F0598C,179,Methanotecta,Archaea,cultured
-Hydrogenedentes,#1FAD4B,#36B55A,38,PVC,Gracilicutes,uncultured
-Hydrothermae,#C66FF6,#3B5BA9,70,FCB,Gracilicutes,uncultured
-Hydrothermarchaeota,#B9529F,#B9529F,153,Hydrothermarchaeota,Archaea,uncultured
-Iainarchaeota,#C7B2D6,#8E5AA5,98,DPANN,Archaea,uncultured
-Latescibacterota,#3D628C,#3B5BA9,79,FCB,Gracilicutes,uncultured
-LCP-89,#000000,#000000,196,unresolved,unresolved Bacteria,uncultured
-Margulisbacteria,#CE9C31,#E8B13A,10,CMS,Terrabacteria,uncultured
-Marinimicrobia_(SAR406_clade),#4F7EB3,#3B5BA9,82,FCB,Gracilicutes,uncultured
-MAT-CR-M4-B07,#000000,#000000,195,unresolved,unresolved Bacteria,uncultured
-MBNT15,#000000,#000000,194,unresolved,unresolved Bacteria,uncultured
-Methylomirabilota,#46BFAE,#46BFAE,52,PANNAM,Gracilicutes,cultured
-Micrarchaeota,#9F75B4,#8E5AA5,97,DPANN,Archaea,uncultured
-Modulibacteria,#000000,#000000,193,unresolved,unresolved Bacteria,uncultured
-Myxococcota,#BEC5D0,#46BFAE,65,PANNAM,Gracilicutes,co-culture?
-Nanoarchaeota,#705F7B,#8E5AA5,103,DPANN,Archaea,co-culture?
-Nanohaloarchaeota,#8E5AA5,#8E5AA5,99,DPANN,Archaea,co-culture?
-NB1-j,#000000,#000000,192,unresolved,unresolved Bacteria,uncultured
-Nitrospinota,#2C4D4F,#46BFAE,59,PANNAM,Gracilicutes,uncultured
-Nitrospirota,#71CBCF,#46BFAE,60,PANNAM,Gracilicutes,uncultured
-NKB15,#000000,#000000,191,unresolved,unresolved Bacteria,uncultured
-Omnitrophota,#71C05A,#36B55A,39,PVC,Gracilicutes,uncultured
-Patescibacteria,#8B2F22,#E8713A,17,CCD,Terrabacteria,co-culture?
-PAUC34f,#000000,#000000,190,unresolved,unresolved Bacteria,uncultured
-Planctomycetota,#8AC97C,#36B55A,36,PVC,Gracilicutes,uncultured
-Poribacteria,#FDDE44,#E6C939,34,basal Gracilicutes,Gracilicutes,cultured
-Proteobacteria,#7F8185,#46BFAE,62,PANNAM,Gracilicutes,cultured
-RCP2-54,#000000,#000000,189,unresolved,unresolved Bacteria,uncultured
-Rs-K70_termite_group,#000000,#000000,188,unresolved,unresolved Bacteria,uncultured
-SAR324_clade(Marine_group_B),#BEC5D0,#46BFAE,65,PANNAM,Gracilicutes,co-culture?
-Schekmanbacteria,#1b8274,#46BFAE,58,PANNAM,Gracilicutes,uncultured
-Spirochaetota,#80712D,#E6C939,29,basal Gracilicutes,Gracilicutes,cultured
-Sumerlaeota,#296733,#36B55A,35,PVC,Gracilicutes,uncultured
-Sva0485,#000000,#000000,187,unresolved,unresolved Bacteria,uncultured
-Synergistota,#7A5326,#FAA951,19,DST,Terrabacteria,cultured
-TA06,#000000,#000000,186,unresolved,unresolved Bacteria,uncultured
-Thaumarchaeota,#706384,#6C53A2,113,TACK,Archaea,cultured
-Thermodesulfobiota,#1D3330,#46BFAE,50,PANNAM,Gracilicutes,cultured
-Thermoplasmatota,#DFB1D2,#BF499A,164,Diaforarchaea,Archaea,cultured
-Thermosulfidibacterota,#90B1BF,#46BFAE,48,PANNAM,Gracilicutes,cultured
-Thermotogota,#FBCD9B,#FAA951,20,DST,Terrabacteria,cultured
-TX1A-33,#000000,#000000,185,unresolved,unresolved Bacteria,uncultured
-uncultured,#000000,#000000,184,unresolved,unresolved Bacteria,uncultured
-unresolved,#000000,#000000,209,unresolved,unresolved,uncultured
-Verrucomicrobiota,#36B55A,#36B55A,40,PVC,Gracilicutes,uncultured
-WOR-1,#CE9C31,#E8B13A,10,CMS,Terrabacteria,uncultured
-WPS-2,#000000,#000000,183,unresolved,unresolved Bacteria,uncultured
-WS1,#000000,#000000,182,unresolved,unresolved Bacteria,uncultured
-WS2,#000000,#000000,181,unresolved,unresolved Bacteria,uncultured
-WS4,#000000,#000000,180,unresolved,unresolved Bacteria,uncultured
-Zetaproteobacteria,#7F8185,#46BFAE,62,PANNAM,Gracilicutes,cultured
-Zixibacteria,#23374F,#3B5BA9,80,FCB,Gracilicutes,uncultured
+Silva_phylum,phylum_color,superphylum_color,phylum_order,ToL_order,superphylum,subdomain,culture_status
+Dictyoglomota,#B93A26,#C43F27,1,2,unresolved Terrabacteria,Terrabacteria,cultured
+Aerophobota,#361510,#C43F27,2,3,unresolved Terrabacteria,Terrabacteria,uncultured
+Caldatribacteriota,#782617,#C43F27,3,4,unresolved Terrabacteria,Terrabacteria,cultured
+Actinobacteriota,#EE3224,#C43F27,4,5,unresolved Terrabacteria,Terrabacteria,cultured
+Firmicutes,#942618,#C43F27,5,7,unresolved Terrabacteria,Terrabacteria,cultured
+Halanaerobiaeota,#ED8B7E,#C43F27,6,7,unresolved Terrabacteria,Terrabacteria,cultured
+Abditibacteriota,#C43F27,#C43F27,7,8,unresolved Terrabacteria,Terrabacteria,cultured
+Armatimonadota,#571F17,#C43F27,8,9,unresolved Terrabacteria,Terrabacteria,cultured
+Margulisbacteria,#CE9C31,#E8B13A,9,10,CMS,Terrabacteria,uncultured
+WOR-1,#916d1f,#E8B13A,10,10,CMS,Terrabacteria,uncultured
+Cyanobacteria,#E8B139,#E8B13A,11,12,CMS,Terrabacteria,cultured
+Chloroflexi,#E8713A,#E8713A,12,14,CCD,Terrabacteria,cultured
+Patescibacteria,#8B2F22,#E8713A,13,17,CCD,Terrabacteria,co-culture?
+Synergistota,#7A5326,#FAA951,14,19,DST,Terrabacteria,cultured
+Thermotogota,#FBCD9B,#FAA951,15,20,DST,Terrabacteria,cultured
+Acetothermia,#7B644C,#FAA951,16,21,DST,Terrabacteria,cultured
+Deinococcota,#FAA951,#FAA951,17,23,DST,Terrabacteria,cultured
+Coprothermobacterota,#7A461D,#FAA951,18,24,DST,Terrabacteria,cultured
+Caldisericota,#FBB264,#FAA951,19,26,DST,Terrabacteria,cultured
+Fusobacteriota,#C0A932,#E6C939,20,28,basal Gracilicutes,Gracilicutes,cultured
+Spirochaetota,#80712D,#E6C939,21,29,basal Gracilicutes,Gracilicutes,cultured
+Desantisbacteria,#E6C939,#E6C939,22,31,basal Gracilicutes,Gracilicutes,cultured
+Elusimicrobiota,#FEEB8E,#E6C939,23,32,basal Gracilicutes,Gracilicutes,cultured
+Poribacteria,#FDDE44,#E6C939,24,34,basal Gracilicutes,Gracilicutes,cultured
+Sumerlaeota,#296733,#36B55A,25,35,PVC,Gracilicutes,uncultured
+Planctomycetota,#8AC97C,#36B55A,26,36,PVC,Gracilicutes,uncultured
+Hydrogenedentes,#1FAD4B,#36B55A,27,38,PVC,Gracilicutes,uncultured
+Omnitrophota,#71C05A,#36B55A,28,39,PVC,Gracilicutes,uncultured
+Verrucomicrobiota,#36B55A,#36B55A,29,40,PVC,Gracilicutes,uncultured
+Campilobacterota,#51AD92,#46BFAE,30,46,PANNAM,Gracilicutes,cultured
+Dependentiae,#46BC96,#46BFAE,31,47,PANNAM,Gracilicutes,co-culture?
+Aquificota,#86a2ad,#46BFAE,32,48,PANNAM,Gracilicutes,cultured
+Thermosulfidibacterota,#90B1BF,#46BFAE,33,48,PANNAM,Gracilicutes,cultured
+Calescamantes,#3C7E73,#46BFAE,34,49,PANNAM,Gracilicutes,uncultured
+Thermodesulfobiota,#1D3330,#46BFAE,35,50,PANNAM,Gracilicutes,cultured
+Methylomirabilota,#46BFAE,#46BFAE,36,52,PANNAM,Gracilicutes,cultured
+Acidobacteriota,#B7D6D8,#46BFAE,37,54,PANNAM,Gracilicutes,cultured
+Chrysiogenetota,#56989C,#46BFAE,38,56,PANNAM,Gracilicutes,cultured
+Deferribacterota,#508C8F,#46BFAE,39,57,PANNAM,Gracilicutes,cultured
+Schekmanbacteria,#1b8274,#46BFAE,40,58,PANNAM,Gracilicutes,uncultured
+Nitrospinota,#2C4D4F,#46BFAE,41,59,PANNAM,Gracilicutes,uncultured
+Nitrospirota,#71CBCF,#46BFAE,42,60,PANNAM,Gracilicutes,uncultured
+Alphaproteobacteria,#aeb1b8,#46BFAE,43,62,PANNAM,Gracilicutes,cultured
+Betaproteobacteria,#81848a,#46BFAE,44,62,PANNAM,Gracilicutes,cultured
+Gammaproteobacteria,#77787a,#46BFAE,45,62,PANNAM,Gracilicutes,cultured
+Proteobacteria,#7F8185,#46BFAE,46,62,PANNAM,Gracilicutes,cultured
+Zetaproteobacteria,#64676e,#46BFAE,47,62,PANNAM,Gracilicutes,cultured
+Dadabacteria,#B1B3B8,#46BFAE,48,63,PANNAM,Gracilicutes,uncultured
+Bdellovibrionota,#363738,#46BFAE,49,64,PANNAM,Gracilicutes,co-culture?
+Deferrisomatota,#3b6e60,#46BFAE,50,65,PANNAM,Gracilicutes,co-culture?
+Deltaproteobacteria,#BEC5D0,#46BFAE,51,65,PANNAM,Gracilicutes,co-culture?
+Desulfobacterota,#8fb5ab,#46BFAE,52,65,PANNAM,Gracilicutes,co-culture?
+Myxococcota,#26786c,#46BFAE,53,65,PANNAM,Gracilicutes,co-culture?
+SAR324_clade(Marine_group_B),#81f0e0,#46BFAE,54,65,PANNAM,Gracilicutes,co-culture?
+Firestonebacteria,#5098B5,#3B5BA9,55,66,FCB,Gracilicutes,uncultured
+Hydrothermae,#C66FF6,#3B5BA9,56,70,FCB,Gracilicutes,uncultured
+Cloacimonadota,#7B8BC5,#3B5BA9,57,71,FCB,Gracilicutes,uncultured
+Fermentibacterota,#B7E4F7,#3B5BA9,58,73,FCB,Gracilicutes,uncultured
+Edwardsbacteria,#55A3C2,#3B5BA9,59,75,FCB,Gracilicutes,uncultured
+Gemmatimonadota,#6EA9DC,#3B5BA9,60,76,FCB,Gracilicutes,uncultured
+Latescibacterota,#3D628C,#3B5BA9,61,79,FCB,Gracilicutes,uncultured
+Zixibacteria,#23374F,#3B5BA9,62,80,FCB,Gracilicutes,uncultured
+Fibrobacterota,#6198D0,#3B5BA9,63,81,FCB,Gracilicutes,co-culture?
+Marinimicrobia_(SAR406_clade),#4F7EB3,#3B5BA9,64,82,FCB,Gracilicutes,uncultured
+Calditrichota,#6175B9,#3B5BA9,65,85,FCB,Gracilicutes,cultured
+Bacteroidota,#5364AE,#3B5BA9,66,90,FCB,Gracilicutes,cultured
+Euryarchaeota,#662F90,#662F90,67,95,Methanomada,Archaea,cultured
+Altiarchaeota,#BE7FB6,#BE7FB6,68,96,Altiarchaeota,Archaea,cultured
+Micrarchaeota,#9F75B4,#8E5AA5,69,97,DPANN,Archaea,uncultured
+Iainarchaeota,#C7B2D6,#8E5AA5,70,98,DPANN,Archaea,uncultured
+Nanohaloarchaeota,#8E5AA5,#8E5AA5,71,99,DPANN,Archaea,co-culture?
+Aenigmarchaeota,#826393,#8E5AA5,72,100,DPANN,Archaea,uncultured
+Nanoarchaeota,#752f94,#8E5AA5,73,103,DPANN,Archaea,co-culture?
+Crenarchaeota,#b6a1d6,#6C53A2,74,113,TACK,Archaea,cultured
+Thaumarchaeota,#706384,#6C53A2,75,113,TACK,Archaea,cultured
+Asgardarchaeota,#4A2E8B,#4A2E8B,76,116,Asgard,Archaea,uncultured
+Hydrothermarchaeota,#B9529F,#B9529F,77,153,Hydrothermarchaeota,Archaea,uncultured
+Hadarchaeota,#CE56A0,#CE56A0,78,154,Stygia,Archaea,uncultured
+Thermoplasmatota,#DFB1D2,#BF499A,79,164,Diaforarchaea,Archaea,cultured
+Halobacterota,#993467,#F0598C,80,179,Methanotecta,Archaea,cultured
+WS4,#000000,#000000,81,180,unresolved,unresolved Bacteria,uncultured
+WS2,#000000,#000000,82,181,unresolved,unresolved Bacteria,uncultured
+WS1,#000000,#000000,83,182,unresolved,unresolved Bacteria,uncultured
+WPS-2,#000000,#000000,84,183,unresolved,unresolved Bacteria,uncultured
+uncultured,#000000,#000000,85,184,unresolved,unresolved Bacteria,uncultured
+TX1A-33,#000000,#000000,86,185,unresolved,unresolved Bacteria,uncultured
+TA06,#000000,#000000,87,186,unresolved,unresolved Bacteria,uncultured
+Sva0485,#000000,#000000,88,187,unresolved,unresolved Bacteria,uncultured
+Rs-K70_termite_group,#000000,#000000,89,188,unresolved,unresolved Bacteria,uncultured
+RCP2-54,#000000,#000000,90,189,unresolved,unresolved Bacteria,uncultured
+PAUC34f,#000000,#000000,91,190,unresolved,unresolved Bacteria,uncultured
+NKB15,#000000,#000000,92,191,unresolved,unresolved Bacteria,uncultured
+NB1-j,#000000,#000000,93,192,unresolved,unresolved Bacteria,uncultured
+Modulibacteria,#000000,#000000,94,193,unresolved,unresolved Bacteria,uncultured
+MBNT15,#000000,#000000,95,194,unresolved,unresolved Bacteria,uncultured
+MAT-CR-M4-B07,#000000,#000000,96,195,unresolved,unresolved Bacteria,uncultured
+LCP-89,#000000,#000000,97,196,unresolved,unresolved Bacteria,uncultured
+GN01,#000000,#000000,98,197,unresolved,unresolved Bacteria,uncultured
+GAL15,#000000,#000000,99,198,unresolved,unresolved Bacteria,uncultured
+FW113,#000000,#000000,100,199,unresolved,unresolved Bacteria,uncultured
+Fervidibacteria,#000000,#000000,101,200,unresolved,unresolved Bacteria,uncultured
+FCPU426,#000000,#000000,102,201,unresolved,unresolved Bacteria,uncultured
+Entotheonellaeota,#000000,#000000,103,202,unresolved,unresolved Bacteria,uncultured
+DTB120,#000000,#000000,104,203,unresolved,unresolved Bacteria,uncultured
+CK-2C2-2,#000000,#000000,105,204,unresolved,unresolved Bacteria,uncultured
+BHI80-139,#000000,#000000,106,205,unresolved,unresolved Bacteria,uncultured
+Apal-E12,#000000,#000000,107,206,unresolved,unresolved Bacteria,uncultured
+AncK6,#000000,#000000,108,207,unresolved,unresolved Bacteria,uncultured
+10bav-F6,#000000,#000000,109,208,unresolved,unresolved Bacteria,uncultured
+unresolved,#000000,#000000,110,209,unresolved,unresolved,uncultured
+__,#000000,#000000,111,210,unresolved,unresolved,uncultured
+Bacteria,#000000,#000000,112,211,unresolved,unresolved Bacteria,uncultured
+Archaea,#000000,#000000,113,212,unresolved,unresolved Archaea,uncultured
+Unassigned,#000000,#000000,114,213,unresolved,unresolved,uncultured

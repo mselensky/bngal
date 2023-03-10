@@ -48,18 +48,19 @@ build_taxa.barplot <- function(plotdata, tax.level, dendrogram, fill.by="phylum"
       group_by(edge_btwn_cluster) %>%
       dplyr::mutate(ebc_median_alpha = median(value)) %>%
       arrange(ebc_median_alpha)
-    # alpha.div.data %>%
-    #   ggplot(aes(value, edge_btwn_cluster)) +
-    #   geom_boxplot() +
-    #   xlab("Shannon diversity")
-
 
     if (fill.by == "phylum") {
+
       taxa_barplot.d <- dat.in %>%
         filter(`sample-id` %in% communities) %>%
         left_join(., select(ebc_arranged, `sample-id`, edge_btwn_cluster, bar_order), by = c("sample-id", "edge_btwn_cluster")) %>%
-        group_by('sample-id') %>%
-        dplyr::arrange(phylum, .by_group = TRUE)
+        group_by('sample-id') #%>%
+        #dplyr::arrange(phylum, phylum_order)
+
+      # order phyla by position in the ToL (tree of life)!
+      # (already ordered in the sysdata file)
+      taxa_barplot.d$phylum <- factor(taxa_barplot.d$phylum,
+                                      levels = bngal:::phylum_colors_tol$Silva_phylum)
 
     } else if (fill.by == "ebc") {
 
