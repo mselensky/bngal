@@ -153,7 +153,7 @@ build_taxa.barplot <- function(plotdata, tax.level, dendrogram, fill.by="phylum"
 
       phylum.colors = bngal:::phylum_colors_tol %>%
         filter(Silva_phylum != "env_var") %>%
-        pull(hex.color, Silva_phylum)
+        pull(phylum_color, Silva_phylum)
 
       taxa_barplot <- taxa_barplot +
         geom_bar(aes(hc.order, rel_abun_binned * 100,
