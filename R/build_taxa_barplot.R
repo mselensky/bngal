@@ -151,7 +151,7 @@ build_taxa.barplot <- function(plotdata, tax.level, dendrogram, fill.by="phylum"
 
     if (fill.by == "phylum") {
 
-      phylum.colors = bngal:::phylum_colors %>%
+      phylum.colors = bngal:::phylum_colors_tol %>%
         filter(phylum != "env_var") %>%
         pull(hex.color, phylum)
 

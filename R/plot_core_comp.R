@@ -57,7 +57,7 @@ plot_core_comp <- function(ebc.nodes.abun, tax.level, metadata, fill.by) {
       theme_bw() +
       theme(legend.position = "none",
             axis.text.y = element_blank(), axis.title.y = element_blank()) +
-      scale_fill_manual(values = pull(bngal:::phylum_colors, hex.color, phylum)) +
+      scale_fill_manual(values = pull(bngal:::phylum_colors_tol, phylum_color, Silva_phylum)) +
       scale_shape_manual(values = c("env_var" = 24, "taxon" = 21)) +
       xlab("Coreness centrality") + ylab("Network cluster")
 
