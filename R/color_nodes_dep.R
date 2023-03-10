@@ -1,7 +1,7 @@
 #' Color network nodes by edge between cluster ID and phylum
 #'
 #' This function colors network nodes by phylum and by edge between cluster
-#' using the defaul `bngal` color schemes. A custom list of phylum colors can
+#' using the default `bngal` color schemes. A custom list of phylum colors can
 #' optionally be provided (see `phylum.colors` option).
 #'
 #' @param binned.tax Output from [`bngal::bin_taxonomy()`]
@@ -11,25 +11,34 @@
 #' provided, but if a custom color scheme is desired, columns must be the
 #' following:
 #' * `phylum`: name of phylum in Silva database
-#' * `phylum_color`: color hexcode, including `#`
-#' * `phylum_order`: desired order for downstream plots
+#' * `hex.color`: color hexcode, including `#`
+#' * `order`: desired order for downstream plots
 #'
 #' @return
 #' @export
 #'
 #' @examples
-color_nodes <- function(binned.tax, clusters.to.color, phylum.colors) {
+color_nodes_dep <- function(binned.tax, clusters.to.color, phylum.colors) {
 
   if (missing(phylum.colors)) {
     # R/sysdata.rda contains default color scheme for phyla
-    phylum.colors = bngal:::phylum_colors_tol
+    phylum.colors = bngal:::phylum_colors %>%
+      dplyr::rename(phylum_order = order)
   } else {
-    phylum.colors <- phylum.colors
+    phylum.colors <- phylum.colors %>%
+      dplyr::rename(phylum_order = order)
   }
 
-  # number of available cores
-  NCORES <- bngal::check_cores()
-
+  # this is formatted for multicore processing on a SLURM-directed HPC system,
+  # but any *nix-like machine can multithread here as well. otherwise
+  # this will run on a single core.
+  if (Sys.getenv("SLURM_NTASKS") > 1) {
+    NCORES = Sys.getenv("SLURM_NTASKS")
+  } else if (parallel::detectCores() > 2) {
+    NCORES = parallel::detectCores()-1
+  } else {
+    NCORES = 1
+  }
 
   # define subfunction for multicore support
   color.nodes <- function(cluster.nodes, binned.tax) {
@@ -94,8 +103,8 @@ color_nodes <- function(binned.tax, clusters.to.color, phylum.colors) {
       dplyr::rename(edge_btwn_cluster_color = hex.code) %>%
       dplyr::mutate(edge_btwn_cluster_color = if_else(is.na(edge_btwn_cluster_color), # color all other taxa nodes black
                                                       "#000000", edge_btwn_cluster_color)) %>%
-                                                        left_join(., phylum.colors, by = c("phylum" = "Silva_phylum")) %>%
-      distinct()
+                                                        left_join(., phylum.colors, by = "phylum") %>%
+      dplyr::rename(phylum_color = hex.color)
 
   }
 

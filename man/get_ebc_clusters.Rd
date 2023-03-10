@@ -15,9 +15,6 @@ get_ebc_clusters(prepro.data, ebc.member.ids, igraph.obj, core.ness = "all")
 
 \item{core.ness}{See \code{mode} argument from \code{\link[igraph:coreness]{igraph::coreness()}}. Default = \code{"all"}}
 }
-\value{
-
-}
 \description{
 Return taxonomic compositions of each edge between cluster
 }

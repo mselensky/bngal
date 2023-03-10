@@ -26,9 +26,6 @@ prepare_net_features(
 
 \item{sign}{Direction(s) of pairwise relationship to include in network. Values from \code{"positive"}, \code{"negative"}, or \code{"all"} accepted.}
 }
-\value{
-
-}
 \description{
 This function preprocesses edge and node data, combining both outputs into a list object to be used in
 downstream functions, such as \code{\link[=get_igraph]{get_igraph()}}.

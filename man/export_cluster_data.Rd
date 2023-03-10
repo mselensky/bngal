@@ -17,9 +17,6 @@ export_cluster_data(ebc.comp.data, quantile.cutoff)
 \item 4: 75-100\%
 }}
 }
-\value{
-
-}
 \description{
 This function returns a list of nodes (i.e., taxa) at each level of
 taxonomic classification, split by their statistical distributions into

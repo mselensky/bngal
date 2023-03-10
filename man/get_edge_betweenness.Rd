@@ -9,9 +9,6 @@ get_edge_betweenness(igraph.list)
 \arguments{
 \item{igraph.list}{Output from \code{\link[=get_igraph]{get_igraph()}}}
 }
-\value{
-
-}
 \description{
 This is a wrapper around \code{\link[igraph:cluster_edge_betweenness]{igraph::cluster_edge_betweenness()}}. This can
 be a memory- and time-intensive operation, especially for lower taxonomic

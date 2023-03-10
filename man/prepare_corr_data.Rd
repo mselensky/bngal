@@ -15,9 +15,6 @@ prepare_corr_data(prepared.data, obs.cutoff, transformation, out.dr, cores = 1)
 
 \item{out.dr}{Required. Output directory for pairwise summary data.}
 }
-\value{
-
-}
 \description{
 This function filters input data and returns a normalized abundance matrix.
 }

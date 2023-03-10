@@ -11,9 +11,6 @@ corr_matrix(filtered.matrix, correlation)
 
 \item{correlation}{See \verb{[Hmisc::rcorr()]}}
 }
-\value{
-
-}
 \description{
 Calculate correlation matrix from filtered data. This is essentially a
 convenience wrapper around \verb{[Hmisc::rcorr()]}.

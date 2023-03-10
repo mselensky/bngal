@@ -9,9 +9,6 @@ extract_node_data(network.data)
 \arguments{
 \item{network.data}{Output from Output from \code{\link[=export_network_data]{export_network_data()}}}
 }
-\value{
-
-}
 \description{
 Import network data
 }

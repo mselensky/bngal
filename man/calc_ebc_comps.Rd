@@ -9,9 +9,6 @@ calc_ebc_comps(ebc.nodes, binned.taxonomy, tax.level, metadata.cols)
 \arguments{
 \item{metadata.cols}{}
 }
-\value{
-
-}
 \description{
 Calculate compositions of edge between clusters based on defined metadata column(s)
 }

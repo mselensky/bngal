@@ -13,9 +13,6 @@ make_matrix(long_data, count_column_name, row_names)
 
 \item{row_names}{column by which to name table rows (default = \code{"sample-id"})}
 }
-\value{
-
-}
 \description{
 Make matrix from long-form microbiome data
 }

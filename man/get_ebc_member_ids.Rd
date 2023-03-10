@@ -9,9 +9,6 @@ get_ebc_member_ids(betweenness.)
 \arguments{
 \item{betweenness.}{Output from \code{\link[=get_edge_betweenness]{get_edge_betweenness()}}}
 }
-\value{
-
-}
 \description{
 Wrapper function around \code{\link[igraph:communities]{igraph::membership()}}
 }

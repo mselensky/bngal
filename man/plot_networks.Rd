@@ -36,9 +36,6 @@ If \code{'other'} is chosen, the desired custom color scheme must be saved as a 
 
 \item{other.variable}{\emph{Optional} Only required if \code{filled.by == 'other'}. Name of nodes column by which to select node groupings.}
 }
-\value{
-
-}
 \description{
 Plot correlation networks
 }

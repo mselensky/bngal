@@ -17,9 +17,6 @@ pw_summary(corr.data, preprocessed.features, tax.level, out.dr, cores = 1)
 
 \item{cores}{\emph{(Optional)} Number of CPUs. Default = 1}
 }
-\value{
-
-}
 \description{
 Summarize and export pairwise data for each sample after quality control
 }

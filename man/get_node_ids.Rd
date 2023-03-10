@@ -11,9 +11,6 @@ get_node_ids(prepared.data, corr.matrix)
 
 \item{corr.matrix}{Output from \code{\link[=prepare_corr_data]{prepare_corr_data()}}}
 }
-\value{
-
-}
 \description{
 This function yields a dataframe containing each unique, quality-filtered
 node to be used in constructing a correlation network.

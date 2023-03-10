@@ -13,9 +13,6 @@ export_network_data(node.color.data, tax.level, out.dr)
 
 \item{out.dr}{Data output directory (does not have to exists)}
 }
-\value{
-
-}
 \description{
 Export network node and ebc cluster data
 }

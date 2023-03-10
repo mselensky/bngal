@@ -23,9 +23,6 @@ ebc_compositions(
 
 \item{sub.comms}{\emph{(Optional)} Metadata column by which to split data into subcommunities}
 }
-\value{
-
-}
 \description{
 Calculate compositions of edge between clusters based on defined metadata column(s)
 }

@@ -11,9 +11,6 @@ split_network_data(prepared.data, subset.column)
 
 \item{subset.column}{Metadata variable by which \code{prepared.data} is split into separate dataframes for separate network analyses.}
 }
-\value{
-
-}
 \description{
 This function produces a list of dataframes split by a categorical metadata variable
 defined by \code{subset.column}. Comparisons within each \code{subset.column} group are dropped

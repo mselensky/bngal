@@ -15,9 +15,6 @@ plot_core_comp(ebc.nodes.abun, tax.level, metadata, fill.by)
 
 \item{fill.by}{\emph{Optional} Metadata column by which to fill EBC composition plots}
 }
-\value{
-
-}
 \description{
 Plot edge between cluster compositions against node coreness
 }

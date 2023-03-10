@@ -30,9 +30,6 @@ First column must be named "\code{sample-id}" and must contain unique identifier
 
 \item{compositional}{\emph{Optional} Determines whether output returns relative abundance (\code{TRUE}) or binned count data (\code{FALSE}). Default = \code{TRUE}.}
 }
-\value{
-
-}
 \description{
 This is the primary data formatting function of most \code{bngal} pipelines,
 including the first step of network analysis.

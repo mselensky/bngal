@@ -30,9 +30,6 @@ build_taxa.barplot(
 
 \item{other.variable}{}
 }
-\value{
-
-}
 \description{
 Build summary taxa barplots from network abundance data
 }

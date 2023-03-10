@@ -15,9 +15,6 @@ prepare_network_data(binned.tax, meta.data, corr.cols, sub.comms)
 
 \item{sub.comms}{\emph{Optional} Metadata column by which to separate networks.}
 }
-\value{
-
-}
 \description{
 This function prepares data for correlation network analysis at a specified
 level of taxonomic classification. Singleton ASVs are first removed from a
@@ -27,7 +24,4 @@ a given abundance cutoff value based on user input. Corresponding metadata colum
 preprocessed network data by specifying the \code{corr.cols} option.
 Microbial abundance and environmental metadata (if applicable) are normalized
 on a scale of 0-1 for downstream correlation matrix construction.
-}
-\examples{
-
 }

@@ -12,9 +12,6 @@ get_igraph(prepro.data, directed. = FALSE)
 \item{directed.}{See \code{directed} option from \code{\link[igraph:graph_from_data_frame]{igraph::graph_from_data_frame}}.
 Defaults to \code{FALSE} for pairwise correlation data.}
 }
-\value{
-
-}
 \description{
 This is function is a wrapper around \code{\link[igraph:graph_from_data_frame]{igraph::graph_from_data_frame()}} to
 generate igraph objects for each subcommunity defined earlier in the

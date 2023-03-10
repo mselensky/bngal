@@ -15,9 +15,6 @@ export_ebc_taxa_summary(binned.taxonomy, ebc.nodes.abun, tax.level, out.dr)
 
 \item{out.dr}{Output directory. Results will be saved to the \code{"network-summary-tables"} subfolder.}
 }
-\value{
-
-}
 \description{
 Export EBC and taxonomic abundance summary data to CSV file
 }

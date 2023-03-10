@@ -10,9 +10,6 @@ load_network_data(network.dir)
 \item{network.dir}{Full path to network data output from either \verb{[bngal::export_network_data]}
 (if running interactively) or bngal-build-networks.R (if using bngal CLI)}
 }
-\value{
-
-}
 \description{
 Load exported network data
 }

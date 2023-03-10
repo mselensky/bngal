@@ -13,9 +13,6 @@ generate_edges(corr.matrix, correlation, node.ids)
 
 \item{node.ids}{Output from \code{\link[=get_node_ids]{get_node_ids()}}}
 }
-\value{
-
-}
 \description{
 Generate network edges
 }
