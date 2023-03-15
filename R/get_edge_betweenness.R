@@ -19,16 +19,8 @@
 #' get_igraph_output <- bngal::get_igraph(prepro_data)
 #' get_edge_betweenness(get_igraph_output)
 get_edge_betweenness <- function(igraph.list) {
-  # this is formatted for multicore processing on a SLURM-directed HPC system,
-  # but any *nix-like machine can multithread here as well. otherwise
-  # this will run on a single core.
-  if (Sys.getenv("SLURM_NTASKS") > 1) {
-    NCORES = Sys.getenv("SLURM_NTASKS")
-  } else if (parallel::detectCores() > 2) {
-    NCORES = parallel::detectCores()-1
-  } else {
-    NCORES = 1
-  }
+
+  NCORES <- bngal::check_cores()
 
   # better multicore performance currently being worked on, for now this placeholder:
   cluster_eb <- function (igraph.list) {

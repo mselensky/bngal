@@ -10,16 +10,7 @@
 #' @examples generate_edges(corr_matrix, "spearman", nodes)
 generate_edges <- function(corr.matrix, correlation, node.ids) {
 
-  # this is formatted for multicore processing on a SLURM-directed HPC system,
-  # but any *nix-like machine can multithread here as well. otherwise
-  # this will run on a single core.
-  if (Sys.getenv("SLURM_NTASKS") > 1) {
-    NCORES = Sys.getenv("SLURM_NTASKS")
-  } else if (parallel::detectCores() > 2) {
-    NCORES = parallel::detectCores()-1
-  } else {
-    NCORES = 1
-  }
+  NCORES <- bngal::check_cores()
 
   # define function to extract rho and pval for given correlation matrix
   get_rho_pval <- function(corr.matrix){

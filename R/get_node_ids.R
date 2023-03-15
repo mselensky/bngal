@@ -11,23 +11,16 @@
 #' @examples
 get_node_ids <- function(prepared.data, corr.matrix){
 
-  # this is formatted for multicore processing on a SLURM-directed HPC system,
-  # but any *nix-like machine can multithread here as well. otherwise
-  # this will run on a single core.
-  if (Sys.getenv("SLURM_NTASKS") > 1) {
-    NCORES = Sys.getenv("SLURM_NTASKS")
-  } else if (parallel::detectCores() > 2) {
-    NCORES = parallel::detectCores()-1
-  } else {
-    NCORES = 1
-  }
+  NCORES <- bngal::check_cores()
 
   if (any(names(prepared.data) %in% c("taxonomic_level", "data", "metadata"))) {
     prepared.data.df = prepared.data$data
+    sub.comms = NULL
     tax_level = prepared.data[["taxonomic_level"]]
   } else {
     prepared.data.df = list()
-    for (i in names(prepared.data)) {
+    sub.comms = names(prepared.data)
+    for (i in sub.comms) {
       prepared.data.df[[i]] <- prepared.data[[i]]$data
       tax_level = prepared.data[[i]][["taxonomic_level"]]
     }
@@ -43,7 +36,7 @@ get_node_ids <- function(prepared.data, corr.matrix){
 
     if (tax_level %in% taxa.levels) {
       nodes. <- nodes.1 %>%
-        select(taxon_, domain:.data[[tax_level]], node_type)
+        select(taxon_, domain:all_of(tax_level), node_type)
     } else {
       stop("\n | [", Sys.time(), "] get_node_ids(): Must choose one of the following taxonomic levels:\n",
            " | 'asv', 'genus', 'family', 'order', 'class', 'phylum', 'domain'\n")
@@ -54,13 +47,16 @@ get_node_ids <- function(prepared.data, corr.matrix){
       tibble::rowid_to_column("id") %>%
       dplyr::mutate(id = as.character(id))
 
-    if (any(names(prepared.data) %in% c("taxonomic_level", "data", "metadata"))) {
-      nodes. <- nodes. %>%
-        filter(label %in% rownames(corr.matrix$P))
-    } else {
-      nodes. <- nodes. %>%
-        filter(label %in% rownames(corr.matrix[[i]]$P))
-    }
+    # if (any(names(prepared.data) %in% c("taxonomic_level", "data", "metadata"))) {
+    #   nodes. <- nodes. %>%
+    #     filter(label %in% rownames(corr.matrix$P))
+    # } else {
+    #   nodes. <- nodes. %>%
+    #     filter(label %in% rownames(corr.matrix[[i]]$P))
+    # }
+
+    # nodes. <- nodes. %>%
+    #   filter(label %in% rownames(corr.matrix$P))
 
     nodes.
   }
@@ -73,6 +69,12 @@ get_node_ids <- function(prepared.data, corr.matrix){
     dat.out = parallel::mclapply(X = prepared.data.df,
                                  FUN = function(i){get_ids(i, tax_level)},
                                  mc.cores = NCORES)
+
+    for (i in sub.comms) {
+      dat.out[[i]] <- dat.out[[i]] %>%
+        filter(label %in% rownames(corr.matrix[[i]]$P))
+    }
+
 
   } else {
 

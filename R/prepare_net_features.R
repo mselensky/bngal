@@ -16,16 +16,7 @@
 #' @examples
 prepare_net_features <- function(edges., node.ids, p.val.cutoff, correlation, correlation.cutoff, sign) {
 
-  # this is formatted for multicore processing on a SLURM-directed HPC system,
-  # but any *nix-like machine can multithread here as well. otherwise
-  # this will run on a single core.
-  if (Sys.getenv("SLURM_NTASKS") > 1) {
-    NCORES = Sys.getenv("SLURM_NTASKS")
-  } else if (parallel::detectCores() > 2) {
-    NCORES = parallel::detectCores()-1
-  } else {
-    NCORES = 1
-  }
+ NCORES <- bngal::check_cores()
 
   format_edges <- function(edges.) {
 
