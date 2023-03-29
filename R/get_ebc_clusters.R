@@ -15,7 +15,7 @@ get_ebc_clusters <- function(prepro.data, ebc.member.ids, igraph.obj, core.ness=
 
     node.clusters. <- prepro.data$nodes %>%
       left_join(., ebc.member.ids, by = "id") %>%
-      dplyr::mutate(core = coreness(igraph.obj, core.ness)) %>%
+      dplyr::mutate(core = igraph::coreness(igraph.obj, core.ness)) %>%
       ungroup() %>%
       group_by(edge_btwn_cluster) %>%
       dplyr::mutate(taxa_per_cluster = n())
@@ -44,7 +44,7 @@ get_ebc_clusters <- function(prepro.data, ebc.member.ids, igraph.obj, core.ness=
     for (i in names(prepro.data$nodes)) {
       node.clusters.[[i]] <- prepro.data$nodes[[i]] %>%
         left_join(., ebc.member.ids[[i]], by = "id") %>%
-        dplyr::mutate(core = coreness(igraph.obj[[i]], core.ness)) %>%
+        dplyr::mutate(core = igraph::coreness(igraph.obj[[i]], core.ness)) %>%
         ungroup() %>%
         group_by(edge_btwn_cluster) %>%
         dplyr::mutate(taxa_per_cluster = n())

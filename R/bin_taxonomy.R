@@ -71,11 +71,16 @@ bin_taxonomy <- function(asv.table, meta.data, tax.level, remove.singletons=TRUE
   }
 
   # split taxonomy into different levels
+  taxa.levels = data.frame(tax_name = taxa_levels,
+                           tax_rank = seq(1:length(taxa_levels)),
+                           prefix = c("d__", "p__", "c__", "o__", "f__", "g__", "s__"))
+  input_rank = taxa.levels[taxa.levels$tax_name == tax.level,]$tax_rank
+  taxa.levels <- taxa.levels %>%
+    dplyr::slice(., 1:input_rank)
   long_rel_full_tax <- asv.long %>%
-    dplyr::mutate(taxonomy = str_remove_all(taxon, "d__|p__|c__|o__|f__|g__|s__")) %>%
-    separate(taxonomy, sep=';',
-             c("domain", "phylum", "class", "order", "family", "genus", "asv")) %>%
-    dplyr::mutate(phylum = if_else(phylum == "Proteobacteria", class, phylum))
+    dplyr::mutate(taxonomy = str_remove_all(taxon, paste0(taxa.levels$prefix, collapse = "|"))) %>%
+    separate(taxonomy, sep = ";", into = taxa.levels$tax_name) %>%
+    dplyr::mutate(phylum = if_else(phylum == "Proteobacteria", class, phylum)) # we are opinionated
 
   # default = calculate relative abundance; else bin counts (for e.g. prepare_network_data())
   long_binned <- long_rel_full_tax %>%

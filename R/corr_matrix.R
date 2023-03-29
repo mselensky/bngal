@@ -10,22 +10,17 @@
 #' @export
 #'
 #' @examples
-corr_matrix <- function(filtered.matrix, correlation) {
+corr_matrix <- function(filtered.matrix, correlation, cores) {
 
-  # this is formatted for multithreading on a SLURM-directed HPC system,
-  # but any *nix-like machine can multithread here as well. otherwise
-  # this runs on a single core.
-  if (Sys.getenv("SLURM_NTASKS") >= 1) {
-    NCORES = Sys.getenv("SLURM_NTASKS")
-  } else if (parallel::detectCores() > 2) {
-    NCORES = parallel::detectCores()-1
+  if (missing(cores)) {
+    NCORES = bngal::check_cores()
   } else {
-    NCORES = 1
+    NCORES = cores
   }
 
   # pairwise dissim. and p-values
   # did prepared.data get split into subcommunities?
-  # if so, break subcommunity data preparation steps across NCORES to multithread
+  # if so, break subcommunity data preparation steps across NCORES
   if (!is.null(nrow(filtered.matrix))) {
     out <- Hmisc::rcorr(filtered.matrix, type = correlation)
 

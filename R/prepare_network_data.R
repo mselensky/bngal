@@ -99,16 +99,7 @@ prepare_network_data <- function(binned.tax, meta.data, corr.cols, sub.comms) {
   # optionally split dataframe into list of subcommunities based on provided metadata column
   if (!is.null(sub.comms)) {
 
-    # this is formatted for multithreading on a SLURM-directed HPC system,
-    # but any *nix-like machine can multithread here as well. otherwise
-    # this runs on a single core.
-    if (Sys.getenv("SLURM_NTASKS") >= 1) {
-      NCORES = Sys.getenv("SLURM_NTASKS")
-    } else if (parallel::detectCores() > 2) {
-      NCORES = parallel::detectCores()-1
-    } else {
-      NCORES = 1
-    }
+    NCORES <- bngal::check_cores()
 
     df <- binned.tax %>%
       left_join(., select(meta.data, `sample-id`, all_of(sub.comms)), by = "sample-id")
