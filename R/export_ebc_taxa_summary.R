@@ -11,14 +11,14 @@
 #' @examples
 export_ebc_taxa_summary <- function(binned.taxonomy, ebc.nodes.abun, tax.level, out.dr) {
 
-  for (x in names(ebc.nodes.abun[[tax.level]])) {
+  for (x in names(ebc.nodes.abun)) {
 
-    communities = unique(ebc.nodes.abun[[tax.level]][[x]]$`sample-id`)
+    communities = unique(ebc.nodes.abun[[x]]$`sample-id`)
     n_samples = length(communities)
 
-    output <- binned.taxonomy[[tax.level]] %>%
+    output <- binned.taxonomy %>%
       filter(`sample-id` %in% communities) %>%
-      left_join(select(ebc.nodes.abun[[tax.level]][[x]], `sample-id`, taxon_, edge_btwn_cluster, taxa_per_cluster, ebc_abun_sum), by = c("sample-id", "taxon_")) %>%
+      left_join(select(ebc.nodes.abun[[x]], `sample-id`, taxon_, edge_btwn_cluster, taxa_per_cluster, ebc_abun_sum), by = c("sample-id", "taxon_")) %>%
       group_by(edge_btwn_cluster) %>%
       dplyr::mutate(taxa_per_cluster = if_else(edge_btwn_cluster == 0,
                                                as.numeric(length(unique(taxon_))),

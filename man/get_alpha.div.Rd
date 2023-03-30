@@ -4,10 +4,13 @@
 \alias{get_alpha.div}
 \title{Calculate alpha diversity at each level of taxonomic classification}
 \usage{
-get_alpha.div(binned.taxonomy)
+get_alpha.div(binned.taxonomy, tax.level)
 }
 \arguments{
 \item{binned.taxonomy}{Output from \code{\link[=bin_taxonomy]{bin_taxonomy()}}}
+
+\item{tax.level}{Taxonomic level of network data output from either \verb{[bngal::export_network_data]}
+(if running interactively) or bngal-build-networks.R (if using bngal CLI)}
 }
 \value{
 This function can be applied directly to the output from

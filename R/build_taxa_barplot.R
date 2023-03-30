@@ -15,17 +15,17 @@
 #' @examples
 build_taxa.barplot <- function(plotdata, tax.level, dendrogram, fill.by="phylum", interactive=TRUE, out.dr, metadata.cols, other.variable) {
 
-  dendro_names <- names(dendrogram[["ordered_names"]][[tax.level]])
+  dendro_names <- names(dendrogram[["ordered_names"]])
   out.dr.taxa.bp = file.path(out.dr, "taxa-barplots", fill.by)
   if (!dir.exists(out.dr.taxa.bp)) dir.create(out.dr.taxa.bp, recursive = TRUE)
 
   legend.out = list()
   for (x in dendro_names) {
 
-    dat.in = plotdata[[tax.level]][[x]] %>%
-      left_join(dendrogram[["ordered_names"]][[tax.level]][[x]], by = "sample-id")
-    hc.order = pull(dendrogram[["ordered_names"]][[tax.level]][[x]], `sample-id`, hc.order)
-    communities = pull(dendrogram[["ordered_names"]][[tax.level]][[x]], `sample-id`)
+    dat.in = plotdata[[x]] %>%
+      left_join(dendrogram[["ordered_names"]][[x]], by = "sample-id")
+    hc.order = pull(dendrogram[["ordered_names"]][[x]], `sample-id`, hc.order)
+    communities = pull(dendrogram[["ordered_names"]][[x]], `sample-id`)
 
     # this will arrange filled bars by summed EBC abundance
     ebc_arranged <- dat.in %>%
@@ -281,8 +281,8 @@ build_taxa.barplot <- function(plotdata, tax.level, dendrogram, fill.by="phylum"
                   panel.grid=element_blank())
         }
 
-      dendro_to_plot = dendrogram[["hclust_plots"]][[tax.level]][[x]]
-      n_samples = nrow(dendrogram[["ordered_names"]][[tax.level]][[x]])
+      dendro_to_plot = dendrogram[["hclust_plots"]][[x]]
+      n_samples = nrow(dendrogram[["ordered_names"]][[x]])
 
       out.plot.joined <- ggpubr::ggarrange(dendro_to_plot +
                                              coord_cartesian(xlim = c(1,n_samples)),

@@ -79,8 +79,12 @@ bin_taxonomy <- function(asv.table, meta.data, tax.level, remove.singletons=TRUE
     dplyr::slice(., 1:input_rank)
   long_rel_full_tax <- asv.long %>%
     dplyr::mutate(taxonomy = str_remove_all(taxon, paste0(taxa.levels$prefix, collapse = "|"))) %>%
-    separate(taxonomy, sep = ";", into = taxa.levels$tax_name) %>%
-    dplyr::mutate(phylum = if_else(phylum == "Proteobacteria", class, phylum)) # we are opinionated
+    tidyr::separate(taxonomy, sep = ";", into = taxa.levels$tax_name, extra = "drop", fill = "right")
+
+  if (!tax_level %in% c('domain', 'phylum')) {
+    long_rel_full_tax <- long_rel_full_tax %>%
+      dplyr::mutate(phylum = if_else(phylum == "Proteobacteria", class, phylum)) # we are opinionated
+  }
 
   # default = calculate relative abundance; else bin counts (for e.g. prepare_network_data())
   long_binned <- long_rel_full_tax %>%

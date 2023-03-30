@@ -16,7 +16,7 @@ plot_core_comp <- function(ebc.nodes.abun, tax.level, metadata, fill.by) {
   # ebc.nodes.abun = output of merged EBC node & relative abundance data
   # sub.comm = sub-community network to be summarized (defined by '--subcommunity' option --> "all" if NULL)
 
-  split.comms = ebc.nodes.abun[[tax.level]]
+  split.comms = ebc.nodes.abun
 
   core.abun.grobs <- list()
   for (i in names(split.comms)) {

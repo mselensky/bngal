@@ -30,19 +30,12 @@ ebc_compositions <- function(ebc.nodes, binned.taxonomy, alpha.div, tax.level, m
       filter(.data[[sub.comms]] %in% x) %>%
       pull(`sample-id`)
 
-    full_abun_data <- binned.taxonomy[[tax.level]] %>%
+    full_abun_data <- binned.taxonomy %>%
       filter(`sample-id` %in% communities)
-
-    ebc.nodes.abun.filt <- ebc.nodes[[x]] %>%
-      ungroup() %>%
-      filter(tax_level %in% tax.level) #%>%
-      #dplyr::select(edge_btwn_cluster, 1:.data[[tax.level]])
 
     ebc.nodes.abun <- full_abun_data %>%
       dplyr::select(`sample-id`, taxon_, rel_abun_binned, binned_count) %>%
-      left_join(ebc.nodes.abun.filt, by = "taxon_")
-
-    rm(ebc.nodes.abun.filt)
+      left_join(ebc.nodes[[x]], by = "taxon_")
 
     # this ensures ebc relative abundance is calculated from full dataset
     # regardless of remove.singletons option from bngal::bin_taxonomy()

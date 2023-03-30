@@ -4,10 +4,12 @@
 \alias{extract_node_data}
 \title{Import network data}
 \usage{
-extract_node_data(network.data)
+extract_node_data(network.data, tax.level)
 }
 \arguments{
-\item{network.data}{Output from Output from \code{\link[=export_network_data]{export_network_data()}}}
+\item{network.data}{Output from \code{\link[=export_network_data]{export_network_data()}}}
+
+\item{tax.level}{Taxonomic level of network data output from \verb{[bngal::export_network_data]}}
 }
 \description{
 Import network data

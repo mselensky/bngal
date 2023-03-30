@@ -4,10 +4,13 @@
 \alias{load_network_data}
 \title{Load exported network data}
 \usage{
-load_network_data(network.dir)
+load_network_data(network.dir, tax.level)
 }
 \arguments{
 \item{network.dir}{Full path to network data output from either \verb{[bngal::export_network_data]}
+(if running interactively) or bngal-build-networks.R (if using bngal CLI)}
+
+\item{tax.level}{Taxonomic level of network data output from either \verb{[bngal::export_network_data]}
 (if running interactively) or bngal-build-networks.R (if using bngal CLI)}
 }
 \description{
