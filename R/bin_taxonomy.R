@@ -81,7 +81,7 @@ bin_taxonomy <- function(asv.table, meta.data, tax.level, remove.singletons=TRUE
     dplyr::mutate(taxonomy = str_remove_all(taxon, paste0(taxa.levels$prefix, collapse = "|"))) %>%
     tidyr::separate(taxonomy, sep = ";", into = taxa.levels$tax_name, extra = "drop", fill = "right")
 
-  if (!tax_level %in% c('domain', 'phylum')) {
+  if (!tax.level %in% c('domain', 'phylum')) {
     long_rel_full_tax <- long_rel_full_tax %>%
       dplyr::mutate(phylum = if_else(phylum == "Proteobacteria", class, phylum)) # we are opinionated
   }
