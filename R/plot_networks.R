@@ -122,9 +122,11 @@ plot_networks <- function (node.color.data, filled.by, graph.layout, out.dr,
     }
 
     if (filled.by == "other") {
-      pdf(file = file.path(pdf_path, paste0(subset.values, "-", tax_level, "-by-grouping.pdf")))
+      pdf(file = file.path(pdf_path, paste0(subset.values, "-", tax_level, "-by-grouping.pdf")),
+          width = 11, height = 8.5)
     } else {
-      pdf(file = file.path(pdf_path, paste0(subset.values, "-", tax_level, "-by-", filled.by, ".pdf")))
+      pdf(file = file.path(pdf_path, paste0(subset.values, "-", tax_level, "-by-", filled.by, ".pdf")),
+          width = 11, height = 8.5)
     }
     plot(igraph.obj,
          vertex.label = NA,
@@ -144,9 +146,9 @@ plot_networks <- function (node.color.data, filled.by, graph.layout, out.dr,
            bty = "n",
            lwd = c(min(norm_widths),
                    max(norm_widths) - 2*((max(norm_widths)-min(norm_widths))/n),
-                   max(norm_widths)),
-           inset = -0.05,
-           y.intersp = 0.7
+                   max(norm_widths))#,
+           #inset = -0.05,
+           #y.intersp = 0.7
     )
     legend("right",
            legend = c(min(node_scale),
@@ -157,9 +159,10 @@ plot_networks <- function (node.color.data, filled.by, graph.layout, out.dr,
            bty = "n",
            pt.cex = c(min(norm_node),
                       (max(norm_node)-min(norm_node))/2,
-                      max(norm_node))/2.5,
-           inset = -0.05,
-           y.intersp = 0.7)
+                      max(norm_node))/2.5#,
+           #inset = -0.05,
+          # y.intersp = 0.7
+          )
     if (filled.by == "edge_btwn_cluster") {
 
       # if EBC color is black, lump into "other" category
