@@ -76,6 +76,7 @@ summarize_cooccurrence <- function(nodes., edges., tax.level) {
     dplyr::rename(taxon_ = from_taxon_)
   
   # this is a terribly hard-coded solution but perhaps someone smarter than me will only replace 'NA' with '0' if the column class is numeric :)
+  ncols=ncol(node_summaries)
   node_summaries[4:ncols][is.na(node_summaries[4:ncols])] <- 0
 
   # # number of inter-family (if applicable)
