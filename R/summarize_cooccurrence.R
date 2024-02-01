@@ -72,10 +72,11 @@ summarize_cooccurrence <- function(nodes., edges., tax.level) {
     left_join(unique.ebcs.k1, by = "from_taxon_") %>%
     left_join(select(nodes., edge_btwn_cluster, taxon_, phylum), by = c("from_taxon_" = "taxon_")) %>%
     left_join(n.nodes.per.phy, by = "phylum") %>%
-    replace(is.na(.), 0) %>%
+    select(from_taxon_, edge_btwn_cluster, phylum, everything(.)) %>%
     dplyr::rename(taxon_ = from_taxon_)
-
-
+  
+  # this is a terribly hard-coded solution but perhaps someone smarter than me will only replace 'NA' with '0' if the column class is numeric :)
+  node_summaries[4:ncols][is.na(node_summaries[4:ncols])] <- 0
 
   # # number of inter-family (if applicable)
   # if (tax.level %in% c("family", "genus", "asv")) {
