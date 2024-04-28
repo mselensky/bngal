@@ -1,6 +1,6 @@
 Package: bngal
 Title: Biological Network Graphing and Learning
-Version: 0.0.0.9000
+Version: 1.0.0
 Authors@R: 
     person("Matthew", "Selensky", , "mselensky@gmail.com", role = c("aut", "cre"))
 Description: Biological Network Graph Analysis and Learning (bngal) is a software package developed to create co-occurrence networks from microbial taxonomic abundance data.
