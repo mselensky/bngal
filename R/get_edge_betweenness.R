@@ -11,6 +11,7 @@
 #' Before running this function, consider
 #'
 #' @param igraph.list Output from [`bngal::get_igraph()`]
+#' @param num.cores See [`bngal::check_cores()`]
 #'
 #' @return
 #' @export
@@ -18,9 +19,9 @@
 #' @examples
 #' get_igraph_output <- bngal::get_igraph(prepro_data)
 #' get_edge_betweenness(get_igraph_output)
-get_edge_betweenness <- function(igraph.list) {
+get_edge_betweenness <- function(igraph.list, num.cores = NULL) {
 
-  NCORES <- bngal::check_cores()
+  NCORES <- bngal::check_cores(num.cores)
 
   # better multicore performance currently being worked on, for now this placeholder:
   cluster_eb <- function (igraph.list) {

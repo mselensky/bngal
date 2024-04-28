@@ -8,9 +8,10 @@ build_dendrograms(
   binned.taxonomy,
   metadata,
   color.by,
+  shape.by,
   trans = "log10",
   sub.comms,
-  cores = 1
+  num.cores = 1
 )
 }
 \arguments{
@@ -18,13 +19,15 @@ build_dendrograms(
 
 \item{metadata}{Sample metadata}
 
-\item{color.by}{Metadata column by which to color}
+\item{color.by}{Define color of dendrogram edges by provided metadata column.}
 
-\item{trans}{Transformation to apply to relative abundance data (default = none). Can be one of \code{"log10"}, \code{"log"}, \code{"sqrt"}, or \code{"none"}}
+\item{shape.by}{\emph{(Optional)} Define shape of dendrogram tips by provided metadata column.}
+
+\item{trans}{\emph{(Optional)} Transformation to apply to relative abundance data (default = none). Can be one of \code{"log10"}, \code{"log"}, \code{"sqrt"}, or \code{"none"}}
 
 \item{sub.comms}{\emph{(Optional)} Metadata column by which to split dendrograms into subcommunities}
 
-\item{cores}{\emph{(Optional)} Number of CPUs (default = 1)}
+\item{num.cores}{\emph{(Optional)} See \code{\link[=check_cores]{check_cores()}} (default = 1)}
 }
 \value{
 This function can be applied directly to the output from

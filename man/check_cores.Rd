@@ -4,7 +4,10 @@
 \alias{check_cores}
 \title{Check number of available CPUs}
 \usage{
-check_cores()
+check_cores(num.cores = NULL)
+}
+\arguments{
+\item{num.cores}{User-provided number of cores to use. If the variable is left as NULL (or missing entirely), bngal will automatically detect all available cores on the (non-Windows) machine. If a Windows platform is detected, num.cores is set to 1.}
 }
 \description{
 This function checks for the number of available CPUs (cores) available
