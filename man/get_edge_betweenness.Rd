@@ -4,10 +4,12 @@
 \alias{get_edge_betweenness}
 \title{Return edge between cluster data}
 \usage{
-get_edge_betweenness(igraph.list)
+get_edge_betweenness(igraph.list, num.cores = NULL)
 }
 \arguments{
 \item{igraph.list}{Output from \code{\link[=get_igraph]{get_igraph()}}}
+
+\item{num.cores}{See \code{\link[=check_cores]{check_cores()}}}
 }
 \description{
 This is a wrapper around \code{\link[igraph:cluster_edge_betweenness]{igraph::cluster_edge_betweenness()}}. This can

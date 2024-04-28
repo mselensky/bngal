@@ -11,22 +11,26 @@
 #'
 #' @return
 #' @export
+#' @param num.cores User-provided number of cores to use. If the variable is left as NULL (or missing entirely), bngal will automatically detect all available cores on the (non-Windows) machine. If a Windows platform is detected, num.cores is set to 1.
 #'
 #' @examples n.cores <- bngal::check_cores()
-check_cores <- function() {
+check_cores <- function(num.cores = NULL) {
 
-  if (grepl(Sys.info()["sysname"], "windows", ignore.case = TRUE)) {
-    NCORES = 1
-  } else {
-
-    if (Sys.getenv("SLURM_NTASKS") > 1) {
-      NCORES = Sys.getenv("SLURM_NTASKS")
-    } else if (parallel::detectCores() > 1) {
-      NCORES = parallel::detectCores()
-    } else {
+  if (missing(num.cores) | is.null(num.cores)) {
+    if (grepl(Sys.info()["sysname"], "windows", ignore.case = TRUE)) {
       NCORES = 1
-    }
+    } else {
 
+      if (Sys.getenv("SLURM_NTASKS") > 1) {
+        NCORES = Sys.getenv("SLURM_NTASKS")
+      } else if (parallel::detectCores() > 1) {
+        NCORES = parallel::detectCores()
+      } else {
+        NCORES = 1
+      }
+    }
+  } else {
+    NCORES = num.cores
   }
 
   NCORES

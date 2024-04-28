@@ -5,10 +5,11 @@
 #'
 #' @param binned.taxonomy Output from [`bngal::bin_taxonomy()`]
 #' @param metadata Sample metadata
-#' @param color.by Metadata column by which to color
-#' @param trans Transformation to apply to relative abundance data (default = none). Can be one of `"log10"`, `"log"`, `"sqrt"`, or `"none"`
+#' @param color.by Define color of dendrogram edges by provided metadata column.
+#' @param shape.by *(Optional)* Define shape of dendrogram tips by provided metadata column.
+#' @param trans *(Optional)* Transformation to apply to relative abundance data (default = none). Can be one of `"log10"`, `"log"`, `"sqrt"`, or `"none"`
 #' @param sub.comms *(Optional)* Metadata column by which to split dendrograms into subcommunities
-#' @param cores *(Optional)* Number of CPUs (default = 1)
+#' @param num.cores *(Optional)* See [`bngal::check_cores()`] (default = 1)
 #'
 #' @return This function can be applied directly to the output from
 #' [bngal::bin_taxonomy()].
@@ -19,10 +20,10 @@
 #' @export
 #'
 #' @examples build_dendrograms(binned_tax, metadata, "sample_type", "sqrt")
-build_dendrograms <- function(binned.taxonomy, metadata, color.by, shape.by, trans="log10", sub.comms, cores = 1) {
+build_dendrograms <- function(binned.taxonomy, metadata, color.by, shape.by, trans="log10", sub.comms, num.cores = 1) {
   tax.levels <- c("phylum", "class", "order", "family", "genus", "asv")
 
-  NCORES=as.numeric(cores)
+  NCORES <- bngal::check_cores(num.cores)
 
   # split binned.taxonomy by optional sub.comms
   community.counts = list()
@@ -133,7 +134,7 @@ build_dendrograms <- function(binned.taxonomy, metadata, color.by, shape.by, tra
       ylab("Manhattan distance")
 
     # user-defined plot variables
-    
+
     # color not defined, without dendrogram tip shape
     if (missing(color.by) && missing(shape.by) | is.null(color.by) && is.null(shape.by)) {
       hclust_plots[[x]] <- hclust_plots[[x]] +
@@ -160,7 +161,7 @@ build_dendrograms <- function(binned.taxonomy, metadata, color.by, shape.by, tra
                      aes(x=x, y=y.x, xend=xend, yend=yend,
                          color = .data[[color.by]])) +
         geom_point(data = dendrogram_ends,
-                   aes(x=x, y=0, 
+                   aes(x=x, y=0,
                        color = .data[[color.by]])) +
         theme(legend.box = "vertical")
       #guides(guide_legend(direction = "vertical"))
@@ -171,7 +172,7 @@ build_dendrograms <- function(binned.taxonomy, metadata, color.by, shape.by, tra
                      aes(x=x, y=y.x, xend=xend, yend=yend,
                          color = .data[[color.by]])) +
         geom_point(data = dendrogram_ends,
-                   aes(x=x, y=0, 
+                   aes(x=x, y=0,
                        color = .data[[color.by]],
                        shape = .data[[shape.by]])) +
         theme(legend.box = "vertical")
