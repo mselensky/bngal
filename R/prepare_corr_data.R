@@ -9,24 +9,15 @@
 #' @param transformation *Optional* Numeric transformation to apply to data (default = none). `"log10"` accepted.
 #' @param obs.cutoff *Optional* Minimum number of observations required per pairwise relationship to be included in correlation matrix (default = `10`).
 #' @param out.dr Required. Output directory for pairwise summary data.
+#' @param num.cores See [`bngal::check_cores`]
 #'
 #' @return
 #' @export
 #'
 #' @examples prepare_corr_data(prepared.data, obs.cutoff, transformation, out.dr)
-prepare_corr_data <- function(prepared.data, obs.cutoff, transformation, out.dr, cores = 1) {
+prepare_corr_data <- function(prepared.data, obs.cutoff, transformation, out.dr, num.cores = NULL) {
 
-  NCORES = cores
-  # this is formatted for multithreading on a SLURM-directed HPC system,
-  # but any *nix-like machine can multithread here as well. otherwise
-  # this runs on a single core.
-  # if (Sys.getenv("SLURM_NTASKS") > 1) {
-  #   NCORES = Sys.getenv("SLURM_NTASKS")
-  # } else if (parallel::detectCores() > 2) {
-  #   NCORES = parallel::detectCores()-1
-  # } else {
-  #   NCORES = 1
-  # }
+  NCORES <- bngal::check_cores(num.cores)
 
   comp_corr <- function(prepared_data, transformation, obs.cutoff, out.dr) {
     if (missing(transformation) | is.null(transformation)) {
@@ -202,19 +193,17 @@ prepare_corr_data <- function(prepared.data, obs.cutoff, transformation, out.dr,
     dat.in <- comp_corr(prepared.data$data, transformation, obs.cutoff, out.dr)
 
   } else {
-    # will add multicore support sometime in the future:
-    # parallel::mclapply(X = prepared.data,
-    #                    FUN = function(i){comp_corr(i$data, transformation, obs.cutoff, out.dr)},
-    #                    mc.cores = NCORES)
     dat.in = list()
-    for (i in names(prepared.data)) {
-      message("\n | [", Sys.time(), "] Preparing correlation data for subcommunity '", i, "' ...")
-      dat.in[[i]] <- comp_corr(prepared.data[[i]]$data, transformation, obs.cutoff, out.dr)
-      message(" | --------------------------------------------------------------------")
-    }
 
+    for (i in names(prepared.data)){
+      prepared.data[[i]] = prepared.data[[i]]$data
+    }
+    dat.in = parallel::mclapply(X = prepared.data,
+                                FUN = function(i){comp_corr(i, transformation, obs.cutoff, out.dr)},
+                                mc.cores = NCORES)
   }
 
+  # drop subcommunity if there is a lack of data
   for (i in names(dat.in)) {
     if (length(dat.in[[i]]) == 0) {
       dat.in[[i]] <- NULL

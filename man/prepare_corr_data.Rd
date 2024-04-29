@@ -4,7 +4,13 @@
 \alias{prepare_corr_data}
 \title{Filter preprocessed data for correlation matrix}
 \usage{
-prepare_corr_data(prepared.data, obs.cutoff, transformation, out.dr, cores = 1)
+prepare_corr_data(
+  prepared.data,
+  obs.cutoff,
+  transformation,
+  out.dr,
+  num.cores = NULL
+)
 }
 \arguments{
 \item{prepared.data}{Output from \code{\link{prepare_network_data}} or \code{\link{split_network_data}}}
@@ -14,6 +20,8 @@ prepare_corr_data(prepared.data, obs.cutoff, transformation, out.dr, cores = 1)
 \item{transformation}{\emph{Optional} Numeric transformation to apply to data (default = none). \code{"log10"} accepted.}
 
 \item{out.dr}{Required. Output directory for pairwise summary data.}
+
+\item{num.cores}{See \code{\link{check_cores}}}
 }
 \description{
 This function filters input data and returns a normalized abundance matrix.
