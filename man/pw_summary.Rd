@@ -4,7 +4,13 @@
 \alias{pw_summary}
 \title{Summarize and export pairwise data for each sample after quality control}
 \usage{
-pw_summary(corr.data, preprocessed.features, tax.level, out.dr, cores = 1)
+pw_summary(
+  corr.data,
+  preprocessed.features,
+  tax.level,
+  out.dr,
+  num.cores = NULL
+)
 }
 \arguments{
 \item{corr.data}{Output from \code{\link[=prepare_corr_data]{prepare_corr_data()}}}
@@ -15,7 +21,7 @@ pw_summary(corr.data, preprocessed.features, tax.level, out.dr, cores = 1)
 
 \item{out.dr}{Required. Output directory for pairwise summary data. Should be the same path as defined in \code{\link[=prepare_corr_data]{prepare_corr_data()}}}
 
-\item{cores}{\emph{(Optional)} Number of CPUs. Default = 1}
+\item{num.cores}{See \code{\link{check_cores}}}
 }
 \description{
 Summarize and export pairwise data for each sample after quality control

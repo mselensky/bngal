@@ -4,19 +4,19 @@
 #' @param preprocessed.features Required. Output from [`bngal::prepare_net_features()`]
 #' @param tax.level Taxonomic level at which to summarize pairwise data.
 #' @param out.dr Required. Output directory for pairwise summary data. Should be the same path as defined in [`bngal::prepare_corr_data()`]
-#' @param cores *(Optional)* Number of CPUs. Default = 1
+#' @param num.cores See [`bngal::check_cores`]
 #'
 #' @return
 #' @export
 #'
 #' @examples
-pw_summary <- function(corr.data, preprocessed.features, tax.level, out.dr, cores=1){
+pw_summary <- function(corr.data, preprocessed.features, tax.level, out.dr, num.cores = NULL){
 
   # look in "pairwise-summaries" folder for input data
   pw.out.dr = file.path(out.dr, "pairwise-summaries")
 
   # define number of CPUs
-  NCORES = cores
+  NCORES <- bngal::check_cores(num.cores)
 
   # define taxonomic level of classification
   tax_level = tax.level
