@@ -1,9 +1,6 @@
-YEAR: 2024
-COPYRIGHT HOLDER: bngal authors
+# MIT License
 
-MIT License
-
-Copyright (c) 2024 Matt Selensky
+Copyright (c) 2024 bngal authors
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
