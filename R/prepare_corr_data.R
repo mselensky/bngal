@@ -81,7 +81,7 @@ prepare_corr_data <- function(prepared.data, obs.cutoff, transformation, out.dr,
     pw_all <- matrix.l %>%
       left_join(taxon.key, by = "taxon_") %>%
       dplyr::select(-taxon_) %>%
-      left_join(pw, by = c("taxon_id" = "taxa1"))
+      left_join(pw, by = c("taxon_id" = "taxa1"), relationship = "many-to-many")
 
     pw_counts <- pw_all %>%
       group_by(taxa_pair) %>%
@@ -158,15 +158,6 @@ prepare_corr_data <- function(prepared.data, obs.cutoff, transformation, out.dr,
     summ.out <- left_join(pre.filter.data, post.filter.data, by = "sample-id")
     summ.out$tax_level = tax_level
 
-
-    # export per-sample pairwise summary data to csv file
-
-    if (!is.null(nrow(prepared.data$data))) {
-      write_csv(summ.out, file.path(out.dr, paste0("pairwise_summary_", tax_level, "-all.csv")))
-    } else {
-      write_csv(summ.out, file.path(out.dr, paste0("pairwise_summary_", tax_level, "-", i, ".csv")))
-    }
-
     message(" | [", Sys.time(), "] Filtered data for correlation matrix:\n",
             " |   * Minimum observation threshold: ", obs.cutoff, "\n",
             " |   * # of unique pairwise '", tax_level, "'-level relationships passing threshold: ", nrow(pw_counts), "\n",
@@ -174,18 +165,18 @@ prepare_corr_data <- function(prepared.data, obs.cutoff, transformation, out.dr,
             " |   * # of unique '", tax_level, "'-level nodes involved: ", ncol(pw_filtered.mat)-1, "\n",
             " |   * # of individual pairwise observations included: ", sum(pw_counts$n_pairs))
 
-
-    if (!is.null(nrow(prepared.data$data))) {
-      write_csv(summ.out, file.path(out.dr, paste0("pairwise_summary_", tax_level, "-all.csv")))
-    } else {
-      write_csv(summ.out, file.path(out.dr, paste0("pairwise_summary_", tax_level, "-", i, ".csv")))
-    }
-
-
     # final output matrix
-    pw_filtered.mat %>%
+    matrix.out <- pw_filtered.mat %>%
       column_to_rownames("sample-id") %>%
       as.matrix()
+
+    # pairwise summary data
+    summ.out = summ.out
+
+    # output
+    list("output_matrix" = matrix.out, "pw_summary" = summ.out)
+
+
 
   }
 
@@ -194,22 +185,35 @@ prepare_corr_data <- function(prepared.data, obs.cutoff, transformation, out.dr,
 
   } else {
     dat.in = list()
-
-    for (i in names(prepared.data)){
-      prepared.data[[i]] = prepared.data[[i]]$data
+    dat.in2 = list()
+    for  (i in names(prepared.data)){
+      dat.in2$data[[i]] = prepared.data[[i]]$data
     }
-    dat.in = parallel::mclapply(X = prepared.data,
+    dat.in = parallel::mclapply(X = dat.in2$data,
                                 FUN = function(i){comp_corr(i, transformation, obs.cutoff, out.dr)},
                                 mc.cores = NCORES)
   }
 
+  # export per-sample pairwise summary data to csv file
+  output = list()
+  if (!is.null(nrow(prepared.data$data))) {
+    write_csv(dat.in$pw_summary, file.path(out.dr, paste0("pairwise_summary_", tax_level, "-all.csv")))
+    output$all$output_matrix = dat.in$output_matrix
+  } else {
+      for (i in names(dat.in)) {
+        write_csv(dat.in[[i]]$pw_summary, file.path(out.dr, paste0("pairwise_summary_", tax_level, "-", i, ".csv")))
+        output[[i]]$output_matrix = dat.in[[i]]$output_matrix
+      }
+  }
+
   # drop subcommunity if there is a lack of data
-  for (i in names(dat.in)) {
-    if (length(dat.in[[i]]) == 0) {
+  for (i in names(output)) {
+    if (length(output[[i]]$output_matrix) == 0) {
       dat.in[[i]] <- NULL
       message(" |   * WARNING: subcommunity '", i, "' removed from '", tax_level, "'-level network analysis due to lack of data after observational threshold filtering.")
     }
   }
-  dat.in
+
+  output
 
 }

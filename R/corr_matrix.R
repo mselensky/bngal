@@ -10,25 +10,19 @@
 #' @export
 #'
 #' @examples
-corr_matrix <- function(filtered.matrix, correlation, cores) {
+corr_matrix <- function(filtered.matrix, correlation, cores=NULL) {
 
-  if (missing(cores)) {
-    NCORES = bngal::check_cores()
-  } else {
-    NCORES = cores
-  }
+  NCORES = bngal::check_cores(cores)
 
   # pairwise dissim. and p-values
   # did prepared.data get split into subcommunities?
   # if so, break subcommunity data preparation steps across NCORES
-  if (!is.null(nrow(filtered.matrix))) {
+  if (!is.null(nrow(filtered.matrix$output_matrix))) {
     out <- Hmisc::rcorr(filtered.matrix, type = correlation)
-
   } else {
     out <- parallel::mclapply(X = filtered.matrix,
-                              FUN = function(i){Hmisc::rcorr(i, type = correlation)},
+                              FUN = function(i){Hmisc::rcorr(i$output_matrix, type = correlation)},
                               mc.cores = NCORES)
-
     message(" | [", Sys.time(), "] Correlation matrices computed for the following subcommunities:")
     for (i in names(filtered.matrix)) {
       message(" |   --", i)

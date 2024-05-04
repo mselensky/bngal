@@ -13,7 +13,9 @@
 pw_summary <- function(corr.data, preprocessed.features, tax.level, out.dr, num.cores = NULL){
 
   # look in "pairwise-summaries" folder for input data
-  pw.out.dr = file.path(out.dr, "pairwise-summaries")
+  if (!grepl(out.dr, "pairwise-summaries")) {
+    pw.out.dr = file.path(out.dr, "pairwise-summaries")
+  }
 
   # define number of CPUs
   NCORES <- bngal::check_cores(num.cores)

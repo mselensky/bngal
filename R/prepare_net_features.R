@@ -9,14 +9,15 @@
 #' @param correlation Metric for pairwise comparisions (see [`Hmisc::rcorr()`])
 #' @param correlation.cutoff Values from `0` to `1` accepted. Only relationships with an absolute value of this or greater are kept.
 #' @param sign Direction(s) of pairwise relationship to include in network. Values from `"positive"`, `"negative"`, or `"all"` accepted.
+#' @param num.cores See [`bngal::check_cores()`]
 #'
 #' @return
 #' @export
 #'
 #' @examples
-prepare_net_features <- function(edges., node.ids, p.val.cutoff, correlation, correlation.cutoff, sign) {
+prepare_net_features <- function(edges., node.ids, p.val.cutoff, correlation, correlation.cutoff, sign, num.cores = NULL) {
 
- NCORES <- bngal::check_cores()
+ NCORES <- bngal::check_cores(num.cores)
 
   format_edges <- function(edges.) {
 

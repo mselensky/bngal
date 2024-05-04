@@ -10,7 +10,8 @@ prepare_net_features(
   p.val.cutoff,
   correlation,
   correlation.cutoff,
-  sign
+  sign,
+  num.cores = NULL
 )
 }
 \arguments{
@@ -25,6 +26,8 @@ prepare_net_features(
 \item{correlation.cutoff}{Values from \code{0} to \code{1} accepted. Only relationships with an absolute value of this or greater are kept.}
 
 \item{sign}{Direction(s) of pairwise relationship to include in network. Values from \code{"positive"}, \code{"negative"}, or \code{"all"} accepted.}
+
+\item{num.cores}{See \code{\link[=check_cores]{check_cores()}}}
 }
 \description{
 This function preprocesses edge and node data, combining both outputs into a list object to be used in

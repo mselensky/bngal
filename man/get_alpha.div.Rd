@@ -2,7 +2,7 @@
 % Please edit documentation in R/get_alpha_div.R
 \name{get_alpha.div}
 \alias{get_alpha.div}
-\title{Calculate alpha diversity at each level of taxonomic classification}
+\title{Calculate alpha diversity for a defined level of taxonomic classification}
 \usage{
 get_alpha.div(binned.taxonomy, tax.level)
 }
@@ -17,5 +17,5 @@ This function can be applied directly to the output from
 \code{\link[=bin_taxonomy]{bin_taxonomy()}}.
 }
 \description{
-Calculate alpha diversity at each level of taxonomic classification
+Calculate alpha diversity for a defined level of taxonomic classification
 }

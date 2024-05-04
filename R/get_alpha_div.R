@@ -1,4 +1,4 @@
-#' Calculate alpha diversity at each level of taxonomic classification
+#' Calculate alpha diversity for a defined level of taxonomic classification
 #'
 #' @param binned.taxonomy Output from [`bngal::bin_taxonomy()`]
 #' @param tax.level Taxonomic level of network data output from either `[bngal::export_network_data]`
@@ -8,7 +8,6 @@
 #' [bngal::bin_taxonomy()].
 #' @export
 #'
-#' @examples
 get_alpha.div <- function (binned.taxonomy, tax.level) {
 
   rel_mats <- bngal::make_matrix(binned.taxonomy, "rel_abun_binned", "sample-id")

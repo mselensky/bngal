@@ -1,11 +1,7 @@
 #' Calculate compositions of edge between clusters based on defined metadata column(s)
 #'
-#' @param ebc.nodes
-#' @param binned.taxonomy
-#' @param tax.level
-#' @param metadata.cols
 #'
-#' @return
+#' @return **Deprecated!** This function will be removed in a future version of `bngal`. Please use [`bngal::ebc_compositions`] instead.
 #' @export
 #'
 #' @examples

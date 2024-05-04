@@ -15,7 +15,7 @@ get_node_ids <- function(prepared.data, corr.matrix){
 
   if (any(names(prepared.data) %in% c("taxonomic_level", "data", "metadata"))) {
     prepared.data.df = prepared.data$data
-    sub.comms = NULL
+    sub.comms = "all"
     tax_level = prepared.data[["taxonomic_level"]]
   } else {
     prepared.data.df = list()
@@ -63,19 +63,13 @@ get_node_ids <- function(prepared.data, corr.matrix){
 
   #message(" |   --Extracting node IDs from object '", deparse(substitute(prepared.data)), "'\n")
 
+  dat.out = list()
   if (any(names(prepared.data) %in% c("taxonomic_level", "data", "metadata"))) {
-    dat.out = get_ids(prepared.data.df, tax_level)
+    dat.out$all = get_ids(prepared.data.df, tax_level)
   } else if (any(names(prepared.data[[1]]) %in% c("taxonomic_level", "data", "metadata"))) {
     dat.out = parallel::mclapply(X = prepared.data.df,
                                  FUN = function(i){get_ids(i, tax_level)},
                                  mc.cores = NCORES)
-
-    for (i in sub.comms) {
-      dat.out[[i]] <- dat.out[[i]] %>%
-        filter(label %in% rownames(corr.matrix[[i]]$P))
-    }
-
-
   } else {
 
     stop("\n | [", Sys.time(), "] Unexpected input data.\n",
@@ -83,6 +77,10 @@ get_node_ids <- function(prepared.data, corr.matrix){
          " |   ->Is corr.matrix the output from bngal::prepare_corr_data() ?")
   }
 
+  for (i in sub.comms) {
+    dat.out[[i]] <- dat.out[[i]] %>%
+      filter(label %in% rownames(corr.matrix[[i]]$P))
+  }
   dat.out
 
 }

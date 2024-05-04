@@ -2,7 +2,9 @@
 #'
 #' @param ebc.nodes Output from [`bngal::extract_node_data()`]
 #' @param binned.taxonomy Output from [`bngal::bin_taxonomy()`]
+#' @param alpha.div Output from [`bngal::get_alpha.div()`]
 #' @param tax.level Taxonomic level of classification at which to calculate EBC compositions
+#' @param metadata Sample metadata corresponding to `binned.taxonomy`.
 #' @param metadata.cols
 #' @param sub.comms *(Optional)* Metadata column by which to split data into subcommunities
 #'
@@ -17,25 +19,31 @@ ebc_compositions <- function(ebc.nodes, binned.taxonomy, alpha.div, tax.level, m
   if (missing(sub.comms) | is.null(sub.comms)) {
     sub.comms = "all_communities"
     metadata[[sub.comms]] = rep("all", nrow(metadata))
+    #ebc.nodes[[sub.comms]]$sub_comm = rep("all", nrow(ebc.nodes[[sub.comms]]))
   }
 
-  ebc.nodes <- split(ebc.nodes, ebc.nodes$sub_comm)
+  #ebc.nodes_ <- split(ebc.nodes, ebc.nodes$sub_comm)
   out=list()
   for (x in unique(metadata[[sub.comms]])) {
     # define taxonomic columns to select based on input taxonomic level
-    select.by.tax = names(select(as.data.frame(t(data.frame(row.names = tax.levels))), phylum:.data[[tax.level]]))
+    select.by.tax = names(select(as.data.frame(t(data.frame(row.names = tax.levels))), phylum:all_of(tax.level)))
 
     # filter for subcommunity-specific data
-    communities = metadata %>%
-      filter(.data[[sub.comms]] %in% x) %>%
-      pull(`sample-id`)
+    if (sub.comms != "all_communities") {
+      communities = metadata %>%
+        filter(.data[[sub.comms]] %in% x) %>%
+        pull(`sample-id`)
+    } else {
+      communities = pull(metadata, `sample-id`)
+    }
 
     full_abun_data <- binned.taxonomy %>%
       filter(`sample-id` %in% communities)
 
+    ebc.nodes.x <- ebc.nodes %>% filter(sub_comm %in% x)
     ebc.nodes.abun <- full_abun_data %>%
       dplyr::select(`sample-id`, taxon_, rel_abun_binned, binned_count) %>%
-      left_join(ebc.nodes[[x]], by = "taxon_")
+      left_join(ebc.nodes.x, by = "taxon_")
 
     # this ensures ebc relative abundance is calculated from full dataset
     # regardless of remove.singletons option from bngal::bin_taxonomy()
@@ -79,12 +87,9 @@ ebc_compositions <- function(ebc.nodes, binned.taxonomy, alpha.div, tax.level, m
     # ensure no mismatches between subcommunities and samples (when '--subcommunities' option !is.null)
     out[[x]] <- dat.out %>%
       left_join(., select(metadata, `sample-id`, all_of(sub.comms)), by = "sample-id") %>%
+      left_join(., select(metadata, `sample-id`), by = "sample-id") %>%
       left_join(alpha.div, by = c("sample-id", "tax_level")) %>%
       filter(.data[[sub.comms]] %in% x)
-      # dplyr::mutate(remove = if_else(.data[[sub.comms]] == .data$sub_comm, F, T),
-      #               remove = if_else(is.na(sub_comm), F, remove)) %>%
-      # filter(remove == FALSE) %>%
-      # select(-remove)
   }
 
   out

@@ -6,8 +6,8 @@
 \usage{
 calc_ebc_comps(ebc.nodes, binned.taxonomy, tax.level, metadata.cols)
 }
-\arguments{
-\item{metadata.cols}{}
+\value{
+\strong{Deprecated!} This function will be removed in a future version of \code{bngal}. Please use \code{\link{ebc_compositions}} instead.
 }
 \description{
 Calculate compositions of edge between clusters based on defined metadata column(s)

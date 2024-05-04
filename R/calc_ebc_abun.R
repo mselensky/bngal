@@ -1,10 +1,7 @@
 #' Calculate abundance of edge between clusters
 #'
-#' @param ebc.nodes
-#' @param binned.taxonomy
-#' @param metadata.cols
 #'
-#' @return **deprecated**
+#' @return **Deprecated!** This function will be removed in a future version of `bngal`. Please use [`bngal::ebc_compositions`] instead.
 #' @export
 #'
 #' @examples

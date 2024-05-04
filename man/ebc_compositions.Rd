@@ -19,7 +19,11 @@ ebc_compositions(
 
 \item{binned.taxonomy}{Output from \code{\link[=bin_taxonomy]{bin_taxonomy()}}}
 
+\item{alpha.div}{Output from \code{\link[=get_alpha.div]{get_alpha.div()}}}
+
 \item{tax.level}{Taxonomic level of classification at which to calculate EBC compositions}
+
+\item{metadata}{Sample metadata corresponding to \code{binned.taxonomy}.}
 
 \item{sub.comms}{\emph{(Optional)} Metadata column by which to split data into subcommunities}
 }

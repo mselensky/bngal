@@ -4,7 +4,7 @@
 \alias{corr_matrix}
 \title{Compute correlation matrix}
 \usage{
-corr_matrix(filtered.matrix, correlation, cores)
+corr_matrix(filtered.matrix, correlation, cores = NULL)
 }
 \arguments{
 \item{filtered.matrix}{Output from \verb{[bngal::prepare_corr_data]}}

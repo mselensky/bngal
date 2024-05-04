@@ -6,11 +6,8 @@
 \usage{
 calc_ebc_abun(ebc.nodes, binned.taxonomy, metadata.cols)
 }
-\arguments{
-\item{metadata.cols}{}
-}
 \value{
-\strong{deprecated}
+\strong{Deprecated!} This function will be removed in a future version of \code{bngal}. Please use \code{\link{ebc_compositions}} instead.
 }
 \description{
 Calculate abundance of edge between clusters
