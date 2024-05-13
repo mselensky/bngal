@@ -4,3 +4,10 @@
 
 layout: home
 ---
+
+# Welcome to the `bngal` wiki!
+
+What is `bngal`?
+
+Biological Network Graph Analysis and Learning (`bngal`) is a package written in R to create high-quality, complex correlation networks from microbial abundance data.
+
