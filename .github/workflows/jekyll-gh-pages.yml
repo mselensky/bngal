@@ -26,6 +26,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
+      - run: bundle install
       - name: Checkout
         uses: actions/checkout@v4
       - name: Setup Pages
