@@ -26,11 +26,11 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - run: bundle install
       - name: Checkout
         uses: actions/checkout@v4
       - name: Setup Pages
         uses: actions/configure-pages@v5
+      - run: bundle install
       - name: Build with Jekyll
         uses: actions/jekyll-build-pages@v1
         with:
