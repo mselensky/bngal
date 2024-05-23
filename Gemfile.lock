@@ -274,7 +274,6 @@ PLATFORMS
 DEPENDENCIES
   github-pages
   http_parser.rb (~> 0.6.0)
-  jekyll-feed (~> 0.12)
   just-the-docs (= 0.8.2)
   minima (~> 2.5)
   rake (~> 13.2.1)
