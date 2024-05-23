@@ -23,7 +23,7 @@ email: bngal.help@gmail.com
 description: >- # this means to ignore newlines until "baseurl:"
   Biological Network Graph Analysis and Learning
 baseurl: "" # the subpath of your site, e.g. /blog
-#url: "https://mselensky.github.io/bngal" # the base hostname & protocol for your site, e.g. http://example.com
+url: "https://mselensky.github.io/bngal" # the base hostname & protocol for your site, e.g. http://example.com
 twitter_username: microbial_matt
 github_username:  mselensky
 
