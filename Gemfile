@@ -36,7 +36,5 @@ gem "http_parser.rb", "~> 0.6.0", :platforms => [:jruby]
 install_if -> { ENV["GITHUB_ACTIONS"] != "true" } do
     puts "Is GitHub action: #{ENV["GITHUB_ACTIONS"] == "true"}"
     gem "rake", "~> 13.2.1"
-end 
-
-gem "webrick"
-
+end
+ 
