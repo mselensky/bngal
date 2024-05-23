@@ -28,7 +28,7 @@ twitter_username: microbial_matt
 github_username:  mselensky
 
 # Build settings
-theme: pmarsceill/just-the-docs
+theme: just-the-docs
 plugins:
   - jekyll-feed
 

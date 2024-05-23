@@ -38,4 +38,5 @@ install_if -> { ENV["GITHUB_ACTIONS"] != "true" } do
     gem "rake", "~> 13.2.1"
 end 
 
+gem "webrick"
 
