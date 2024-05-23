@@ -35,13 +35,13 @@ jobs:
           bundler-cache: true # runs 'bundle install' and caches installed gems automatically
           cache-version: 0 # Increment this number if you need to re-download cached gems
       - name: Setup Pages
-        uses: actions/configure-pages@v5
+        uses: actions/configure-pages@v3
       - name: Build with Jekyll
-        #run: bundle exec jekyll build --baseurl "${{ steps.pages.outputs.base_path }}"
-        uses: actions/jekyll-build-pages@v1
-        with:
-          source: ./
-          destination: ./_site
+        run: bundle exec jekyll build --baseurl "${{ steps.pages.outputs.base_path }}"
+        #uses: actions/jekyll-build-pages@v1
+        #with:
+        #  source: ./
+        #  destination: ./_site
         env:
           JEKYLL_ENV: production
       - name: Upload artifact
