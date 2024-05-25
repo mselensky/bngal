@@ -22,6 +22,10 @@ ebc_compositions <- function(ebc.nodes, binned.taxonomy, alpha.div, tax.level, m
     #ebc.nodes[[sub.comms]]$sub_comm = rep("all", nrow(ebc.nodes[[sub.comms]]))
   }
 
+  # filter metadata for samples in binned_taxonomy
+  binned_tax_samples = unique(binned.taxonomy$`sample-id`)
+  metadata = metadata[metadata$`sample-id` %in% binned_tax_samples,]
+  
   #ebc.nodes_ <- split(ebc.nodes, ebc.nodes$sub_comm)
   out=list()
   for (x in unique(metadata[[sub.comms]])) {
@@ -57,7 +61,7 @@ ebc_compositions <- function(ebc.nodes, binned.taxonomy, alpha.div, tax.level, m
     full.data.ebc <- full.data %>%
       left_join(select(full_abun_data, -binned_count), by = c("sample-id", "taxon_")) %>%
       left_join(select(ebc.nodes.abun, -binned_count, -rel_abun_binned),
-                by = c("sample-id", "taxon_", "domain", all_of(select.by.tax))) %>%
+                by = c(all_of(select.by.tax), "sample-id", "taxon_", "domain")) %>%
       dplyr::mutate(rel_abun_binned = if_else(binned_count == 0, 0, rel_abun_binned),
                     edge_btwn_cluster = if_else(is.na(edge_btwn_cluster), 0, as.numeric(edge_btwn_cluster))) %>%
       left_join(., select(metadata, `sample-id`, any_of(metadata.cols)),
