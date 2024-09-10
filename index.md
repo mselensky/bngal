@@ -11,9 +11,9 @@ What is `bngal`?
 
 Biological Network Graph Analysis and Learning (`bngal`) is a package written in R to create high-quality, complex correlation networks from microbial abundance data.
 
-<object data="./figures/all-asv-by-edge_btwn_cluster.pdf" type="application/pdf" width="700px" height="700px">
-    <embed src="./figures/all-asv-by-edge_btwn_cluster.pdf">
-        <p>This browser does not support PDFs. Please download the PDF to view it: <a href="./figures/all-asv-by-edge_btwn_cluster.pdf">Download PDF</a>.</p>
+<object data="./bngal/figures/all-asv-by-edge_btwn_cluster.pdf" type="application/pdf" width="700px" height="700px">
+    <embed src="./bngal/figures/all-asv-by-edge_btwn_cluster.pdf">
+        <p>This browser does not support PDFs. Please download the PDF to view it: <a href="./bngal/figures/all-asv-by-edge_btwn_cluster.pdf">Download PDF</a>.</p>
     </embed>
 </object>
 
