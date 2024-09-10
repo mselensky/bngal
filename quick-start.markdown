@@ -8,7 +8,7 @@ permalink: /quick-start-global-net/
 
 # Global network analysis
 
-Creating a "global network" means you are sending all of your taxonomic abundance data into the `bngal` pipeline. This is a useful starting analysis that visualizes broad trends across your entire dataset. The following global network example will analyze a [published dataset](https://journals.asm.org/doi/10.1128/aem.01682-23#supplementary-materials) to show the potential for regional biogeography of microbes living in the eastern Yucatan carbonate aquifer. After such a global analysis, we can [split up the data into separate networks](#separate-networks-by-metadata-column-region) based on a metadata column (`region`) to further refine pairwise correlation trends within each region.
+Creating a "global network" means you are sending all of your taxonomic abundance data into the `bngal` pipeline. This is a useful starting analysis that visualizes broad trends across your entire dataset. The following global network example will analyze a [published dataset](https://journals.asm.org/doi/10.1128/aem.01682-23#supplementary-materials) to show the potential for regional biogeography of microbes living in the eastern Yucatan carbonate aquifer. After such a global analysis, we can [split up the data into separate networks](../quick-start-multi-net) based on a metadata column (`region`) to further refine pairwise correlation trends within each region.
 
 ## Step 1: `bngal-build-nets`
 
