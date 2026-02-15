@@ -45,7 +45,7 @@ The simplest use case is to create a global network of the entire input ASV tabl
 
 You might want to make such a "global" network when wanting to examine broad trends between groups of samples (communities) in your dataset. After we run `bngal-build-nets`, we'll move on to the next command, which will provide useful summaries and visualizations for us to interpret from the network that `bngal-build-nets` creates.
 
-**Note on using BNGAL images from Docker**: You must mount your input data into the container's `/work` directory by providing the option `-v \`pwd\`:/work` to `docker run`, assuming the input data are in your current working directory (`pwd`).
+**Note on using BNGAL images from Docker**: You must mount your input data into the container's `/work` directory by providing the option ```-v `pwd`:/work``` to `docker run`. This example assumes the input data are in your current working directory (\`pwd\`).
 
 ```
 # using Docker
