@@ -45,9 +45,11 @@ The simplest use case is to create a global network of the entire input ASV tabl
 
 You might want to make such a "global" network when wanting to examine broad trends between groups of samples (communities) in your dataset. After we run `bngal-build-nets`, we'll move on to the next command, which will provide useful summaries and visualizations for us to interpret from the network that `bngal-build-nets` creates.
 
+**Note on using BNGAL images from Docker**: You must mount your input data into the container's `/work` directory by providing the option `-v \`pwd\`:/work` to `docker run`, assuming the input data are in your current working directory (`pwd`).
+
 ```
 # using Docker
-docker run -v `pwd`:/home/mambauser -it mjsel/bngal:dev \
+docker run -v `pwd`:/work -it mjsel/bngal:1.0.0 \
   bngal-build-nets \
     --asv_table=$TAX_TABLE \
     --metadata=$META_DATA \
@@ -84,7 +86,7 @@ The second step in the bngal pipeline, `bngal-summarize-nets`, outputs more usef
 
 ```
 # using Docker
-docker run -v `pwd`:/home/mambauser -it mjsel/bngal:dev \
+docker run -v `pwd`:/work -it mjsel/bngal:1.0.0 \
   bngal-summarize-nets \
     --asv_table=$TAX_TABLE \
     --metadata=$META_DATA \
@@ -111,7 +113,7 @@ Though the above plot might reflect the composition of the edge betweenness clus
     </embed>
 </object>
 
-Because we chose `--fill_ebc_by="region"`, the top hierarchical cluster is filled by the metadata column `region`. Generally speaking, in this dataset, microbial communities from a given hydrological region tend to be more similar to each other. We can clearly see this without even considering the EBC barplot below the hierarchical cluster. That said, when we begin to layer in the compositional data as it relates to EBCs, we see the emergence of potential niches that are perhaps defined by the `region`. For example, EBC 10 is most abundant in `region4`, while EBC 20 is most abundant in `EBC 20`. On further analysis, it turns out that the taxa mapped to these EBCs might be expected to have similar growth requirements that are consistent with the environment from which they are sampled. We also observe more ubiquitous EBCs, like EBC 3, that seem to be abundant in most regions. Biogeography is cool!
+Because we chose `--fill_ebc_by="region"`, the top hierarchical cluster is filled by the metadata column `region`. Generally speaking, in this dataset, microbial communities from a given hydrological region tend to be more similar to each other. We can clearly see this without even considering the EBC barplot below the hierarchical cluster. That said, when we begin to layer in the compositional data as it relates to EBCs, we see the emergence of potential niches that are perhaps defined by the `region`. For example, EBC 10 is most abundant in `region4`, while EBC 20 is most abundant in `region6`. On further analysis, it turns out that the taxa mapped to these EBCs might be expected to have similar growth requirements that are consistent with the environment from which they are sampled. We also observe more ubiquitous EBCs, like EBC 3, that seem to be abundant in most regions. Biogeography is cool!
 
 You can take a deep look into which individual taxa comprise a given EBC by examining the `network-summary-tables` output folder. Please see [this table](../output_folders/#output-subfolders) for a description of each file that is saved there. For more granular analysis of potential community structure, these files are very helpful.
 

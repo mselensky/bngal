@@ -19,30 +19,27 @@ You can quickly install both the `bngal` R package and its command-line utility 
 
 ## Command line utility (recommended)
 
-There are two ways to install the command line utility: DockerHub or Singularity. I recommend using one of the images hosted on [DockerHub](https://hub.docker.com/repository/docker/mjsel/bngal/tags?page=1&ordering=last_updated) (do note your chip architecture - discussed further below). An installation route is also available from [Anaconda](https://www.anaconda.com/products/distribution) or [CRAN](https://cran.r-project.org/).
+There are two ways to install the command line utility: DockerHub or Singularity/Apptainer. I recommend using one of the images hosted on [DockerHub](https://hub.docker.com/repository/docker/mjsel/bngal/tags?page=1&ordering=last_updated) (do note your chip architecture - discussed further below). An installation route is also available from [Anaconda](https://www.anaconda.com/products/distribution) or [CRAN](https://cran.r-project.org/).
 
-### Docker (and Singularity)
+### Docker (and Singularity/Apptainer)
 
-Before pulling from DockerHub, please note your chip architecture - `arm64` (e.g., Apple Silicon) or `amd64 / x86_64` (e.g., Intel). You will want to pull the right image matched to your chip type. The `bngal` images are bootstrapped with [micromamba-docker](https://github.com/mamba-org/micromamba-docker):
+[Multi-platform Docker images](https://docs.docker.com/build/building/multi-platform/) for BNGAL are maintained [here](https://hub.docker.com/repository/docker/mjsel/bngal/general). Supported architectures for each release version are noted in the table below.
 
 Image Tag | Version | Architecture
 :--- | :--- | :---
-`mjsel/bngal:1.0.1` | `1.0.1` | `amd64 / x86_64`
-`mjsel/bngal:1.0.1-arm64` | `1.0.1` | `arm64`
-`mjsel/bngal:1.0.0` | `1.0.0` | `amd64 / x86_64`
-`mjsel/bngal:1.0.0-arm64` | `1.0.0` | `arm64`
+`mjsel/bngal:1.0.1` | `1.0.1` | `amd64 / arm64`
+`mjsel/bngal:1.0.0` | `1.0.0` | `amd64 / arm64`
 
-`bngal-cli` is easily installable if you use Docker. You will only need to install one of these, depending on your architecture:
+`bngal-cli` is easily installable if you use Docker:
+
 ```
 docker pull mjsel/bngal:1.0.1
-docker pull mjsel/bngal:1.0.1-arm64 
 ```
 
-Alternatively, you can pull the same image if you use Singularity:
+Alternatively, you can pull the same image if you use Singularity/Apptainer:
 
 ```
-singularity pull docker://mjsel/bngal:1.0.1
-singularity pull docker://mjsel/bngal:1.0.1-arm64
+apptainer pull docker://mjsel/bngal:1.0.1
 ```
 
 ### Anaconda virtual environment

@@ -5,4 +5,4 @@ BNGAL (or `bngal`) is a software package developed to create co-occurrence netwo
 
 Please visit the Wiki page for more information on how to use `bngal`!
 
-If you found `bngal` helpful for your research, please consider citing our recent paper that used this tool: https://doi.org/10.1128/aem.01682-23
+If you found `bngal` helpful for your research, please consider citing our paper that used this tool: https://doi.org/10.1128/aem.01682-23
